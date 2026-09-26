@@ -1,0 +1,58 @@
+<!doctype html><html lang="kn"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#b40000"><link rel="manifest" href="manifest.webmanifest">
+<title>Bidire News AI Editor</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
+header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.brand{font-weight:800;color:#b40000;font-size:19px}.sub{font-size:11px;color:#777}.wrap{max-width:980px;margin:12px auto;padding:0 9px}
+.panel{background:#fff;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;overflow:hidden}.bar{padding:9px 11px;border-bottom:1px solid #eee;font-weight:700;background:#fafafa}.body{padding:11px}
+textarea,input,select{width:100%;border:1px solid #ccc;border-radius:6px;padding:9px;font:inherit}textarea{min-height:170px;resize:vertical}
+label{display:block;font-size:12px;font-weight:700;margin:7px 0 4px}.row,.actions{display:flex;gap:7px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}.actions{margin-top:9px}.actions button{flex:1;min-width:115px}
+button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{background:#b40000;color:#fff}.black{background:#111;color:#fff}.light{background:#eee}
+.count,.small{font-size:11px;color:#777}.count{text-align:right;margin-top:4px}.status{display:none;margin-top:8px;padding:8px;border-left:3px solid #b40000;background:#fff7d6;font-size:12px}
+.preview{border:1px solid #ddd;border-radius:6px;padding:13px}.preview h1{font-size:23px;margin:0 0 5px}.preview p{font-size:17px;line-height:1.7;white-space:pre-wrap}
+.hide{display:none}@media(max-width:600px){.wrap{margin:7px auto}.actions button{min-width:100px;padding:8px}.preview h1{font-size:20px}.preview p{font-size:16px}}
+</style></head><body>
+<header><div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div><button id="settingsBtn" class="black">⚙ Settings</button></header>
+<main class="wrap">
+<section class="panel"><div class="bar">ಹೊಸ ಸುದ್ದಿ</div><div class="body">
+<label>Raw News / ಮೂಲ ಮಾಹಿತಿ</label><textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿಯನ್ನು ಇಲ್ಲಿ paste ಮಾಡಿ..."></textarea>
+<div class="row"><div><label>ಪದಗಳ ಮಿತಿ</label><select id="limit"><option value="0">Original</option><option>100</option><option>150</option><option>170</option><option>200</option></select></div>
+<div><label>ಶೈಲಿ</label><select id="style"><option value="normal">Bidire News</option><option value="vijayavani">ವಿಜಯವಾಣಿ ಶೈಲಿ</option></select></div></div>
+<div class="actions"><button class="primary" id="generate">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ</button><button class="light" id="shorten">✂ ಸಂಕ್ಷಿಪ್ತ</button><button class="light" id="grammar">✓ Grammar</button><button class="light" id="translate">English</button></div>
+<div id="status" class="status"></div></div></section>
+<section class="panel"><div class="bar">ಸುದ್ದಿ ಸಂಪಾದನೆ</div><div class="body">
+<label>Headline</label><input id="headline"><label>English SEO Slug</label><input id="slug"><label>Subheadline</label><input id="sub"><label>News Body</label><textarea id="bodyOut" style="min-height:260px"></textarea>
+<div class="count"><span id="wc">0</span> words</div>
+<div class="actions"><button class="black" id="copyBlogger">📋 Copy to Blogger</button><button class="light" id="copyBody">Copy News</button><button class="light" id="saveDraft">💾 Save Draft</button></div>
+</div></section>
+<section class="panel"><div class="bar">Preview</div><div class="body"><div class="preview"><h1 id="ph">ಶೀರ್ಷಿಕೆ</h1><div id="ps" class="small">english-seo-slug</div><p id="pb">ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</p></div></div></section>
+<section class="panel hide" id="settings"><div class="bar">Gemini Settings</div><div class="body">
+<p class="small">API key ಈ browserನ local storageನಲ್ಲಿ ಮಾತ್ರ ಉಳಿಯುತ್ತದೆ. Gemini API free-tier/billing ನಿಯಮಗಳು Google accountಗೆ ಅನುಗುಣವಾಗಿರುತ್ತವೆ.</p>
+<label>Gemini API Key</label><input id="key" type="password" placeholder="AIza..."><label>Model</label><input id="model" value="gemini-2.5-flash">
+<div class="actions"><button class="primary" id="saveSettings">Save</button><button class="light" id="clearSettings">Clear</button></div>
+</div></section>
+<section class="panel"><div class="bar">Bidire News Rules</div><div class="body small">ಕೊಟ್ಟಿರುವ ಮಾಹಿತಿಯನ್ನಷ್ಟೇ ಬಳಸಿ. ಯಾವುದೇ ಹೆಸರು, ಹುದ್ದೆ, ದಿನಾಂಕ, ಸ್ಥಳ, ಸಂಖ್ಯೆ ಅಥವಾ ಹೇಳಿಕೆಯನ್ನು ಊಹಿಸಬೇಡಿ. ಹೆಸರು/ಹುದ್ದೆಗಳನ್ನು ಉಳಿಸಿ. ಕನ್ನಡ ದಿನಪತ್ರಿಕೆ ಶೈಲಿ. Default dateline: ಮೂಡುಬಿದಿರೆ:. ವಿಜಯವಾಣಿ mode: ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ.</div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function wc(s){return s.trim()?s.trim().split(/\s+/).length:0}
+function status(s){$("status").textContent=s;$("status").style.display=s?"block":"none"}
+function update(){ $("wc").textContent=wc($("bodyOut").value);$("ph").textContent=$("headline").value||"ಶೀರ್ಷಿಕೆ";$("ps").textContent=$("slug").value||"english-seo-slug";$("pb").textContent=$("bodyOut").value||"ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ."}
+["bodyOut","headline","slug"].forEach(x=>$(x).addEventListener("input",update));
+$("settingsBtn").onclick=()=>{$("settings").classList.toggle("hide");$("key").value=localStorage.getItem("bidire_key")||"";$("model").value=localStorage.getItem("bidire_model")||"gemini-2.5-flash"};
+$("saveSettings").onclick=()=>{localStorage.setItem("bidire_key",$("key").value.trim());localStorage.setItem("bidire_model",$("model").value.trim()||"gemini-2.5-flash");status("Settings saved.");setTimeout(()=>status(""),1200)};
+$("clearSettings").onclick=()=>{localStorage.removeItem("bidire_key");$("key").value="";status("API key cleared.")};
+function makePrompt(task){let raw=$("raw").value.trim();if(!raw){status("ಮೊದಲು Raw News ಹಾಕಿ.");return null}let lim=$("limit").value;let date=$("style").value==="vijayavani"?"ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ":"ಮೂಡುಬಿದಿರೆ:";return `You are Bidire News senior Kannada sub-editor. ${task} Use ONLY the supplied facts. Never invent or guess. Preserve every supplied name, designation, date, place, number and factual detail. No invented quotes. Newspaper Kannada. Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences. Dateline: ${date}. Return JSON keys headline,slug,subheadline,body,englishTranslation. RAW NEWS:\n${raw}`}
+async function ai(task){let key=localStorage.getItem("bidire_key"),model=localStorage.getItem("bidire_model")||"gemini-2.5-flash";if(!key){status("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}let p=makePrompt(task);if(!p)return;status("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
+try{let r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:p}]}],generationConfig:{responseMimeType:"application/json"}})});let j=await r.json();if(!r.ok)throw Error(j.error?.message||"API error");let t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\s*/,"").replace(/\s*```$/,"");let o=JSON.parse(t);$("headline").value=o.headline||"";$("slug").value=o.slug||"";$("sub").value=o.subheadline||"";$("bodyOut").value=o.body||"";update();status("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>status(""),1500)}catch(e){status("AI error: "+e.message)}}
+$("generate").onclick=()=>ai("Create the complete news report.");
+$("shorten").onclick=()=>ai("Shorten the news while retaining all supplied important facts and names.");
+$("grammar").onclick=()=>ai("Correct grammar and improve newspaper readability without adding facts.");
+$("translate").onclick=()=>{let b=$("bodyOut").value.trim();if(!b){status("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}let old=$("raw").value;$("raw").value=b;ai("Translate the supplied Kannada news into natural English. Preserve names, places, dates and factual meaning. Put translation in englishTranslation.");$("raw").value=old};
+$("copyBlogger").onclick=async()=>{await navigator.clipboard.writeText(`${$("headline").value}\n\n${$("slug").value}\n\n${$("sub").value}\n\n${$("bodyOut").value}`);status("Bloggerಗೆ copy ಆಗಿದೆ.");setTimeout(()=>status(""),1200)};
+$("copyBody").onclick=async()=>{await navigator.clipboard.writeText($("bodyOut").value);status("News copied.");setTimeout(()=>status(""),1000)};
+$("saveDraft").onclick=()=>{localStorage.setItem("bidire_draft",JSON.stringify({headline:$("headline").value,slug:$("slug").value,sub:$("sub").value,body:$("bodyOut").value}));status("Draft saved.")};
+let d=JSON.parse(localStorage.getItem("bidire_draft")||"null");if(d){$("headline").value=d.headline||"";$("slug").value=d.slug||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";update()}
+</script></body></html>
