@@ -12,7 +12,7 @@ label{display:block;font-size:12px;font-weight:700;margin:7px 0 4px}.row,.action
 button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{background:#b40000;color:#fff}.black{background:#111;color:#fff}.light{background:#eee}
 .count,.small{font-size:11px;color:#777}.count{text-align:right;margin-top:4px}.status{display:none;margin-top:8px;padding:8px;border-left:3px solid #b40000;background:#fff7d6;font-size:12px}
 .preview{border:1px solid #ddd;border-radius:6px;padding:13px}.preview h1{font-size:23px;margin:0 0 5px}.preview p{font-size:17px;line-height:1.7;white-space:pre-wrap}
-.hide{display:none}@media(max-width:600px){.wrap{margin:7px auto}.actions button{min-width:100px;padding:8px}.preview h1{font-size:20px}.preview p{font-size:16px}}
+.hide{display:none}.photo-box{margin-top:10px;border:1px dashed #ccc;border-radius:8px;padding:10px;background:#fafafa}.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:9px}.photo-item{border:1px solid #ddd;border-radius:7px;overflow:hidden;background:#fff}.photo-item img{display:block;width:100%;height:120px;object-fit:cover}.photo-item .pcap{padding:6px 8px;font-size:11px;color:#666;font-style:italic;line-height:1.35}.photo-item .pname{padding:5px 8px;font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo-remove{margin:6px 8px 8px;width:calc(100% - 16px);font-size:11px}.photo-status{font-size:11px;color:#777;margin-top:6px}@media(max-width:600px){.wrap{margin:7px auto}.actions button{min-width:100px;padding:8px}.preview h1{font-size:20px}.preview p{font-size:16px}}
 </style></head><body>
 <header><div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div><button id="settingsBtn" class="black">⚙ Settings</button></header>
 <main class="wrap">
@@ -24,6 +24,7 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{back
 <div id="status" class="status"></div></div></section>
 <section class="panel"><div class="bar">ಸುದ್ದಿ ಸಂಪಾದನೆ</div><div class="body">
 <label>Headline</label><input id="headline"><label>Subheadline</label><input id="sub"><label>News Body</label><textarea id="bodyOut" style="min-height:260px"></textarea>
+<div class="photo-box"><label>📷 Photos</label><input id="photoInput" type="file" accept="image/*" multiple><div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಸುದ್ದಿಯ ಆಧಾರದ ಮೇಲೆ caption automatic ಆಗಿ ತಯಾರಾಗುತ್ತದೆ.</div><div id="photoGrid" class="photo-grid"></div><div id="photoStatus" class="photo-status"></div></div>
 <div class="count"><span id="wc">0</span> words</div>
 <div class="actions"><button type="button" class="primary" id="publishBlogger">🚀 Publish to Blogger</button><button type="button" class="black" id="copyBlogger">📋 Copy to Blogger</button><button type="button" class="light" id="copyBody">Copy News</button><button type="button" class="light" id="saveDraft">💾 Save Draft</button></div><div id="publishStatus" class="status"></div>
 </div></section>
@@ -129,12 +130,45 @@ $("connectBlogger").addEventListener("click",async()=>{
   finally{btn.disabled=false;btn.textContent="🔐 Connect Google / Blogger"}
 });
 $("disconnectBlogger").onclick=()=>{bloggerToken=null;bloggerMsg("Disconnected.",false)};
+let photos=[];
+function photoMsg(s){const el=$("photoStatus");el.textContent=s||"";}
+function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+function renderPhotos(){
+  const grid=$("photoGrid"); grid.innerHTML="";
+  photos.forEach((p,i)=>{const d=document.createElement("div");d.className="photo-item";d.innerHTML=`<img src="${p.dataUrl}" alt=""><div class="pcap">${escapeHtml(p.caption||"Photo caption")}</div><div class="pname">${escapeHtml(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button>`;grid.appendChild(d)});
+  grid.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(Number(b.dataset.i),1);renderPhotos();photoMsg(photos.length?photos.length+" photo(s) selected.":"")});
+}
+function escapeHtml(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+async function generatePhotoCaption(dataUrl, name){
+  const key=localStorage.getItem("bidire_key"), model=localStorage.getItem("bidire_model")||"gemini-2.5-flash";
+  if(!key) return "";
+  const prompt=`You are a Kannada newspaper photo caption writer for Bidire News. Generate ONE short, factual Kannada photo caption sentence based only on the supplied news context and the visible image. Do not invent names, roles, places or events. If people are visible but their identities are not stated in the news context, do not identify them. Keep it concise, newspaper style, no label such as 'ಫೋಟೋ ಕ್ಯಾಪ್ಶನ್', no quotes. NEWS CONTEXT:\nHeadline: ${$("headline").value}\nSubheadline: ${$("sub").value}\nNews: ${$("bodyOut").value}`;
+  try{
+    const base64=String(dataUrl).split(",")[1]; const mime=String(dataUrl).split(";")[0].split(":")[1]||"image/jpeg";
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}]})});
+    const j=await r.json(); if(!r.ok) throw Error(j.error?.message||"Caption API error");
+    return (j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^['"“”]+|['"“”]+$/g,"");
+  }catch(e){return ""}
+}
+$("photoInput").addEventListener("change",async e=>{
+  const files=[...e.target.files||[]]; if(!files.length)return;
+  photoMsg("ಫೋಟೋಗಳನ್ನು ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...");
+  for(const file of files){
+    if(!file.type.startsWith("image/")) continue;
+    const dataUrl=await fileToDataURL(file);
+    const item={name:file.name,dataUrl,caption:""}; photos.push(item); renderPhotos();
+    const cap=await generatePhotoCaption(dataUrl,file.name); item.caption=cap||`${$("headline").value||"ಸುದ್ದಿ"} — Bidire News`; renderPhotos();
+  }
+  photoMsg(`${photos.length} photo(s) selected.`); e.target.value="";
+});
 function htmlContent(){
   const sub=$("sub").value.trim(), body=$("bodyOut").value.trim();
-  const esc=x=>x.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");
+  const esc=x=>String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");
   const paras=body.split(/\n\s*\n/).filter(Boolean).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
-  return (sub?`<p><strong>${esc(sub)}</strong></p>`:"")+paras;
+  const photoHtml=photos.map(p=>`<figure style="margin:16px 0 18px;text-align:center;"><img src="${p.dataUrl}" alt="${esc(p.caption)}" style="max-width:100%;height:auto;display:block;margin:0 auto;"><figcaption style="font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4;">${esc(p.caption)}</figcaption></figure>`).join("");
+  return (sub?`<p><strong>${esc(sub)}</strong></p>`:"")+photoHtml+paras;
 }
+
 $("publishBlogger").onclick=async()=>{
   const title=$("headline").value.trim(), body=$("bodyOut").value.trim(), blogId=$("blogId").value.trim()||"2799540703054854619";
   if(!title||!body){$("publishStatus").textContent="ಮೊದಲು Headline ಮತ್ತು News Body ಸಿದ್ಧಪಡಿಸಿ.";$("publishStatus").style.display="block";return}
@@ -154,7 +188,7 @@ $("publishBlogger").onclick=async()=>{
   }
 };
 $("copyBody").onclick=async()=>{await navigator.clipboard.writeText($("bodyOut").value);status("News copied.");setTimeout(()=>status(""),1000)};
-$("saveDraft").onclick=()=>{localStorage.setItem("bidire_draft",JSON.stringify({headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value}));status("Draft saved.")};
-let d=JSON.parse(localStorage.getItem("bidire_draft")||"null");if(d){$("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";update()}
+$("saveDraft").onclick=()=>{localStorage.setItem("bidire_draft",JSON.stringify({headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,photos:photos.map(p=>({name:p.name,dataUrl:p.dataUrl,caption:p.caption}))}));status("Draft saved.")};
+let d=JSON.parse(localStorage.getItem("bidire_draft")||"null");if(d){$("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";photos=Array.isArray(d.photos)?d.photos:[];renderPhotos();update()}
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
 </script></body></html>
