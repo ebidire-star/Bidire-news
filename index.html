@@ -1,6 +1,6 @@
 <!doctype html><html lang="kn"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#b40000"><link rel="manifest" href="manifest.webmanifest"><script src="https://accounts.google.com/gsi/client" async defer></script>
+<meta name="theme-color" content="#b40000"><link rel="manifest" href="manifest.webmanifest"><script src="https://accounts.google.com/gsi/client" async defer onload="window.gsiReady=true"></script>
 <title>Bidire News AI Editor</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
@@ -25,7 +25,7 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{back
 <section class="panel"><div class="bar">ಸುದ್ದಿ ಸಂಪಾದನೆ</div><div class="body">
 <label>Headline</label><input id="headline"><label>Subheadline</label><input id="sub"><label>News Body</label><textarea id="bodyOut" style="min-height:260px"></textarea>
 <div class="count"><span id="wc">0</span> words</div>
-$("copyBlogger").onclick=async()=>{await navigator.clipboard.writeText(`${$("headline").value}\n\n${$("sub").value}\n\n${$("bodyOut").value}`);status("Bloggerಗೆ copy ಆಗಿದೆ.");setTimeout(()=>status(""),1200)};
+<div class="actions"><button type="button" class="primary" id="publishBlogger">🚀 Publish to Blogger</button><button type="button" class="black" id="copyBlogger">📋 Copy to Blogger</button><button type="button" class="light" id="copyBody">Copy News</button><button type="button" class="light" id="saveDraft">💾 Save Draft</button></div><div id="publishStatus" class="status"></div>
 </div></section>
 <section class="panel"><div class="bar">Preview</div><div class="body"><div class="preview"><h1 id="ph">ಶೀರ್ಷಿಕೆ</h1><p id="pb">ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</p></div></div></section>
 <section class="panel hide" id="settings"><div class="bar">Gemini Settings</div><div class="body">
@@ -49,7 +49,18 @@ function wc(s){return s.trim()?s.trim().split(/\s+/).length:0}
 function status(s){$("status").textContent=s;$("status").style.display=s?"block":"none"}
 function update(){ $("wc").textContent=wc($("bodyOut").value);$("ph").textContent=$("headline").value||"ಶೀರ್ಷಿಕೆ";$("pb").textContent=$("bodyOut").value||"ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ."}
 ["bodyOut","headline"].forEach(x=>$(x).addEventListener("input",update));
-$("settingsBtn").onclick=()=>{$("settings").classList.toggle("hide");$("key").value=localStorage.getItem("bidire_key")||"";$("model").value=localStorage.getItem("bidire_model")||"gemini-2.5-flash"};
+$("settingsBtn").addEventListener("click",()=>{
+  const panel=$("settings");
+  panel.classList.toggle("hide");
+  $("key").value=localStorage.getItem("bidire_key")||"";
+  $("model").value=localStorage.getItem("bidire_model")||"gemini-2.5-flash";
+  $("clientId").value=localStorage.getItem("bidire_client_id")||"";
+  $("blogId").value=localStorage.getItem("bidire_blog_id")||"2799540703054854619";
+  $("blogLabel").value=localStorage.getItem("bidire_blog_label")||"";
+  if(!panel.classList.contains("hide")){
+    setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),50);
+  }
+});
 $("saveSettings").onclick=()=>{
   const key=$("key").value.trim();
   const model=$("model").value.trim()||"gemini-2.5-flash";
@@ -86,10 +97,17 @@ $("copyBlogger").onclick=async()=>{await navigator.clipboard.writeText(`${$("hea
 
 let bloggerToken=null, tokenClient=null;
 function bloggerMsg(s,ok=false){$("bloggerStatus").textContent=s;$("bloggerStatus").style.color=ok?"#16803c":"#b40000"}
+async function waitForGoogleGSI(){
+  for(let i=0;i<30;i++){
+    if(window.google?.accounts?.oauth2)return true;
+    await new Promise(r=>setTimeout(r,250));
+  }
+  return false;
+}
 function initBloggerClient(){
   const cid=$("clientId").value.trim();
   if(!cid){bloggerMsg("ಮೊದಲು Google OAuth Client ID ಹಾಕಿ.");return false}
-  if(!window.google?.accounts?.oauth2){bloggerMsg("Google authorization library ಇನ್ನೂ load ಆಗಿಲ್ಲ. 2-3 seconds ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.");return false}
+  if(!window.google?.accounts?.oauth2){bloggerMsg("Google authorization ಇನ್ನೂ load ಆಗಿಲ್ಲ. ಮತ್ತೆ Connect ಒತ್ತಿ.");return false}
   tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger",callback:(resp)=>{
     if(resp.error){bloggerMsg("Google authorization failed: "+(resp.error_description||resp.error));return}
     bloggerToken=resp.access_token;localStorage.setItem("bidire_client_id",cid);localStorage.setItem("bidire_blog_id",$("blogId").value.trim()||"2799540703054854619");localStorage.setItem("bidire_blog_label",$("blogLabel").value.trim());
@@ -97,7 +115,19 @@ function initBloggerClient(){
   }});
   return true;
 }
-$("connectBlogger").onclick=()=>{if(!initBloggerClient())return;tokenClient.requestAccessToken({prompt:bloggerToken?"":"consent"})};
+$("connectBlogger").addEventListener("click",async()=>{
+  const btn=$("connectBlogger");
+  btn.disabled=true;
+  btn.textContent="⏳ Connecting...";
+  bloggerMsg("Google authorization ತೆರೆಯಲಾಗುತ್ತಿದೆ...",true);
+  try{
+    const ready=await waitForGoogleGSI();
+    if(!ready){bloggerMsg("Google authorization library load ಆಗಲಿಲ್ಲ. Chrome page refresh ಮಾಡಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.");return}
+    if(!initBloggerClient())return;
+    tokenClient.requestAccessToken({prompt:bloggerToken?"":"consent"});
+  }catch(e){bloggerMsg("Connect error: "+e.message)}
+  finally{btn.disabled=false;btn.textContent="🔐 Connect Google / Blogger"}
+});
 $("disconnectBlogger").onclick=()=>{bloggerToken=null;bloggerMsg("Disconnected.",false)};
 function htmlContent(){
   const sub=$("sub").value.trim(), body=$("bodyOut").value.trim();
@@ -125,6 +155,6 @@ $("publishBlogger").onclick=async()=>{
 };
 $("copyBody").onclick=async()=>{await navigator.clipboard.writeText($("bodyOut").value);status("News copied.");setTimeout(()=>status(""),1000)};
 $("saveDraft").onclick=()=>{localStorage.setItem("bidire_draft",JSON.stringify({headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value}));status("Draft saved.")};
-$("clientId").value=localStorage.getItem("bidire_client_id")||"";$("blogId").value=localStorage.getItem("bidire_blog_id")||"2799540703054854619";$("blogLabel").value=localStorage.getItem("bidire_blog_label")||"";
 let d=JSON.parse(localStorage.getItem("bidire_draft")||"null");if(d){$("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";update()}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
 </script></body></html>
