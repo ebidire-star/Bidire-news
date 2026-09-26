@@ -296,7 +296,7 @@ async function uploadPhotoToDrive(photo){
   const id=j.id;
   const pr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/permissions`,{method:"POST",headers:{Authorization:"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
   if(!pr.ok){const pj=await pr.json().catch(()=>({}));throw new Error(pj.error?.message||"Photo sharing permission failed");}
-  return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`;
+  return `https://lh3.googleusercontent.com/d/${encodeURIComponent(id)}=w2000`;
 }
 
 async function prepareHostedPhotos(){
