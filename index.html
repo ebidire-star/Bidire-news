@@ -31,7 +31,7 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{back
 <section class="panel hide" id="settings"><div class="bar">Gemini Settings</div><div class="body">
 <p class="small">API key ಈ browserನ local storageನಲ್ಲಿ ಮಾತ್ರ ಉಳಿಯುತ್ತದೆ. Gemini API free-tier/billing ನಿಯಮಗಳು Google accountಗೆ ಅನುಗುಣವಾಗಿರುತ್ತವೆ.</p>
 <label>Gemini API Key</label><input id="key" type="password" placeholder="AIza..."><label>Model</label><input id="model" value="gemini-2.5-flash">
-<div class="actions"><button class="primary" id="saveSettings">Save</button><button class="light" id="clearSettings">Clear</button></div>
+<div class="actions"><button type="button" class="primary" id="saveSettings">Save</button><button type="button" class="light" id="clearSettings">Clear</button></div><div id="settingsStatus" style="margin-top:8px;font-size:12px;color:#16803c;font-weight:700"></div>
 </div></section>
 <section class="panel"><div class="bar">Bidire News Rules</div><div class="body small">ಕೊಟ್ಟಿರುವ ಮಾಹಿತಿಯನ್ನಷ್ಟೇ ಬಳಸಿ. ಯಾವುದೇ ಹೆಸರು, ಹುದ್ದೆ, ದಿನಾಂಕ, ಸ್ಥಳ, ಸಂಖ್ಯೆ ಅಥವಾ ಹೇಳಿಕೆಯನ್ನು ಊಹಿಸಬೇಡಿ. ಹೆಸರು/ಹುದ್ದೆಗಳನ್ನು ಉಳಿಸಿ. ಕನ್ನಡ ದಿನಪತ್ರಿಕೆ ಶೈಲಿ. Default dateline: ಮೂಡುಬಿದಿರೆ:. ವಿಜಯವಾಣಿ mode: ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ.</div></section>
 </main>
@@ -42,8 +42,31 @@ function status(s){$("status").textContent=s;$("status").style.display=s?"block"
 function update(){ $("wc").textContent=wc($("bodyOut").value);$("ph").textContent=$("headline").value||"ಶೀರ್ಷಿಕೆ";$("ps").textContent=$("slug").value||"english-seo-slug";$("pb").textContent=$("bodyOut").value||"ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ."}
 ["bodyOut","headline","slug"].forEach(x=>$(x).addEventListener("input",update));
 $("settingsBtn").onclick=()=>{$("settings").classList.toggle("hide");$("key").value=localStorage.getItem("bidire_key")||"";$("model").value=localStorage.getItem("bidire_model")||"gemini-2.5-flash"};
-$("saveSettings").onclick=()=>{localStorage.setItem("bidire_key",$("key").value.trim());localStorage.setItem("bidire_model",$("model").value.trim()||"gemini-2.5-flash");status("Settings saved.");setTimeout(()=>status(""),1200)};
-$("clearSettings").onclick=()=>{localStorage.removeItem("bidire_key");$("key").value="";status("API key cleared.")};
+$("saveSettings").onclick=()=>{
+  const key=$("key").value.trim();
+  const model=$("model").value.trim()||"gemini-2.5-flash";
+  const ss=$("settingsStatus");
+  try{
+    if(!key){ss.textContent="⚠️ API key ಹಾಕಿ.";ss.style.color="#b40000";return;}
+    localStorage.setItem("bidire_key",key);
+    localStorage.setItem("bidire_model",model);
+    const saved=localStorage.getItem("bidire_key")==key;
+    if(!saved) throw new Error("Browser storage save failed");
+    ss.textContent="✓ API key saved. ಈಗ AI ಸುದ್ದಿ ಬರೆಯಿರಿ ಕ್ಲಿಕ್ ಮಾಡಿ.";
+    ss.style.color="#16803c";
+  }catch(e){
+    ss.textContent="✕ Save ಆಗಲಿಲ್ಲ: "+e.message;
+    ss.style.color="#b40000";
+  }
+};
+$("clearSettings").onclick=()=>{
+  localStorage.removeItem("bidire_key");
+  localStorage.removeItem("bidire_model");
+  $("key").value="";
+  $("model").value="gemini-2.5-flash";
+  $("settingsStatus").textContent="API key cleared.";
+  $("settingsStatus").style.color="#b40000";
+};
 function makePrompt(task){let raw=$("raw").value.trim();if(!raw){status("ಮೊದಲು Raw News ಹಾಕಿ.");return null}let lim=$("limit").value;let date=$("style").value==="vijayavani"?"ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ":"ಮೂಡುಬಿದಿರೆ:";return `You are Bidire News senior Kannada sub-editor. ${task} Use ONLY the supplied facts. Never invent or guess. Preserve every supplied name, designation, date, place, number and factual detail. No invented quotes. Newspaper Kannada. Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences. Dateline: ${date}. Return JSON keys headline,slug,subheadline,body,englishTranslation. RAW NEWS:\n${raw}`}
 async function ai(task){let key=localStorage.getItem("bidire_key"),model=localStorage.getItem("bidire_model")||"gemini-2.5-flash";if(!key){status("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}let p=makePrompt(task);if(!p)return;status("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
 try{let r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:p}]}],generationConfig:{responseMimeType:"application/json"}})});let j=await r.json();if(!r.ok)throw Error(j.error?.message||"API error");let t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\s*/,"").replace(/\s*```$/,"");let o=JSON.parse(t);$("headline").value=o.headline||"";$("slug").value=o.slug||"";$("sub").value=o.subheadline||"";$("bodyOut").value=o.body||"";update();status("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>status(""),1500)}catch(e){status("AI error: "+e.message)}}
