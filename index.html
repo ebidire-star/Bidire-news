@@ -178,7 +178,7 @@ $("grammar").onclick=()=>ai("Correct grammar and improve newspaper readability w
 $("translate").onclick=()=>{let b=$("bodyOut").value.trim();if(!b){status("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}let old=$("raw").value;$("raw").value=b;ai("Translate the supplied Kannada news into natural English. Preserve names, places, dates and factual meaning. Put translation in englishTranslation.");$("raw").value=old};
 $("copyBlogger").onclick=async()=>{await navigator.clipboard.writeText(`${$("headline").value}\n\n${$("sub").value}\n\n${$("bodyOut").value}`);status("Bloggerಗೆ copy ಆಗಿದೆ.");setTimeout(()=>status(""),1200)};
 
-let bloggerToken=null, tokenClient=null;
+let bloggerToken=null, tokenClient=null, bloggerPending=null;
 function bloggerMsg(s,ok=false){$("bloggerStatus").textContent=s;$("bloggerStatus").style.color=ok?"#16803c":"#b40000"}
 async function waitForGoogleGSI(){
   for(let i=0;i<30;i++){
@@ -192,11 +192,21 @@ function initBloggerClient(){
   if(!cid){bloggerMsg("ಮೊದಲು Google OAuth Client ID ಹಾಕಿ.");return false}
   if(!window.google?.accounts?.oauth2){bloggerMsg("Google authorization ಇನ್ನೂ load ಆಗಿಲ್ಲ. ಮತ್ತೆ Connect ಒತ್ತಿ.");return false}
   tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger",callback:(resp)=>{
-    if(resp.error){bloggerMsg("Google authorization failed: "+(resp.error_description||resp.error));return}
+    if(resp.error){bloggerMsg("Google authorization failed: "+(resp.error_description||resp.error)); if(bloggerPending){const r=bloggerPending;bloggerPending=null;r.reject(new Error(resp.error_description||resp.error));} return}
     bloggerToken=resp.access_token;localStorage.setItem("bidire_client_id",cid);localStorage.setItem("bidire_blog_id",$("blogId").value.trim()||"2799540703054854619");localStorage.setItem("bidire_blog_label",$("blogLabel").value.trim());
     bloggerMsg("✓ Blogger connected. ಈಗ Publish to Blogger ಒತ್ತಬಹುದು.",true);
+    if(bloggerPending){const r=bloggerPending;bloggerPending=null;r.resolve(bloggerToken);}
   }});
   return true;
+}
+async function requestBloggerAccess(prompt="consent"){
+  const ready=await waitForGoogleGSI();
+  if(!ready) throw new Error("Google authorization library load ಆಗಲಿಲ್ಲ. Page refresh ಮಾಡಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.");
+  if(!initBloggerClient()) throw new Error("Google OAuth Client ID ಸರಿಯಾಗಿಲ್ಲ. Settings ಪರಿಶೀಲಿಸಿ.");
+  return new Promise((resolve,reject)=>{
+    bloggerPending={resolve,reject};
+    tokenClient.requestAccessToken({prompt});
+  });
 }
 $("connectBlogger").addEventListener("click",async()=>{
   const btn=$("connectBlogger");
@@ -259,9 +269,12 @@ function htmlContent(){
 $("publishBlogger").onclick=async()=>{
   const title=$("headline").value.trim(), body=$("bodyOut").value.trim(), blogId=$("blogId").value.trim()||"2799540703054854619";
   if(!title||!body){$("publishStatus").textContent="ಮೊದಲು Headline ಮತ್ತು News Body ಸಿದ್ಧಪಡಿಸಿ.";$("publishStatus").style.display="block";return}
-  if(!bloggerToken){if(!initBloggerClient()){return} bloggerMsg("Google authorization ಬೇಕಾಗಿದೆ. Settingsನಲ್ಲಿ Connect ಒತ್ತಿ.");$("publishStatus").textContent="Settings → Connect Google / Blogger ಒತ್ತಿ, ನಂತರ ಮತ್ತೆ Publish ಮಾಡಿ.";$("publishStatus").style.display="block";return}
   $("publishStatus").textContent="Bloggerಗೆ publish ಮಾಡಲಾಗುತ್ತಿದೆ...";$("publishStatus").style.display="block";
   try{
+    if(!bloggerToken){
+      $("publishStatus").textContent="Google authorization ತೆರೆಯಲಾಗುತ್ತಿದೆ...";
+      await requestBloggerAccess("consent");
+    }
     const labels=$("blogLabel").value.trim()?[$("blogLabel").value.trim()]:[];
     const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{method:"POST",headers:{"Authorization":"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({kind:"blogger#post",blog:{id:blogId},title,content:htmlContent(),labels})});
     const j=await r.json();
@@ -269,8 +282,11 @@ $("publishBlogger").onclick=async()=>{
     $("publishStatus").innerHTML=`✓ Bloggerಗೆ publish ಆಯಿತು. <a href="${j.url||"#"}" target="_blank" rel="noopener">Post ತೆರೆಯಿರಿ</a>`;
     $("publishStatus").style.color="#16803c";
   }catch(e){
-    if(String(e.message).toLowerCase().includes("401")){bloggerToken=null;bloggerMsg("Authorization expired. ಮತ್ತೆ Connect ಮಾಡಿ.")}
-    $("publishStatus").textContent="✕ Publish ಆಗಲಿಲ್ಲ: "+e.message;
+    bloggerToken=null;
+    const msg=String(e.message||e);
+    if(/401|unauthorized|invalid credential/i.test(msg)) bloggerMsg("Authorization expired. Publish ಮತ್ತೆ ಒತ್ತಿ.");
+    else if(/403|permission|forbidden/i.test(msg)) bloggerMsg("Blogger permission ಇಲ್ಲ. Settingsನಲ್ಲಿ Google/Blogger Connect ಮಾಡಿ.");
+    $("publishStatus").textContent="✕ Publish ಆಗಲಿಲ್ಲ: "+msg;
     $("publishStatus").style.color="#b40000";
   }
 };
