@@ -301,7 +301,7 @@ async function uploadDrive(p){
  let id=j.id;
  r=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/permissions`,{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
  if(!r.ok){j=await r.json().catch(()=>({}));throw Error(j.error?.message||"Drive permission failed")}
- return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`;
+ return `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w2000`;
 }
 async function hostedPhotos(){
  let arr=[];for(let i=0;i<photos.length;i++){if(!photos[i].driveUrl){$("publishStatus").textContent=`ಫೋಟೋ ${i+1}/${photos.length} upload ಆಗುತ್ತಿದೆ...`;photos[i].driveUrl=await uploadDrive(photos[i])}arr.push(photos[i])}return arr;
@@ -369,11 +369,21 @@ async function loadPostForEdit(id){
     const english=tmp.querySelector(".english-box p")||tmp.querySelector('div[style*="border-left:4px solid #555"] div:last-child');
     englishSummary=english?.textContent?.trim()||"";
     keyPoints=[...tmp.querySelectorAll(".summary-box ul li")].map(x=>x.textContent.trim());
+    photos=[...tmp.querySelectorAll("figure img")].map((img,i)=>{
+      const src=img.getAttribute("src")||"";
+      const m=src.match(/[?&]id=([^&]+)/)||src.match(/\/d\/([^/]+)/);
+      const driveId=m?decodeURIComponent(m[1]):"";
+      return {
+        name:"existing-photo-"+(i+1),
+        dataUrl:"",
+        driveUrl:driveId?"https://drive.google.com/thumbnail?id="+encodeURIComponent(driveId)+"&sz=w2000":src,
+        caption:img.parentElement?.querySelector("figcaption")?.textContent?.trim()||img.getAttribute("alt")||""
+      };
+    });
     [...tmp.querySelectorAll("figure")].forEach(f=>f.remove());
     tmp.querySelectorAll(".summary-box").forEach(x=>x.remove());
     if(summary)summary.remove();
     $("bodyOut").value=[...tmp.querySelectorAll("p")].map(x=>x.textContent.trim()).filter(Boolean).join("\n\n");
-    photos=[];
     setEditingPost(j.id,j.url);syncEditors();renderPhotos();render();
     $("allPostsPanel").classList.add("hide");window.scrollTo({top:0,behavior:"smooth"});scheduleAutosave();
   }catch(e){$("allPostsStatus").textContent="✕ "+e.message;$("allPostsStatus").style.display="block"}
