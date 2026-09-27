@@ -1,1 +1,9 @@
-{"name": "Bidire News AI Editor", "short_name": "Bidire AI", "start_url": ".", "display": "standalone", "theme_color": "#0d1117", "background_color": "#0d1117", "lang": "kn"}
+{
+  "name":"Bidire News AI Editor",
+  "short_name":"Bidire AI",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#0d1117",
+  "theme_color":"#0d1117",
+  "lang":"kn"
+}
