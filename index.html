@@ -191,7 +191,7 @@ function initBloggerClient(){
   const cid=$("clientId").value.trim();
   if(!cid){bloggerMsg("ಮೊದಲು Google OAuth Client ID ಹಾಕಿ.");return false}
   if(!window.google?.accounts?.oauth2){bloggerMsg("Google authorization ಇನ್ನೂ load ಆಗಿಲ್ಲ. ಮತ್ತೆ Connect ಒತ್ತಿ.");return false}
-  tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:(resp)=>{
+  tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger",callback:(resp)=>{
     if(resp.error){bloggerMsg("Google authorization failed: "+(resp.error_description||resp.error)); if(bloggerPending){const r=bloggerPending;bloggerPending=null;r.reject(new Error(resp.error_description||resp.error));} return}
     bloggerToken=resp.access_token;localStorage.setItem("bidire_client_id",cid);localStorage.setItem("bidire_blog_id",$("blogId").value.trim()||"2799540703054854619");localStorage.setItem("bidire_blog_label",$("blogLabel").value.trim());
     bloggerMsg("✓ Blogger connected. ಈಗ Publish to Blogger ಒತ್ತಬಹುದು.",true);
@@ -278,25 +278,46 @@ function dataUrlToBlob(dataUrl){
   for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
   return new Blob([arr],{type:mime});
 }
-async function uploadPhotoToDrive(photo){
+async function uploadPhotoToBlogger(photo){
   if(!bloggerToken) throw new Error("Google authorization ಬೇಕಾಗಿದೆ.");
   const blob=dataUrlToBlob(photo.dataUrl);
-  const metadata={name:photo.name||("bidire-news-"+Date.now()+".jpg"),mimeType:blob.type};
-  const boundary="bidire_boundary_"+Date.now()+Math.random().toString(16).slice(2);
-  const body=new Blob([
-    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n`,
-    JSON.stringify(metadata),
-    `\r\n--${boundary}\r\nContent-Type: ${blob.type}\r\n\r\n`,
-    blob,
-    `\r\n--${boundary}--\r\n`
-  ],{type:`multipart/related; boundary=${boundary}`});
-  const r=await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{Authorization:"Bearer "+bloggerToken,"Content-Type":`multipart/related; boundary=${boundary}`},body});
-  const j=await r.json();
-  if(!r.ok) throw new Error(j.error?.message||"Photo upload failed");
-  const id=j.id;
-  const pr=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/permissions`,{method:"POST",headers:{Authorization:"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
-  if(!pr.ok){const pj=await pr.json().catch(()=>({}));throw new Error(pj.error?.message||"Photo sharing permission failed");}
-  return `https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`;
+  const size=blob.size;
+  const filename=photo.name||("bidire-news-"+Date.now()+".jpg");
+  const mime=blob.type||"image/jpeg";
+  const sessionUrl="https://docs.google.com/upload/blogger/photos/resumable";
+  const payload={
+    protocolVersion:"0.8",
+    createSessionRequest:{fields:[
+      {external:{name:"file",filename,put:{},size}},
+      {inlined:{name:"title",content:filename,contentType:"text/plain"}},
+      {inlined:{name:"addtime",content:String(Date.now()),contentType:"text/plain"}},
+      {inlined:{name:"onepick_version",content:"v2",contentType:"text/plain"}},
+      {inlined:{name:"onepick_host_id",content:"10",contentType:"text/plain"}},
+      {inlined:{name:"onepick_host_usecase",content:"RichEditor",contentType:"text/plain"}},
+      {inlined:{name:"album_mode",content:"permanent",contentType:"text/plain"}},
+      {inlined:{name:"silo_id",content:"3",contentType:"text/plain"}}
+    ]}
+  };
+  const startHeaders={
+    "Authorization":"Bearer "+bloggerToken,
+    "Content-Type":"application/x-www-form-urlencoded",
+    "x-goog-upload-command":"start",
+    "x-goog-upload-header-content-length":String(size),
+    "x-goog-upload-header-content-type":mime,
+    "x-goog-upload-protocol":"resumable"
+  };
+  const sr=await fetch(sessionUrl+"?authuser=0&opi=98421741",{method:"POST",headers:startHeaders,body:JSON.stringify(payload)});
+  if(!sr.ok){const t=await sr.text();throw new Error(t||("Blogger photo session failed ("+sr.status+")"));}
+  const uploadUrl=sr.headers.get("x-goog-upload-url");
+  if(!uploadUrl) throw new Error("Blogger photo upload URL ಸಿಗಲಿಲ್ಲ.");
+  const ur=await fetch(uploadUrl,{method:"POST",headers:{"Authorization":"Bearer "+bloggerToken,"Content-Type":mime,"x-goog-upload-command":"upload, finalize","x-goog-upload-offset":"0"},body:blob});
+  const uj=await ur.json().catch(()=>null);
+  if(!ur.ok) throw new Error(uj?.error?.message||uj?.sessionStatus?.errorMessage||("Blogger photo upload failed ("+ur.status+")"));
+  const raw=uj?.sessionStatus?.additionalInfo?.["uploader_service.GoogleRupioAdditionalInfo"]?.completionInfo?.customerSpecificInfo?.url;
+  if(!raw) throw new Error("Blogger photo URL ಸಿಗಲಿಲ್ಲ.");
+  const parts=raw.split("/");
+  if(parts.length<2) return raw;
+  return parts.slice(0,-1).join("/")+"/s0/"+parts[parts.length-1];
 }
 
 async function prepareHostedPhotos(){
@@ -305,8 +326,8 @@ async function prepareHostedPhotos(){
   for(let i=0;i<photos.length;i++){
     const p=photos[i];
     if(p.url && /^https?:\/\//i.test(p.url)) {hosted.push(p);continue;}
-    $("publishStatus").textContent=`ಫೋಟೋ ${i+1}/${photos.length} Bloggerಗಾಗಿ upload ಮಾಡಲಾಗುತ್ತಿದೆ...`;
-    const url=await uploadPhotoToDrive(p);
+    $("publishStatus").textContent=`ಫೋಟೋ ${i+1}/${photos.length} Blogger photo storageಗೆ upload ಮಾಡಲಾಗುತ್ತಿದೆ...`;
+    const url=await uploadPhotoToBlogger(p);
     p.url=url; hosted.push(p);
   }
   return hosted;
@@ -324,7 +345,7 @@ $("publishBlogger").onclick=async()=>{
     const hostedPhotos=await prepareHostedPhotos();
     const labels=$("blogLabel").value.trim()?[$("blogLabel").value.trim()]:[];
     const content=htmlContent(hostedPhotos);
-    const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{method:"POST",headers:{"Authorization":"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({kind:"blogger#post",blog:{id:blogId},title,content,labels})});
+    const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{method:"POST",headers:{"Authorization":"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({kind:"blogger#post",blog:{id:blogId},title,content,labels,images:hostedPhotos.map(p=>({url:p.url})).filter(x=>x.url)})});
     const j=await r.json();
     if(!r.ok)throw new Error(j.error?.message||"Blogger API error");
     $("publishStatus").innerHTML=`✓ Bloggerಗೆ publish ಆಯಿತು. <a href="${j.url||"#"}" target="_blank" rel="noopener">Post ತೆರೆಯಿರಿ</a>`;
@@ -332,7 +353,7 @@ $("publishBlogger").onclick=async()=>{
   }catch(e){
     const msg=String(e.message||e);
     if(/401|unauthorized|invalid credential/i.test(msg)){bloggerToken=null;bloggerMsg("Authorization expired. Publish ಮತ್ತೆ ಒತ್ತಿ.");}
-    else if(/403|permission|forbidden/i.test(msg)) bloggerMsg("Google Drive/Blogger permission ಇಲ್ಲ. Settingsನಲ್ಲಿ ಮತ್ತೆ Connect Google / Blogger ಮಾಡಿ.");
+    else if(/403|permission|forbidden/i.test(msg)) bloggerMsg("Google/Blogger permission ಇಲ್ಲ. Settingsನಲ್ಲಿ ಮತ್ತೆ Connect Google / Blogger ಮಾಡಿ.");
     $("publishStatus").textContent="✕ Publish ಆಗಲಿಲ್ಲ: "+msg;
     $("publishStatus").style.color="#b40000";
   }
