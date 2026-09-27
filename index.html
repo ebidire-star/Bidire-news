@@ -139,7 +139,7 @@ function cleanModel(v){
   if(low.includes("3.5")) return "gemini-3.5-flash";
   return "gemini-3.8-flash";
 }
-function makePrompt(task){let raw=$("raw").value.trim();if(!raw){status("ಮೊದಲು Raw News ಹಾಕಿ.");return null}let lim=$("limit").value;let date=$("style").value==="vijayavani"?"ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ":"ಮೂಡುಬಿದಿರೆ:";return `You are Bidire News senior Kannada sub-editor. ${task} Use ONLY the supplied facts. Never invent or guess. Preserve every supplied name, designation, date, place, number and factual detail. No invented quotes. Newspaper Kannada. Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences. Dateline: ${date}. Return JSON keys headline,subheadline,body,englishTranslation. RAW NEWS:\n${raw}`}
+function makePrompt(task){let raw=$("raw").value.trim();if(!raw){status("ಮೊದಲು Raw News ಹಾಕಿ.");return null}let lim=$("limit").value;let date=$("style").value==="vijayavani"?"ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ":"ಮೂಡುಬಿದಿರೆ:";return `You are Bidire News senior Kannada sub-editor. ${task} Use ONLY the supplied facts. Never invent or guess. Preserve every supplied name, designation, date, place, number and factual detail. No invented quotes. Newspaper Kannada. Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences. Dateline: ${date}. Return JSON keys headline,subheadline,body,englishTranslation,keyPoints,englishSummary. keyPoints must be an array of 3 to 5 short factual Kannada points derived only from the supplied news. englishSummary must be a concise factual English summary of the news. RAW NEWS:\n${raw}`}
 async function callGemini(model,key,body){
   const safe=cleanModel(model);
   const url=`https://generativelanguage.googleapis.com/v1beta/models/${safe}:generateContent?key=${encodeURIComponent(key)}`;
@@ -169,7 +169,7 @@ async function ai(task){
       } else throw e;
     }
     let t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\s*/,"").replace(/\s*```$/,"");
-    let o=JSON.parse(t); $("headline").value=o.headline||""; $("sub").value=o.subheadline||""; $("bodyOut").value=o.body||""; update(); status("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ."); setTimeout(()=>status(""),1500);
+    let o=JSON.parse(t); $("headline").value=o.headline||""; $("sub").value=o.subheadline||""; $("bodyOut").value=o.body||""; keyPoints=Array.isArray(o.keyPoints)?o.keyPoints.filter(Boolean):[]; englishSummary=String(o.englishSummary||o.englishTranslation||"").trim(); update(); status("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ."); setTimeout(()=>status(""),1500);
   }catch(e){status("AI error: "+e.message)}
 }
 $("generate").onclick=()=>ai("Create the complete news report.");
@@ -191,7 +191,7 @@ function initBloggerClient(){
   const cid=$("clientId").value.trim();
   if(!cid){bloggerMsg("ಮೊದಲು Google OAuth Client ID ಹಾಕಿ.");return false}
   if(!window.google?.accounts?.oauth2){bloggerMsg("Google authorization ಇನ್ನೂ load ಆಗಿಲ್ಲ. ಮತ್ತೆ Connect ಒತ್ತಿ.");return false}
-  tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger",callback:(resp)=>{
+  tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:(resp)=>{
     if(resp.error){bloggerMsg("Google authorization failed: "+(resp.error_description||resp.error)); if(bloggerPending){const r=bloggerPending;bloggerPending=null;r.reject(new Error(resp.error_description||resp.error));} return}
     bloggerToken=resp.access_token;localStorage.setItem("bidire_client_id",cid);localStorage.setItem("bidire_blog_id",$("blogId").value.trim()||"2799540703054854619");localStorage.setItem("bidire_blog_label",$("blogLabel").value.trim());
     bloggerMsg("✓ Blogger connected. ಈಗ Publish to Blogger ಒತ್ತಬಹುದು.",true);
@@ -222,7 +222,7 @@ $("connectBlogger").addEventListener("click",async()=>{
   finally{btn.disabled=false;btn.textContent="🔐 Connect Google / Blogger"}
 });
 $("disconnectBlogger").onclick=()=>{bloggerToken=null;bloggerMsg("Disconnected.",false)};
-let photos=[];
+let photos=[]; let keyPoints=[]; let englishSummary="";
 function photoMsg(s){const el=$("photoStatus");el.textContent=s||"";}
 function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
 function renderPhotos(){
@@ -264,11 +264,11 @@ function htmlContent(hostedPhotos=[]){
   const paras=body.split(/\n\s*\n/).filter(Boolean).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`);
   const ph=hostedPhotos.length?hostedPhotos:photos;
   let blocks=[];
-  paras.forEach((p,i)=>{
-    blocks.push(p);
-    if(ph[i]) blocks.push(`<figure style="margin:16px 0 18px;text-align:center;"><img src="${ph[i].url||ph[i].dataUrl}" alt="${esc(ph[i].caption)}" style="max-width:100%;height:auto;display:block;margin:0 auto;"><figcaption style="font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4;">${esc(ph[i].caption)}</figcaption></figure>`);
-  });
-  for(let i=paras.length;i<ph.length;i++) blocks.push(`<figure style="margin:16px 0 18px;text-align:center;"><img src="${ph[i].url||ph[i].dataUrl}" alt="${esc(ph[i].caption)}" style="max-width:100%;height:auto;display:block;margin:0 auto;"><figcaption style="font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4;">${esc(ph[i].caption)}</figcaption></figure>`);
+  if(paras.length) blocks.push(paras[0]);
+  ph.forEach(p=>blocks.push(`<figure style="margin:16px 0 18px;text-align:center;"><img src="${p.url||p.dataUrl}" alt="${esc(p.caption)}" style="max-width:100%;height:auto;display:block;margin:0 auto;"><figcaption style="font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4;">${esc(p.caption)}</figcaption></figure>`));
+  for(let i=1;i<paras.length;i++) blocks.push(paras[i]);
+  if(keyPoints.length) blocks.push(`<div style="margin:24px 0;padding:14px 16px;background:#fff4ef;border-left:4px solid #d71920;border-radius:4px;"><div style="font-size:20px;font-weight:700;margin-bottom:8px;">ಪ್ರಮುಖ ಅಂಶಗಳು</div><ul style="margin:0;padding-left:20px;">${keyPoints.map(x=>`<li style="margin:6px 0;line-height:1.6;">${esc(x)}</li>`).join("")}</ul></div>`);
+  if(englishSummary) blocks.push(`<div style="margin:22px 0;padding:14px 16px;background:#f7f7f7;border-left:4px solid #555;border-radius:4px;"><div style="font-size:20px;font-weight:700;margin-bottom:8px;">English Summary</div><div style="font-size:15px;line-height:1.65;color:#444;">${esc(englishSummary)}</div></div>`);
   return (sub?`<p style="font-size:15px;font-weight:600;line-height:1.55;color:#555;margin:0 0 15px;padding:7px 10px;border-left:3px solid #aaa;background:#f7f7f7;">${esc(sub)}</p>`:"")+blocks.join("");
 }
 
@@ -281,43 +281,26 @@ function dataUrlToBlob(dataUrl){
 async function uploadPhotoToBlogger(photo){
   if(!bloggerToken) throw new Error("Google authorization ಬೇಕಾಗಿದೆ.");
   const blob=dataUrlToBlob(photo.dataUrl);
-  const size=blob.size;
   const filename=photo.name||("bidire-news-"+Date.now()+".jpg");
   const mime=blob.type||"image/jpeg";
-  const sessionUrl="https://docs.google.com/upload/blogger/photos/resumable";
-  const payload={
-    protocolVersion:"0.8",
-    createSessionRequest:{fields:[
-      {external:{name:"file",filename,put:{},size}},
-      {inlined:{name:"title",content:filename,contentType:"text/plain"}},
-      {inlined:{name:"addtime",content:String(Date.now()),contentType:"text/plain"}},
-      {inlined:{name:"onepick_version",content:"v2",contentType:"text/plain"}},
-      {inlined:{name:"onepick_host_id",content:"10",contentType:"text/plain"}},
-      {inlined:{name:"onepick_host_usecase",content:"RichEditor",contentType:"text/plain"}},
-      {inlined:{name:"album_mode",content:"permanent",contentType:"text/plain"}},
-      {inlined:{name:"silo_id",content:"3",contentType:"text/plain"}}
-    ]}
-  };
-  const startHeaders={
-    "Authorization":"Bearer "+bloggerToken,
-    "Content-Type":"application/x-www-form-urlencoded",
-    "x-goog-upload-command":"start",
-    "x-goog-upload-header-content-length":String(size),
-    "x-goog-upload-header-content-type":mime,
-    "x-goog-upload-protocol":"resumable"
-  };
-  const sr=await fetch(sessionUrl+"?authuser=0&opi=98421741",{method:"POST",headers:startHeaders,body:JSON.stringify(payload)});
-  if(!sr.ok){const t=await sr.text();throw new Error(t||("Blogger photo session failed ("+sr.status+")"));}
-  const uploadUrl=sr.headers.get("x-goog-upload-url");
-  if(!uploadUrl) throw new Error("Blogger photo upload URL ಸಿಗಲಿಲ್ಲ.");
-  const ur=await fetch(uploadUrl,{method:"POST",headers:{"Authorization":"Bearer "+bloggerToken,"Content-Type":mime,"x-goog-upload-command":"upload, finalize","x-goog-upload-offset":"0"},body:blob});
-  const uj=await ur.json().catch(()=>null);
-  if(!ur.ok) throw new Error(uj?.error?.message||uj?.sessionStatus?.errorMessage||("Blogger photo upload failed ("+ur.status+")"));
-  const raw=uj?.sessionStatus?.additionalInfo?.["uploader_service.GoogleRupioAdditionalInfo"]?.completionInfo?.customerSpecificInfo?.url;
-  if(!raw) throw new Error("Blogger photo URL ಸಿಗಲಿಲ್ಲ.");
-  const parts=raw.split("/");
-  if(parts.length<2) return raw;
-  return parts.slice(0,-1).join("/")+"/s0/"+parts[parts.length-1];
+  const boundary="bidire_"+Date.now()+"_"+Math.random().toString(16).slice(2);
+  const body=new Blob([
+    "--"+boundary+"\r\n",
+    "Content-Type: application/json; charset=UTF-8\r\n\r\n",
+    JSON.stringify({name:filename,mimeType:mime}),
+    "\r\n--"+boundary+"\r\n",
+    "Content-Type: "+mime+"\r\n\r\n",
+    blob,
+    "\r\n--"+boundary+"--\r\n"
+  ],{type:"multipart/related; boundary="+boundary});
+  const r=await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType",{method:"POST",headers:{"Authorization":"Bearer "+bloggerToken,"Content-Type":"multipart/related; boundary="+boundary},body});
+  const j=await r.json().catch(()=>null);
+  if(!r.ok) throw new Error(j?.error?.message||("Drive photo upload failed ("+r.status+")"));
+  if(!j?.id) throw new Error("Drive photo ID ಸಿಗಲಿಲ್ಲ.");
+  const pr=await fetch("https://www.googleapis.com/drive/v3/files/"+encodeURIComponent(j.id)+"/permissions",{method:"POST",headers:{"Authorization":"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
+  const pj=await pr.json().catch(()=>null);
+  if(!pr.ok && !/alreadyExists|duplicate/i.test(String(pj?.error?.message||""))) throw new Error(pj?.error?.message||("Drive permission failed ("+pr.status+")"));
+  return "https://drive.google.com/uc?export=view&id="+encodeURIComponent(j.id);
 }
 
 async function prepareHostedPhotos(){
@@ -360,7 +343,7 @@ $("publishBlogger").onclick=async()=>{
 };
 $("copyBody").onclick=async()=>{await navigator.clipboard.writeText($("bodyOut").value);status("News copied.");setTimeout(()=>status(""),1000)};
 $("copyPostHtml").onclick=async()=>{try{await navigator.clipboard.writeText(htmlContent());status("Blogger Post HTML copied.");setTimeout(()=>status(""),1500)}catch(e){status("Copy failed.")}};
-$("saveDraft").onclick=()=>{localStorage.setItem("bidire_draft",JSON.stringify({headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,photos:photos.map(p=>({name:p.name,dataUrl:p.dataUrl,caption:p.caption}))}));status("Draft saved.")};
-let d=JSON.parse(localStorage.getItem("bidire_draft")||"null");if(d){$("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";photos=Array.isArray(d.photos)?d.photos:[];renderPhotos();update()}
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=8").catch(()=>{}));}
+$("saveDraft").onclick=()=>{localStorage.setItem("bidire_draft",JSON.stringify({headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,keyPoints,englishSummary,photos:photos.map(p=>({name:p.name,dataUrl:p.dataUrl,caption:p.caption,url:p.url||""}))}));status("Draft saved.")};
+let d=JSON.parse(localStorage.getItem("bidire_draft")||"null");if(d){$("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";keyPoints=Array.isArray(d.keyPoints)?d.keyPoints:[];englishSummary=String(d.englishSummary||"");photos=Array.isArray(d.photos)?d.photos:[];renderPhotos();update()}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=9").catch(()=>{}));}
 </script></body></html>
