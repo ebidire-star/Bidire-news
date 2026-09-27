@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="kn"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0d1117">
+<title>Bidire News AI Editor</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
+header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.brand{font-weight:800;color:#b40000;font-size:19px}.sub{font-size:11px;color:#777}.wrap{max-width:980px;margin:12px auto;padding:0 9px}
+.panel{background:#fff;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;overflow:hidden}.bar{padding:9px 11px;border-bottom:1px solid #eee;font-weight:700;background:#fafafa}.body{padding:11px}
+textarea,input,select{width:100%;border:1px solid #ccc;border-radius:6px;padding:9px;font:inherit}textarea{min-height:170px;resize:vertical}
+label{display:block;font-size:12px;font-weight:700;margin:7px 0 4px}.row,.actions{display:flex;gap:7px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}.actions{margin-top:9px}.actions button{flex:1;min-width:115px}
+button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{background:#b40000;color:#fff}.black{background:#111;color:#fff}.light{background:#eee}
+.count,.small{font-size:11px;color:#777}.count{text-align:right;margin-top:4px}.status{display:none;margin-top:8px;padding:8px;border-left:3px solid #b40000;background:#fff7d6;font-size:12px}
+.hide{display:none}.post-preview{border:1px solid #ddd;border-radius:8px;background:#fff;padding:16px}.post-preview h1{font-size:26px;line-height:1.35;margin:0 0 8px}.post-sub{font-size:15px;font-weight:600;line-height:1.55;color:#555;margin:0 0 15px;padding:7px 10px;border-left:3px solid #aaa;background:#f7f7f7}.post-body p{margin:0 0 12px;line-height:1.75}.post-photo{margin:14px 0 18px;text-align:center}.post-photo img{max-width:100%;height:auto;display:block;margin:0 auto;border-radius:4px}.post-photo figcaption{font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4}.photo-box{margin-top:10px;border:1px dashed #ccc;border-radius:8px;padding:10px;background:#fafafa}.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:9px}.photo-item{border:1px solid #ddd;border-radius:7px;overflow:hidden;background:#fff}.photo-item img{display:block;width:100%;height:120px;object-fit:cover}.photo-item .pcap{padding:6px 8px;font-size:11px;color:#666;font-style:italic;line-height:1.35}.photo-item .pname{padding:5px 8px;font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo-remove{margin:6px 8px 8px;width:calc(100% - 16px);font-size:11px}
+@media(max-width:600px){header{padding:9px 8px}.wrap{margin:7px auto}.actions button{min-width:100px;padding:8px}.brand{font-size:17px}.post-preview h1{font-size:23px}}
+</style></head><body>
+<header><div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div>
+<div class="actions" style="margin:0"><button id="settingsBtn" class="black">⚙ Settings</button></div></header>
+<main class="wrap">
+<section class="panel"><div class="bar">ಹೊಸ ಸುದ್ದಿ</div><div class="body">
+<label>Raw News / ಮೂಲ ಮಾಹಿತಿ</label><textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿಯನ್ನು ಇಲ್ಲಿ paste ಮಾಡಿ..."></textarea>
+<div class="photo-box"><strong>📷 Photo + Automatic Caption</strong><input id="photoInput" type="file" accept="image/*" multiple><div class="small">ಒಂದು ಅಥವಾ ಹಲವು ಫೋಟೋಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.</div><div id="photoGrid" class="photo-grid"></div><div id="photoStatus" class="small"></div></div>
+<div class="row"><div><label>ಪದಗಳ ಮಿತಿ</label><select id="limit"><option value="0">Original</option><option>100</option><option>150</option><option>170</option><option>200</option></select></div>
+<div><label>ಶೈಲಿ</label><select id="style"><option value="normal">Bidire News</option><option value="vijayavani">ವಿಜಯವಾಣಿ ಶೈಲಿ</option></select></div></div>
+<div class="actions"><button class="primary" id="generate">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ</button><button class="light" id="shorten">✂ ಸಂಕ್ಷಿಪ್ತ</button><button class="light" id="grammar">✓ Grammar</button><button class="light" id="translate">English</button></div>
+<div id="status" class="status"></div></div></section>
+
+<section class="panel"><div class="bar">ಸುದ್ದಿ ಸಂಪಾದನೆ</div><div class="body">
+<label>Headline</label><input id="headline"><label>Subheadline / ಉಪಶೀರ್ಷಿಕೆ</label><input id="sub"><label>News Body</label><textarea id="bodyOut" style="min-height:260px"></textarea>
+<div class="count"><span id="wc">0</span> words</div>
+<div class="actions"><button class="primary" id="publishBlogger">🚀 Publish to Blogger</button><button class="black" id="copyBlogger">📋 Copy to Blogger</button><button class="light" id="saveDraft">💾 Save Draft</button></div>
+<div id="publishStatus" class="status"></div></div></section>
+
+<section class="panel"><div class="bar">📰 News Post Preview</div><div class="body"><div class="post-preview">
+<h1 id="ph">ಶೀರ್ಷಿಕೆ</h1><div id="psub" class="post-sub">ಸಬ್‌ಹೆಡ್ಲೈನ್</div><div id="pphotos"></div><div id="pbody" class="post-body">ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div></div></div></section>
+
+<section class="panel hide" id="settings"><div class="bar">Gemini + Blogger Settings</div><div class="body">
+<label>Gemini API Key</label><input id="key" type="password" placeholder="AIza...">
+<label>Gemini Model</label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash</option><option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option></select>
+<label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com">
+<label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619">
+<label>Default Blogger Label</label><input id="blogLabel">
+<div class="actions"><button class="primary" id="saveSettings">Save Settings</button><button class="black" id="connectBlogger">🔐 Connect Google / Blogger</button></div>
+<div id="settingsStatus" class="small"></div><div id="bloggerStatus" class="small"></div>
+</div></section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=x=>String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+let photos=[],keyPoints=[],englishSummary="",bloggerToken=null,tokenClient=null,pending=null;
+
+function cleanModel(v){return String(v||"").includes("3.5")?"gemini-3.5-flash-lite":"gemini-3.8-flash";}
+function wc(s){return s.trim()?s.trim().split(/\s+/).length:0}
+function msg(t){$("status").textContent=t;$("status").style.display=t?"block":"none";}
+function update(){
+ $("wc").textContent=wc($("bodyOut").value);$("ph").textContent=$("headline").value||"ಶೀರ್ಷಿಕೆ";$("psub").textContent=$("sub").value||"ಸಬ್‌ಹೆಡ್ಲೈನ್";
+ const b=$("bodyOut").value.trim(), out=$("pbody");out.innerHTML=b?b.split(/\n\s*\n/).filter(Boolean).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join(""):"ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.";
+ const g=$("pphotos");g.innerHTML="";photos.forEach(p=>{const f=document.createElement("figure");f.className="post-photo";f.innerHTML=`<img src="${p.dataUrl}"><figcaption>${esc(p.caption)}</figcaption>`;g.appendChild(f)});
+}
+["headline","sub","bodyOut"].forEach(x=>$(x).addEventListener("input",update));
+$("settingsBtn").onclick=()=>{$("settings").classList.toggle("hide");$("key").value=localStorage.getItem("bidire_key")||"";$("model").value=cleanModel(localStorage.getItem("bidire_model"));$("clientId").value=localStorage.getItem("bidire_client_id")||"";$("blogId").value=localStorage.getItem("bidire_blog_id")||"2799540703054854619";$("blogLabel").value=localStorage.getItem("bidire_blog_label")||"";if(!$("settings").classList.contains("hide"))$("settings").scrollIntoView({behavior:"smooth"})};
+$("saveSettings").onclick=()=>{localStorage.setItem("bidire_key",$("key").value.trim());localStorage.setItem("bidire_model",cleanModel($("model").value));localStorage.setItem("bidire_client_id",$("clientId").value.trim());localStorage.setItem("bidire_blog_id",$("blogId").value.trim()||"2799540703054854619");localStorage.setItem("bidire_blog_label",$("blogLabel").value.trim());$("settingsStatus").textContent="✓ Settings saved.";};
+
+function promptText(task){const raw=$("raw").value.trim();if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return null}const lim=$("limit").value;const date=$("style").value==="vijayavani"?"ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ":"ಮೂಡುಬಿದಿರೆ:";return `You are Bidire News senior Kannada sub-editor. ${task} Use ONLY supplied facts. Never invent. Preserve every supplied name, designation, date, place, number and factual detail. Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences. Dateline: ${date}. Return JSON with keys headline,subheadline,body,keyPoints,englishSummary. keyPoints must be 3-5 short factual Kannada points. englishSummary must be a concise factual English summary. RAW NEWS:\n${raw}`;}
+async function gemini(model,key,p){const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:p}]}],generationConfig:{responseMimeType:"application/json"}})});const j=await r.json();if(!r.ok)throw Error(j.error?.message||"API error");return j;}
+async function ai(task){const key=localStorage.getItem("bidire_key"),model=cleanModel(localStorage.getItem("bidire_model"));if(!key){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}const p=promptText(task);if(!p)return;msg("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");try{let j;try{j=await gemini(model,key,p)}catch(e){if(model!=="gemini-3.5-flash-lite"&&/quota|rate|limit|429/i.test(e.message)){j=await gemini("gemini-3.5-flash-lite",key,p);localStorage.setItem("bidire_model","gemini-3.5-flash-lite")}else throw e}const t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\s*/,"").replace(/\s*```$/,"");const o=JSON.parse(t);$("headline").value=o.headline||"";$("sub").value=o.subheadline||"";$("bodyOut").value=o.body||"";keyPoints=Array.isArray(o.keyPoints)?o.keyPoints.filter(Boolean):[];englishSummary=String(o.englishSummary||"").trim();update();msg("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>msg(""),1200)}catch(e){msg("AI error: "+e.message)}}
+$("generate").onclick=()=>ai("Create the complete news report.");
+$("shorten").onclick=()=>ai("Shorten the news while retaining all supplied facts and names.");
+$("grammar").onclick=()=>ai("Correct grammar without adding facts.");
+$("translate").onclick=()=>{const b=$("bodyOut").value.trim();if(!b){msg("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}const old=$("raw").value;$("raw").value=b;ai("Translate into natural English and put the result in englishSummary.");$("raw").value=old};
+
+function fileData(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
+async function photoCaption(data){const key=localStorage.getItem("bidire_key");if(!key)return "";try{const base=String(data).split(",")[1],mime=String(data).split(";")[0].split(":")[1]||"image/jpeg";const p=`Write ONE short factual Kannada newspaper photo caption. Use only the news context and visible image. Do not invent identities. Context: ${$("headline").value}\n${$("bodyOut").value}`;const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${cleanModel(localStorage.getItem("bidire_model"))}:generateContent?key=${encodeURIComponent(key)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:p},{inline_data:{mime_type:mime,data:base}}]}]})});const j=await r.json();return (j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim()}catch(e){return ""}}
+function renderPhotos(){const g=$("photoGrid");g.innerHTML="";photos.forEach((p,i)=>{const d=document.createElement("div");d.className="photo-item";d.innerHTML=`<img src="${p.dataUrl}"><div class="pcap">${esc(p.caption)}</div><div class="pname">${esc(p.name)}</div><button class="light photo-remove" data-i="${i}">Remove</button>`;g.appendChild(d)});g.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();update()})}
+$("photoInput").onchange=async e=>{for(const f of [...e.target.files||[]]){if(!f.type.startsWith("image/"))continue;const dataUrl=await fileData(f);const p={name:f.name,dataUrl,caption:""};photos.push(p);renderPhotos();p.caption=await photoCaption(dataUrl)||"ಸುದ್ದಿಗೆ ಸಂಬಂಧಿಸಿದ ಚಿತ್ರ";renderPhotos();update()}$("photoStatus").textContent=photos.length+" photo(s) selected.";e.target.value=""};
+
+function dataBlob(data){const a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
+async function uploadPhoto(p){const blob=dataBlob(p.dataUrl),filename=p.name||("bidire-"+Date.now()+".jpg"),mime=blob.type||"image/jpeg",boundary="b"+Date.now()+Math.random().toString(16).slice(2);const body=new Blob(["--"+boundary+"\r\n","Content-Type: application/json; charset=UTF-8\r\n\r\n",JSON.stringify({name:filename,mimeType:mime}),"\r\n--"+boundary+"\r\n","Content-Type: "+mime+"\r\n\r\n",blob,"\r\n--"+boundary+"--\r\n"],{type:"multipart/related; boundary="+boundary});const r=await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{Authorization:"Bearer "+bloggerToken,"Content-Type":"multipart/related; boundary="+boundary},body});const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Drive upload failed");const pr=await fetch(`https://www.googleapis.com/drive/v3/files/${j.id}/permissions`,{method:"POST",headers:{Authorization:"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});if(!pr.ok){const x=await pr.json().catch(()=>({}));throw Error(x.error?.message||"Drive permission failed")}return `https://drive.google.com/thumbnail?id=${encodeURIComponent(j.id)}&sz=w1600`}
+
+function postHTML(hosted){const sub=$("sub").value.trim(),body=$("bodyOut").value.trim(),paras=body.split(/\n\s*\n/).filter(Boolean);let blocks=[];if(sub)blocks.push(`<p style="font-weight:600;background:#f7f7f7;padding:8px;border-left:3px solid #aaa">${esc(sub)}</p>`);if(paras[0])blocks.push(`<p>${esc(paras[0]).replace(/\n/g,"<br>")}</p>`);hosted.forEach(p=>blocks.push(`<figure style="text-align:center;margin:16px 0"><img src="${p.url}" alt="${esc(p.caption)}" style="max-width:100%;height:auto"><figcaption style="font-size:12px;font-style:italic;color:#666">${esc(p.caption)}</figcaption></figure>`));for(let i=1;i<paras.length;i++)blocks.push(`<p>${esc(paras[i]).replace(/\n/g,"<br>")}</p>`);if(keyPoints.length)blocks.push(`<div style="margin:24px 0;padding:14px;background:#fff4ef;border-left:4px solid #d71920"><h3 style="margin:0 0 8px">ಪ್ರಮುಖ ಅಂಶಗಳು</h3><ul>${keyPoints.map(x=>`<li style="margin:6px 0">${esc(x)}</li>`).join("")}</ul></div>`);if(englishSummary)blocks.push(`<div style="margin:22px 0;padding:14px;background:#f7f7f7;border-left:4px solid #555"><h3 style="margin:0 0 8px">English Summary</h3><div style="line-height:1.6">${esc(englishSummary)}</div></div>`);return blocks.join("")}
+
+async function getToken(){if(bloggerToken)return bloggerToken;if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಿಲ್ಲ. Page refresh ಮಾಡಿ.");const cid=localStorage.getItem("bidire_client_id");if(!cid)throw Error("Settingsನಲ್ಲಿ OAuth Client ID ಹಾಕಿ.");tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:r=>{if(r.error){pending?.reject(Error(r.error_description||r.error));pending=null;return}bloggerToken=r.access_token;pending?.resolve(r.access_token);pending=null}});return new Promise((res,rej)=>{pending={resolve:res,reject:rej};tokenClient.requestAccessToken({prompt:"consent"})})}
+$("connectBlogger").onclick=async()=>{try{await getToken();$("bloggerStatus").textContent="✓ Blogger connected. Drive photo access ಕೂಡ ಇದೆ."}catch(e){$("bloggerStatus").textContent="✕ "+e.message}};
+$("publishBlogger").onclick=async()=>{try{const title=$("headline").value.trim(),body=$("bodyOut").value.trim();if(!title||!body)throw Error("Headline ಮತ್ತು News Body ಬೇಕಾಗಿದೆ.");$("publishStatus").textContent="Publish ಮಾಡಲಾಗುತ್ತಿದೆ...";await getToken();const hosted=[];for(let i=0;i<photos.length;i++){ $("publishStatus").textContent=`ಫೋಟೋ ${i+1}/${photos.length} upload...`;hosted.push({...photos[i],url:await uploadPhoto(photos[i])})}const blogId=localStorage.getItem("bidire_blog_id")||"2799540703054854619",labels=localStorage.getItem("bidire_blog_label")?[localStorage.getItem("bidire_blog_label")]:[];const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${blogId}/posts`,{method:"POST",headers:{Authorization:"Bearer "+bloggerToken,"Content-Type":"application/json"},body:JSON.stringify({kind:"blogger#post",blog:{id:blogId},title,content:postHTML(hosted),labels,images:hosted.map(x=>({url:x.url}))})});const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Blogger publish failed");$("publishStatus").innerHTML=`✓ Publish ಆಯಿತು. <a href="${j.url}" target="_blank">Post ತೆರೆಯಿರಿ</a>`}catch(e){$("publishStatus").textContent="✕ "+e.message}};
+$("copyBlogger").onclick=async()=>{await navigator.clipboard.writeText($("headline").value+"\n\n"+$("sub").value+"\n\n"+$("bodyOut").value);msg("Bloggerಗೆ copy ಆಯಿತು.")};
+$("saveDraft").onclick=()=>{localStorage.setItem("bidire_draft",JSON.stringify({headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,keyPoints,englishSummary,photos:photos.map(p=>({name:p.name,dataUrl:p.dataUrl,caption:p.caption}))}));msg("Draft saved.")};
+const d=JSON.parse(localStorage.getItem("bidire_draft")||"null");if(d){$("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||"";photos=d.photos||[];renderPhotos();update()}
+</script></body></html>
