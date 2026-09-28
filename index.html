@@ -80,22 +80,308 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 .safe-draft-actions{display:flex;gap:7px;margin-top:8px}
 .safe-draft-actions button{flex:1}
 
+
+/* ===== Bidire Modern UI V2 ===== */
+:root{
+  --bn-red:#b40000; --bn-blue:#1769aa; --bn-purple:#6f42c1;
+  --bn-green:#16803c; --bn-amber:#b26a00; --bn-orange:#e8590c;
+  --bn-teal:#087f8c; --bn-slate:#495057; --bn-bg:#eef2f7;
+}
+body{background:linear-gradient(180deg,#eef2f7 0,#f7f9fc 420px,#eef2f7 100%)}
+header{
+  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid #d7dee8;box-shadow:0 3px 16px rgba(20,35,55,.08);
+  padding:12px 14px;
+}
+.brand{font-size:20px;letter-spacing:-.2px}
+.wrap{max-width:1040px;margin:18px auto;padding:0 12px}
+.panel{
+  border:1px solid #d9e0e8;border-radius:16px;margin-bottom:16px;
+  box-shadow:0 5px 20px rgba(26,39,58,.07);overflow:hidden;
+  scroll-margin-top:92px;
+}
+.panel>.bar{
+  padding:14px 16px;font-size:16px;border-bottom:1px solid rgba(0,0,0,.07);
+  display:flex;align-items:center;gap:8px;min-height:52px;
+}
+.panel>.body{padding:16px}
+.panel:nth-of-type(1){border-top:5px solid var(--bn-blue)}
+.panel:nth-of-type(2){border-top:5px solid var(--bn-red)}
+.panel:nth-of-type(3){border-top:5px solid var(--bn-purple)}
+.panel:nth-of-type(4){border-top:5px solid var(--bn-green)}
+.panel:nth-of-type(5){border-top:5px solid var(--bn-amber)}
+.panel:nth-of-type(6){border-top:5px solid var(--bn-orange)}
+.panel:nth-of-type(7){border-top:5px solid var(--bn-slate)}
+.panel:nth-of-type(8){border-top:5px solid var(--bn-teal)}
+
+.section-nav{
+  position:sticky;top:67px;z-index:4;display:flex;gap:8px;overflow:auto;
+  padding:9px 2px;margin:0 auto 14px;scrollbar-width:none;
+}
+.section-nav::-webkit-scrollbar{display:none}
+.section-nav button{
+  flex:0 0 auto;border:1px solid #d5dde7;background:#fff;color:#344054;
+  border-radius:999px;padding:9px 13px;font-size:12px;box-shadow:0 2px 8px rgba(20,35,55,.06);
+}
+.section-nav button.active{color:#fff;border-color:transparent}
+.section-nav button[data-target="newSection"].active{background:var(--bn-blue)}
+.section-nav button[data-target="editSection"].active{background:var(--bn-red)}
+.section-nav button[data-target="assistantSection"].active{background:var(--bn-purple)}
+.section-nav button[data-target="safeSection"].active{background:var(--bn-green)}
+.section-nav button[data-target="previewSection"].active{background:var(--bn-amber)}
+.section-nav button[data-target="adsPanel"].active{background:var(--bn-orange)}
+.section-nav button[data-target="settings"].active{background:var(--bn-slate)}
+.section-nav button[data-target="allPostsPanel"].active{background:var(--bn-teal)}
+
+.subtool{
+  border:1px solid #d7dee8;border-radius:14px;background:#fff;margin-top:12px;overflow:hidden;
+  box-shadow:0 2px 10px rgba(20,35,55,.05)
+}
+.subtool>button{
+  width:100%;text-align:left;background:linear-gradient(90deg,#f7f9fc,#fff);
+  color:#263238;padding:13px 15px;font-size:14px;border-radius:0;
+}
+.subtool>button .chev{float:right;transition:.2s}
+.subtool.open>button .chev{transform:rotate(180deg)}
+.subtool-body{display:none;padding:13px 15px;border-top:1px solid #e8edf3}
+.subtool.open .subtool-body{display:block}
+.subtool.audio{border-left:4px solid var(--bn-blue)}
+.subtool.assistant{border-left:4px solid var(--bn-purple)}
+.edit-box{border-radius:13px;border:1px solid #f0c9c9;background:#fff8f7;box-shadow:none}
+.edit-box h4{color:var(--bn-red)}
+.audio-box,.chat-box,.safe-draft-box{border-radius:13px}
+.safe-draft-box{border-left-color:var(--bn-green)}
+.ad-panel{border-radius:13px}
+.post-preview{border-radius:14px}
+.quick-note{font-size:11px;color:#667085;margin:2px 0 9px}
+@media(max-width:600px){
+  header{position:sticky}
+  .section-nav{top:62px;padding:8px 0}
+  .section-nav button{padding:8px 11px;font-size:11px}
+  .panel{border-radius:13px;margin-bottom:13px}
+  .panel>.body{padding:12px}
+}
+
+
+/* ===== V3 requested refinements ===== */
+header{min-height:58px;padding:9px 14px}
+.top-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.icon-btn{
+  width:38px;height:38px;padding:0!important;min-width:38px!important;
+  border-radius:50%!important;background:#f1f4f8!important;color:#253040!important;
+  border:1px solid #d9e1ea!important;font-size:18px!important;line-height:38px;
+}
+.icon-btn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(20,35,55,.12)}
+.legacy-controls,.legacy-new-actions{display:none!important}
+.section-nav{top:58px;margin-bottom:12px}
+.section-nav button{padding:7px 11px;font-size:11px}
+.section-nav button[data-target="newSection"]{border-color:#b8d5f0}
+.section-nav button[data-target="editSection"]{border-color:#efbcbc}
+.section-nav button[data-target="safeSection"]{border-color:#b9e1c7}
+.section-nav button[data-target="previewSection"]{border-color:#ead19d}
+.section-nav button[data-target="adsPanel"]{border-color:#f0c4aa}
+.section-nav button[data-target="allPostsPanel"]{border-color:#b9dfe4}
+
+.audio .subtool-body{padding:10px 12px}
+.audio-actions{gap:6px;margin-top:7px}
+.audio-actions button{min-width:105px;padding:7px 9px;font-size:12px}
+.audio-file{padding:7px;font-size:12px}
+#transcribeAudio,#clearAudio{min-width:105px}
+.row + .actions{margin-top:8px}
+.actions{gap:6px}
+.actions button{min-width:92px;padding:7px 9px;font-size:12px}
+#limit,#style{padding:7px 8px;font-size:12px}
+label{font-size:11px}
+.tool-row{gap:6px}
+.tool-row button{min-width:92px;padding:7px 8px;font-size:12px}
+
+@media(max-width:600px){
+  header{padding:8px 10px}
+  .icon-btn{width:34px;height:34px;min-width:34px!important;font-size:16px!important;line-height:34px}
+  .section-nav{top:50px}
+  .section-nav button{padding:7px 9px}
+  .audio-actions button,.actions button,.tool-row button{min-width:0;flex:1}
+}
+
+
+/* ===== V4: Raw News + AI Chat Composer ===== */
+.raw-chat{
+  border:1px solid #d8dee8;border-radius:16px;background:#fff;
+  box-shadow:0 4px 18px rgba(20,35,55,.06);overflow:hidden;margin-bottom:14px
+}
+.raw-chat-head{
+  padding:12px 14px;background:linear-gradient(90deg,#f4f7fb,#fff);
+  border-bottom:1px solid #e6eaf0;display:flex;align-items:center;gap:9px
+}
+.raw-chat-head strong{font-size:15px}.raw-chat-head span{font-size:11px;color:#667085}
+.raw-chat-body{padding:12px}
+.raw-chat-body textarea{
+  min-height:150px;border:0!important;outline:0!important;box-shadow:none!important;
+  background:#f7f9fc;border-radius:12px;padding:13px;font-size:14px;line-height:1.7
+}
+.raw-chat-actions{display:flex;gap:7px;align-items:center;margin-top:8px}
+.raw-chat-actions button{min-width:0;padding:8px 11px;font-size:12px}
+.raw-chat-actions .grow{flex:1}
+.ai-write-btn{
+  background:#b40000!important;color:#fff!important;
+  box-shadow:0 3px 10px rgba(180,0,0,.18)
+}
+.chat-send-btn{background:#202938!important;color:#fff!important}
+.chat-clear-btn{background:#edf1f5!important;color:#344054!important}
+.raw-chat-status{font-size:11px;color:#667085;margin-top:7px;min-height:14px}
+.chat-log{
+  max-height:260px;overflow:auto;margin-top:9px;padding:3px
+}
+.chat-log:empty{display:none}
+.chat-bubble{
+  max-width:88%;padding:9px 11px;border-radius:12px;margin:7px 0;
+  font-size:12px;line-height:1.55;white-space:pre-wrap
+}
+.chat-bubble.user{margin-left:auto;background:#e8f0fe;color:#263238}
+.chat-bubble.ai{margin-right:auto;background:#f0f2f5;color:#263238}
+#newSection .audio{margin-top:12px}
+@media(max-width:600px){
+  .raw-chat-actions{flex-wrap:wrap}
+  .raw-chat-actions button{flex:1}
+  .raw-chat-actions .grow{flex-basis:100%}
+}
+
+
+/* ===== V5 requested clean Chat / Audio / Safe Draft UI ===== */
+#newSection .raw-chat,
+#newSection .subtool.audio{
+  background:#050505!important;
+  color:#fff!important;
+  border-color:#050505!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+}
+#newSection .raw-chat-head{
+  background:#050505!important;
+  color:#fff!important;
+  border-bottom:1px solid #222!important;
+}
+#newSection .raw-chat-head strong{font-size:17px;color:#fff}
+#newSection .raw-chat-body{background:#050505!important}
+#newSection .raw-chat-body textarea#raw{
+  background:#111!important;color:#fff!important;
+  border:1px solid #333!important;border-radius:12px!important;
+}
+#newSection .raw-chat-body textarea#raw::placeholder,
+#newSection #rawChatInput::placeholder{color:#8f96a3}
+#newSection #rawChatInput{
+  min-height:76px;background:#111!important;color:#fff!important;
+  border:1px solid #333!important;border-radius:12px!important;
+  margin-top:9px;padding:12px;font-size:14px;line-height:1.55;
+}
+#newSection .chat-log{background:#050505!important}
+#newSection .chat-bubble.user{background:#242424!important;color:#fff!important}
+#newSection .chat-bubble.ai{background:#151515!important;color:#fff!important;border:1px solid #2d2d2d}
+#newSection .chat-send-btn{background:#fff!important;color:#111!important}
+#newSection .chat-clear-btn{background:#222!important;color:#fff!important}
+#newSection .raw-chat-status{display:none!important}
+#newSection .subtool.audio>button{
+  background:#050505!important;color:#fff!important;border:0!important;
+}
+#newSection .subtool.audio .subtool-body{background:#050505!important;border-top:1px solid #222!important}
+#newSection .subtool.audio label,
+#newSection .subtool.audio .small{color:#fff!important}
+#newSection .subtool.audio input,
+#newSection .subtool.audio select{background:#111!important;color:#fff!important;border-color:#333!important}
+#newSection .subtool.audio .audio-actions button{background:#fff!important;color:#111!important;border:0!important}
+#newSection .subtool.audio .audio-actions .black{background:#fff!important;color:#111!important}
+#newSection .subtool.audio .audio-file{background:#111!important;color:#fff!important;border-color:#333!important}
+#newSection .subtool.audio .recording{background:#330b0b!important;color:#fff!important;border-color:#6b2222!important}
+#newSection .subtool.audio .audio-preview{background:#111!important}
+
+/* Remove helper/instruction copy from the main editor UI. */
+#newSection .small:not(#photoStatus):not(#audioStatus),
+#editSection .quick-note{display:none!important}
+
+/* Compact green saved-draft strip */
+.safe-inline-panel{margin-bottom:16px;padding:0 2px}
+.safe-inline{
+  min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:7px 9px;border:1px solid #cdebd6;border-radius:11px;background:#f5fff8;
+}
+.safe-inline-text{font-size:14px;font-weight:800;color:#16803c}
+.safe-mini-btn{background:#16803c!important;color:#fff!important;padding:7px 11px!important;font-size:11px!important;border-radius:8px!important}
+html[data-theme="dark"] .safe-inline{background:#07140b;border-color:#1f5a32}
+html[data-theme="dark"] .safe-inline-text{color:#4ade80}
+
+@media(max-width:600px){
+  #newSection .raw-chat-head strong{font-size:16px}
+  #newSection .raw-chat-body textarea#raw{min-height:145px}
+  #newSection #rawChatInput{min-height:70px}
+  .safe-inline-text{font-size:13px}
+  .safe-mini-btn{font-size:11px!important;padding:7px 10px!important}
+}
+
+
+/* ===== V6 Edit Panel: compact systematic UI ===== */
+.edit-panel-modern{border-top:5px solid var(--bn-red)!important}
+.edit-panel-modern>.bar.edit-main-bar{background:linear-gradient(135deg,#b40000,#d20b0b);color:#fff;border:0;padding:13px 15px;justify-content:space-between}
+.edit-main-bar>div{display:flex;align-items:center;gap:10px}.edit-main-bar strong{display:block;font-size:19px}.edit-main-bar small{display:block;font-size:10px;opacity:.82;margin-top:2px}.edit-bar-icon{font-size:25px}.edit-draft-mini{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.55)!important;padding:6px 10px!important;font-size:11px!important;border-radius:9px!important}
+.edit-field{margin-bottom:10px;padding:9px 10px;border:1px solid #f0d5d5;border-radius:12px;background:#fffafa}.edit-field label{font-size:12px;margin:0 0 5px;color:#2f2f2f}.edit-field input,.edit-field textarea{background:#fff;border-color:#d7d7d7;border-radius:9px;padding:9px}.edit-field textarea{line-height:1.7}
+.edit-category-row{display:flex;align-items:center;gap:9px;padding:8px 10px;margin:0 0 10px;border:1px solid #ddd6f4;background:#faf8ff;border-radius:12px}.edit-category-row label{margin:0;font-size:12px;min-width:65px;color:#5637a5}.edit-category-row select{padding:8px 9px;border-radius:8px;border-color:#d9cff4;background:#fff;font-size:12px}
+.edit-accordion{padding:0!important;overflow:hidden;margin-top:9px!important;background:#fff!important;border:1px solid #e2e5ea!important;border-radius:12px!important}.edit-accordion-head{width:100%;display:flex;justify-content:space-between;align-items:center;background:#f7f9fc!important;color:#222!important;padding:11px 12px!important;border-radius:0!important;font-size:14px;text-align:left}.edit-accordion-head:hover{background:#f1f4f8!important}.accordion-right{display:flex;align-items:center;gap:9px}.accordion-right>b{font-size:18px;color:#667085;transition:.2s}.edit-accordion.open .accordion-right>b{transform:rotate(180deg)}.mini-enable{display:flex!important;align-items:center;gap:4px!important;margin:0!important;font-size:10px!important;font-weight:700!important;color:#555}.mini-enable input{width:auto!important;margin:0}.edit-accordion-body{display:none;padding:10px 11px;border-top:1px solid #edf0f3}.edit-accordion.open .edit-accordion-body{display:block}.edit-accordion.open .edit-accordion-head{background:#fff4f2!important;color:#b40000!important}.edit-accordion#englishBox.open .edit-accordion-head{background:#f1fff6!important;color:#16803c!important}.compact-publish-actions{display:flex;gap:6px;margin-top:11px}.compact-publish-actions button{flex:1;min-width:0!important;padding:8px 6px!important;font-size:11px!important;border-radius:9px!important}.compact-publish-actions .primary{box-shadow:0 3px 8px rgba(180,0,0,.16)}.autosave{font-size:10px;min-height:12px;margin-top:7px}
+html[data-theme="dark"] .edit-field{background:#1b1515;border-color:#4a3030}.edit-field label{color:inherit}html[data-theme="dark"] .edit-field input,html[data-theme="dark"] .edit-field textarea{background:#11161d;color:#e6edf3;border-color:#484f58}html[data-theme="dark"] .edit-category-row{background:#181427;border-color:#463b69}.edit-category-row select{color:#222}html[data-theme="dark"] .edit-accordion{background:#161b22!important;border-color:#30363d!important}.edit-accordion-head{color:#222!important}html[data-theme="dark"] .edit-accordion-head{background:#11161d!important;color:#e6edf3!important}html[data-theme="dark"] .edit-accordion.open .edit-accordion-head{background:#251514!important;color:#ff6b6b!important}html[data-theme="dark"] .edit-accordion#englishBox.open .edit-accordion-head{background:#102118!important;color:#4ade80!important}.edit-accordion-body{background:inherit}
+@media(max-width:600px){.edit-main-bar strong{font-size:17px}.edit-bar-icon{font-size:22px}.edit-category-row{gap:7px}.edit-category-row select{flex:1}.compact-publish-actions button{font-size:10px!important;padding:8px 4px!important}}
+
+
+/* ===== V8: AI Edit Chat above Category + fixed 4 categories ===== */
+.edit-ai-chat{margin-top:10px!important;margin-bottom:10px!important}
+.edit-ai-chat-head span{display:none!important}
+#editChatInput{min-height:54px!important;height:54px!important}
+.edit-category-row{margin-top:10px!important}
+ /* ===== V7: Copy All + compact Edit AI Chat ===== */
+.edit-head-actions{display:flex;align-items:center;gap:6px}.edit-copy-mini{background:#fff!important;color:#b40000!important;border:1px solid rgba(255,255,255,.8)!important;padding:6px 9px!important;font-size:10px!important;border-radius:8px!important;font-weight:800!important}
+.edit-ai-chat{margin-top:10px;border:1px solid #e2e5ea;border-radius:12px;overflow:hidden;background:#fafbfc}.edit-ai-chat-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;background:#202733;color:#fff}.edit-ai-chat-head>div{display:flex;align-items:baseline;gap:7px;min-width:0}.edit-ai-chat-head strong{font-size:13px;white-space:nowrap}.edit-ai-chat-head span{font-size:10px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.edit-chat-clear{border:0!important;background:#394250!important;color:#fff!important;border-radius:7px!important;padding:5px 8px!important;font-size:10px!important}.edit-chat-log{display:none;max-height:170px;overflow:auto;padding:8px;background:#f5f7fa}.edit-chat-log:not(:empty){display:block}.edit-chat-bubble{padding:7px 9px;margin:4px 0;border-radius:9px;font-size:11px;line-height:1.5;white-space:pre-wrap}.edit-chat-bubble.user{background:#e9eef5;margin-left:16%;color:#222}.edit-chat-bubble.ai{background:#fff;border:1px solid #dfe4ea;margin-right:8%;color:#222}.edit-ai-chat>textarea{display:block;width:100%;min-height:58px;resize:vertical;border:0!important;border-top:1px solid #e5e7eb!important;border-bottom:1px solid #e5e7eb!important;border-radius:0!important;background:#fff!important;padding:9px 10px!important;font-size:12px!important;line-height:1.5!important;box-sizing:border-box}.edit-chat-actions{display:flex;gap:6px;padding:7px;background:#fff}.edit-chat-actions button{flex:1;min-width:0!important;padding:7px 8px!important;border-radius:8px!important;font-size:10px!important;font-weight:800!important}.edit-chat-send{background:#b40000!important;color:#fff!important}.edit-chat-apply{background:#16803c!important;color:#fff!important}.edit-chat-apply:disabled{opacity:.4;cursor:not-allowed}.edit-chat-status{font-size:9px;min-height:12px;padding:0 9px 6px;color:#667085}.edit-ai-chat.has-answer{box-shadow:0 2px 10px rgba(32,39,51,.08)}
+html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.edit-ai-chat-head{background:#0d1117}.edit-chat-log{background:#161b22}.edit-chat-bubble.user{background:#222a35;color:#e6edf3}.edit-chat-bubble.ai{background:#11161d;border-color:#30363d;color:#e6edf3}.edit-ai-chat>textarea{background:#0d1117!important;color:#e6edf3!important;border-color:#30363d!important}.edit-chat-actions{background:#11161d}.edit-chat-status{color:#8b949e}
+@media(max-width:600px){.edit-main-bar{gap:5px}.edit-head-actions{gap:4px}.edit-copy-mini,.edit-draft-mini{padding:6px 7px!important;font-size:9px!important}.edit-ai-chat-head span{display:none}.edit-chat-actions button{font-size:10px!important}}
 </style>
 </head>
 <body>
 <header>
   <div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div>
-  <div class="actions" style="margin:0">
-    <button type="button" id="newBtn" class="primary">＋ New Post</button>
-    <button type="button" id="themeBtn" class="light">☀️ Light</button>
-    <button type="button" id="allPostsBtn" class="light">📰 All Posts</button><button type="button" id="adsBtn" class="light">📢 Advertisement</button><button type="button" id="settingsBtn" class="black">⚙ Settings</button>
+  <div class="top-actions">
+    <button type="button" id="themeBtn" class="icon-btn" title="Dark / Light mode">☾</button>
+    <button type="button" id="settingsBtn" class="icon-btn" title="Settings">⚙</button>
+  </div>
+  <div class="legacy-controls" aria-hidden="true">
+    <button type="button" id="newBtn"></button>
+    <button type="button" id="allPostsBtn"></button>
+    <button type="button" id="adsBtn"></button>
   </div>
 </header>
 
 <main class="wrap">
-<section class="panel"><div class="bar">ಹೊಸ ಸುದ್ದಿ</div><div class="body">
-<label>Raw News / ಮೂಲ ಮಾಹಿತಿ</label>
-<textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿಯನ್ನು ಇಲ್ಲಿ paste ಮಾಡಿ..."></textarea>
+
+<nav class="section-nav" id="sectionNav" aria-label="Bidire News sections">
+  <button data-target="newSection">📰 ಹೊಸ ಸುದ್ದಿ</button>
+  <button data-target="editSection">✍️ ಸಂಪಾದನೆ</button>
+  <button data-target="safeSection">🛡️ Draft</button>
+  <button data-target="previewSection">👁️ Preview</button>
+  <button data-target="adsPanel">📢 Ads</button>
+  <button data-target="allPostsPanel">📰 All Posts</button>
+</nav>
+
+<section class="panel" id="newSection"><div class="bar">📰 ಹೊಸ ಸುದ್ದಿ</div><div class="body">
+<div class="raw-chat" id="rawNewsChat">
+  <div class="raw-chat-head">
+    <strong>💬 Chat</strong>
+  </div>
+  <div class="raw-chat-body">
+    <textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea>
+    <div id="rawChatLog" class="chat-log"></div>
+    <textarea id="rawChatInput" class="chat-input" placeholder="AIಗೆ ಕೇಳಿ..."></textarea>
+    <div class="raw-chat-actions">
+      <button type="button" id="rawChatSend" class="chat-send-btn">➤ Chat</button>
+      <button type="button" id="rawChatClear" class="chat-clear-btn">Clear</button>
+      <button type="button" id="rawAiWrite" class="ai-write-btn grow">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
+    </div>
+    <div id="rawChatStatus" class="raw-chat-status"></div>
+  </div>
+</div>
 
 <div class="photo-box">
 <strong style="font-size:13px">📷 Photo + Automatic Caption</strong>
@@ -106,8 +392,8 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 </div>
 
 
-<div class="audio-box">
-  <strong style="font-size:13px">🎙️ Audio to Text / ಧ್ವನಿಯಿಂದ ಪಠ್ಯ</strong>
+<div class="subtool audio">
+  <button type="button" class="subtool-toggle">🎙️ Audio to Text <span class="chev">▼</span></button><div class="subtool-body">
   <div class="small">ನೇರವಾಗಿ audio record ಮಾಡಬಹುದು ಅಥವಾ ನಿಮ್ಮ deviceನಲ್ಲಿ ಇರುವ audio file upload ಮಾಡಬಹುದು.</div>
   <div class="audio-actions">
     <button type="button" class="primary" id="recordAudio">🎙️ Start Recording</button>
@@ -120,82 +406,73 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
     <button type="button" class="black" id="transcribeAudio">✨ Audio → Text</button>
     <button type="button" class="light" id="clearAudio">Clear Audio</button>
   </div>
-</div>
+</div></div>
 
 <div class="row">
 <div><label>ಪದಗಳ ಮಿತಿ</label><select id="limit"><option value="0">Original</option><option>100</option><option>150</option><option>170</option><option>200</option></select></div>
 <div><label>ಶೈಲಿ</label><select id="style"><option value="normal">Bidire News</option><option value="vijayavani">ವಿಜಯವಾಣಿ ಶೈಲಿ</option></select></div>
 </div>
-<div class="actions">
-<button type="button" class="primary" id="generate">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ</button><button type="button" class="light" id="shorten">✂ ಸಂಕ್ಷಿಪ್ತ</button><button type="button" class="light" id="grammar">✓ Grammar</button><button type="button" class="light" id="translate">English</button>
+<div class="legacy-new-actions" aria-hidden="true">
+<button type="button" id="generate"></button><button type="button" id="shorten"></button><button type="button" id="grammar"></button><button type="button" id="translate"></button>
 </div>
 <div id="status" class="status"></div>
 </div></section>
 
-<section class="panel"><div class="bar">ಸುದ್ದಿ ಸಂಪಾದನೆ</div><div class="body">
-<label>Headline</label><input id="headline">
-<label>Subheadline / ಉಪಶೀರ್ಷಿಕೆ</label><input id="sub">
-<label>News Body</label><textarea id="bodyOut" style="min-height:260px"></textarea>
+<section class="panel edit-panel-modern" id="editSection"><div class="bar edit-main-bar"><div><span class="edit-bar-icon">✍️</span><div><strong>ಸುದ್ದಿ ಸಂಪಾದನೆ</strong><small>Edit &amp; Finalize News</small></div></div><div class="edit-head-actions"><button type="button" class="edit-copy-mini" id="copyAllEdit">📋 Copy All</button><button type="button" class="edit-draft-mini" id="editDraftJump">↩ Draft</button></div></div><div class="body">
+<div class="edit-field"><label>Headline</label><input id="headline"></div>
+<div class="edit-field"><label>Subheadline / ಉಪಶೀರ್ಷಿಕೆ</label><input id="sub"></div>
+<div class="edit-field"><label>News Body</label><textarea id="bodyOut" style="min-height:250px"></textarea></div>
 
-<div class="edit-box">
-  <div class="toggle-row">
-    <h4>ಪ್ರಮುಖ ಅಂಶಗಳು</h4>
-    <label style="margin:0"><input id="keyPointsEnabled" type="checkbox" checked> Enable</label>
+<div class="edit-ai-chat" id="editAiChat">
+  <div class="edit-ai-chat-head">
+    <div><strong>💬 AI Edit Chat</strong></div>
+    <button type="button" id="editChatClear" class="edit-chat-clear">Clear</button>
   </div>
-  <div id="pointsEditor" class="points-editor"></div>
-  <div class="tool-row">
-    <button type="button" class="light" id="addPoint">＋ Add Point</button>
-    <button type="button" class="light" id="aiPoints">✨ AI Generate</button>
+  <div id="editChatLog" class="edit-chat-log"></div>
+  <textarea id="editChatInput" placeholder=""></textarea>
+  <div class="edit-chat-actions">
+    <button type="button" id="editChatSend" class="edit-chat-send">➤ AIಗೆ ಕೇಳಿ</button>
+    <button type="button" id="editChatApply" class="edit-chat-apply" disabled>✓ Apply Change</button>
+  </div>
+  <div id="editChatStatus" class="edit-chat-status"></div>
+</div>
+
+<div class="edit-category-row"><label for="category">Category</label><select id="category"><option value="ಮೂಡುಬಿದಿರೆ" selected>ಮೂಡುಬಿದಿರೆ</option><option value="ಕ್ರೈಂ">ಕ್ರೈಂ</option><option value="ತಂತ್ರಜ್ಞಾನ">ತಂತ್ರಜ್ಞಾನ</option><option value="ವಿಶೇಷ">ವಿಶೇಷ</option></select></div>
+
+<div class="edit-accordion edit-box" id="keyPointsBox">
+  <button type="button" class="edit-accordion-head" id="keyPointsToggle"><span>⭐ ಪ್ರಮುಖ ಅಂಶಗಳು</span><span class="accordion-right"><label class="mini-enable"><input id="keyPointsEnabled" type="checkbox" checked> Enable</label><b>⌄</b></span></button>
+  <div class="edit-accordion-body" id="keyPointsBody">
+    <div id="pointsEditor" class="points-editor"></div>
+    <div class="tool-row"><button type="button" class="light" id="addPoint">＋ Add Point</button><button type="button" class="light" id="aiPoints">✨ AI Generate</button></div>
   </div>
 </div>
 
-<div class="edit-box">
-  <div class="toggle-row">
-    <h4>English Summary</h4>
-    <label style="margin:0"><input id="englishEnabled" type="checkbox" checked> Enable</label>
+<div class="edit-accordion edit-box" id="englishBox">
+  <button type="button" class="edit-accordion-head" id="englishToggle"><span>🌐 English Summary</span><span class="accordion-right"><label class="mini-enable"><input id="englishEnabled" type="checkbox" checked> Enable</label><b>⌄</b></span></button>
+  <div class="edit-accordion-body" id="englishBody">
+    <textarea id="englishSummaryEdit" style="min-height:100px" placeholder="English summary..."></textarea>
+    <div class="tool-row"><button type="button" class="light" id="aiEnglish">✨ AI Generate</button></div>
   </div>
-  <textarea id="englishSummaryEdit" style="min-height:100px" placeholder="English summary..."></textarea>
-  <div class="tool-row"><button type="button" class="light" id="aiEnglish">✨ AI Generate</button></div>
 </div>
 
 <div class="autosave" id="autosaveStatus"></div>
-<div class="actions"><button type="button" class="primary" id="publish">🚀 Publish to Blogger</button><button type="button" class="black" id="copy">📋 Copy to Blogger</button><button type="button" class="light" id="save">💾 Save Draft</button></div>
+<div class="compact-publish-actions"><button type="button" class="primary" id="publish">🚀 Publish</button><button type="button" class="black" id="copy">📋 Copy</button><button type="button" class="light" id="save">💾 Save</button></div>
 <div id="publishStatus" class="status"></div>
+
 </div></section>
 
-<section class="panel">
-  <div class="bar">💬 AI News Assistant — Raw News ಜೊತೆ ಚರ್ಚಿಸಿ</div>
-  <div class="body">
-    <div class="small">ಕಚ್ಚಾ ಸುದ್ದಿಗೆ ಬೇಕಾದ ಮಾಹಿತಿ ಸೇರಿಸುವುದು, ಬದಲಾಯಿಸುವುದು, ಸರಿಪಡಿಸುವುದು ಅಥವಾ ಪ್ರಶ್ನೆ ಕೇಳುವುದಕ್ಕಾಗಿ ಈ chat ಬಳಸಿ. AIಗೆ ಗೊತ್ತಿಲ್ಲದ ಹೊಸ fact ಅನ್ನು ಅದು ಸ್ವತಃ ಸೇರಿಸಬಾರದು.</div>
-    <div id="chatMessages" class="chat-messages">
-      <div class="chat-msg chat-system">ನಿಮ್ಮ raw news ಆಧಾರವಾಗಿ ಇಲ್ಲಿ AI ಜೊತೆ ಚರ್ಚಿಸಬಹುದು.</div>
-    </div>
-    <textarea id="chatInput" class="chat-input" placeholder="ಉದಾ: 'ಈ ಸುದ್ದಿಗೆ ನಾನು ನೀಡಿದ ಮಾಹಿತಿಯಲ್ಲಿರುವ ಕಾರ್ಯಕ್ರಮದ ಸಮಯವನ್ನು ಸೇರಿಸಿ' ಅಥವಾ 'ಈ paragraph ಅನ್ನು ಇನ್ನಷ್ಟು ಸ್ಪಷ್ಟವಾಗಿ ಬದಲಾಯಿಸಿ'"></textarea>
-    <div class="chat-actions">
-      <button type="button" class="primary" id="chatSend">💬 Send</button>
-      <button type="button" class="light" id="chatApply">↙ Apply AI Change</button>
-      <button type="button" class="light" id="chatClear">Clear Chat</button>
-    </div>
-    <div id="chatStatus" class="status"></div>
-  </div>
 </section>
 
-<section class="panel">
-  <div class="bar">🛡️ Emergency / Safe Draft</div>
-  <div class="body">
-    <div class="safe-draft-box">
-      <div class="safe-draft-title">✓ ನಿಮ್ಮ ಕೆಲಸ automatic ಆಗಿ ಉಳಿಸಲಾಗುತ್ತಿದೆ</div>
-      <div class="safe-draft-meta" id="safeDraftMeta">Draft ಇನ್ನೂ save ಆಗಿಲ್ಲ.</div>
-      <div class="safe-draft-actions">
-        <button type="button" class="black" id="restoreSafeDraft">↩ Restore Latest Draft</button>
-        <button type="button" class="light" id="deleteSafeDraft">Delete Saved Draft</button>
-      </div>
-    </div>
+<section class="safe-inline-panel" id="safeSection">
+  <div class="safe-inline">
+    <span class="safe-inline-text" id="safeDraftMeta">✓ ಇಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ</span>
+    <button type="button" class="safe-mini-btn" id="restoreSafeDraft">Draft ನೋಡಿ</button>
+    <button type="button" id="deleteSafeDraft" class="hide" aria-hidden="true" tabindex="-1">Delete</button>
   </div>
 </section>
 
 
-<section class="panel"><div class="bar">📰 News Post Preview</div><div class="body">
+<section class="panel" id="previewSection"><div class="bar">👁️ News Post Preview</div><div class="body">
 <div class="post-preview" id="preview">
 <h1 id="ph">ಶೀರ್ಷಿಕೆ</h1><div id="ps" class="post-sub">ಸಬ್‌ಹೆಡ್ಲೈನ್ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
 <div id="pbody" class="post-body">ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
@@ -227,7 +504,7 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
     </div>
     <div id="adManagePanel" class="ad-panel hide">
       <div class="small">Expiry date ಮುಗಿದ ಜಾಹೀರಾತು automatic ಆಗಿ Expired ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ.</div>
-      <div class="actions"><button type="button" class="black" id="refreshAds">↻ Refresh Ads</button><button type="button" class="primary" id="syncAllAds">🌐 Sync All Ads</button><button type="button" class="light" id="clearAds">Delete All Ads</button></div>
+      <div class="actions"><button type="button" class="black" id="refreshAds">↻ Refresh Ads</button><button type="button" class="primary" id="syncAllAds">↔ Blogger + AI Sync</button><button type="button" class="light" id="clearAds">Delete All Ads</button></div>
       <div id="adList" class="ad-list"></div>
     </div>
   </div>
@@ -376,7 +653,7 @@ function draftObject(){
     caption:p.caption||""
   }));
   return {
-    headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,
+    headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,category:$("category")?.value||"",
     keyPoints,englishSummary:$("englishSummaryEdit").value,
     keyPointsEnabled:$("keyPointsEnabled").checked,englishEnabled:$("englishEnabled").checked,
     photos:draftPhotos,editingPostId,editingPostUrl,savedAt:new Date().toISOString()
@@ -531,7 +808,9 @@ $("publish").onclick=async()=>{
   try{
     if(!token)await access();
     const ph=await hostedPhotos(),content=htmlContent(ph),labels=[];
+    const category=$("category")?.value.trim();
     const userLabel=$("blogLabel").value.trim();if(userLabel)labels.push(userLabel);
+    if(category && !labels.includes(category))labels.push(category);
     if(!labels.includes("BidireAIEditor"))labels.push("BidireAIEditor");
     const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
     let r,j;
@@ -572,6 +851,7 @@ async function loadPostForEdit(id){
     const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(id)}`,{headers:{Authorization:"Bearer "+token}});
     const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Could not load post");
     $("headline").value=j.title||"";
+    if($("category")){ const existing=(j.labels||[]).find(x=>x!=="BidireAIEditor" && x!=="BidireAd" && x!==$("blogLabel").value.trim()); if(existing && ["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(existing)) $("category").value=existing; else $("category").value="ಮೂಡುಬಿದಿರೆ"; }
     const tmp=document.createElement("div");tmp.innerHTML=j.content||"";
     const summary=tmp.querySelector('p[style*="border-left"]');$("sub").value=summary?.textContent?.trim()||"";
     const english=tmp.querySelector(".english-box p")||tmp.querySelector('div[style*="border-left:4px solid #555"] div:last-child');
@@ -609,10 +889,10 @@ $("saveSettings").onclick=()=>{
  setAIModelStatus(cleanModel($("model").value),"Primary selected; automatic fallback enabled");
  $("settingsStatus").textContent="✓ Settings saved.";
 };
-$("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");syncEditors();renderPhotos();render();localStorage.removeItem("bn_draft");window.scrollTo({top:0,behavior:"smooth"})};
+$("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";if($("category"))$("category").value="ಮೂಡುಬಿದಿರೆ";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");syncEditors();renderPhotos();render();localStorage.removeItem("bn_draft");window.scrollTo({top:0,behavior:"smooth"})};
 let d=safeJsonGet("bn_draft",null);
 if(d){
-  $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";
+  $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
   keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||"";photos=d.photos||[];
   $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;$("englishEnabled").checked=d.englishEnabled!==false;
   setEditingPost(d.editingPostId||null,d.editingPostUrl||"");syncEditors();renderPhotos();render();
@@ -746,15 +1026,57 @@ $("publishAdWebsite").onclick=async()=>{
   }
 };
 $("clearAds").onclick=()=>{if(!confirm("ಎಲ್ಲಾ ಜಾಹೀರಾತುಗಳನ್ನು delete ಮಾಡಬೇಕೇ?"))return;ads=[];saveAds();renderAds()};
+
+/* ===== Blogger ↔ Bidire AI Advertisement Sync ===== */
+async function importBloggerAdvertisements(){
+  if(!token) await access();
+  const blogId=$("blogId").value.trim()||blogDefault;
+  const url=`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts?labels=BidireAd&maxResults=100`;
+  const r=await fetch(url,{headers:{Authorization:"Bearer "+token}});
+  const j=await r.json();
+  if(!r.ok) throw Error(j.error?.message||"Blogger Advertisement load failed");
+  const items=j.items||[]; let imported=0;
+  for(const post of items){
+    const holder=document.createElement("div"); holder.innerHTML=post.content||"";
+    const node=holder.querySelector("[data-bidire-ad]"); if(!node) continue;
+    const id=node.getAttribute("data-ad-id")||("blogger_"+post.id);
+    const img=node.querySelector("img");
+    const imageUrl=img?.getAttribute("src")||"";
+    const meta={
+      id, title:(post.title||"").replace(/^\[BIDIRE_AD\]\s*/i,"")||"Advertisement",
+      text:"", business:"", phone:"", contact:node.getAttribute("data-link")||"",
+      size:node.getAttribute("data-size")||"728x240",
+      position:node.getAttribute("data-position")||"top",
+      start:node.getAttribute("data-start")||"", expiry:node.getAttribute("data-expiry")||"",
+      enabled:node.getAttribute("data-enabled")!=="false",
+      imageData:"", imageUrl, websitePostId:post.id, websiteUrl:post.url||"",
+      createdAt:post.published||post.updated||new Date().toISOString()
+    };
+    const idx=ads.findIndex(a=>a.id===id||a.websitePostId===post.id);
+    if(idx>=0) ads[idx]={...ads[idx],...meta,imageData:ads[idx].imageData||""};
+    else {ads.push(meta);imported++;}
+  }
+  saveAds(); renderAds(); return imported;
+}
+
 $("syncAllAds").onclick=async()=>{
  try{
    if(!token) await access();
+   $("adStatus").style.color="#333";
+   $("adStatus").textContent="⏳ Blogger Advertisement + AI Advertisement sync ಆಗುತ್ತಿದೆ...";
+   $("adStatus").style.display="block";
+   const imported=await importBloggerAdvertisements();
    const list=ads.filter(a=>a.imageData||a.imageUrl);
-   if(!list.length){$("adStatus").textContent="Publish ಮಾಡಲು ಜಾಹೀರಾತುಗಳಿಲ್ಲ.";$("adStatus").style.display="block";return;}
-   $("adStatus").style.color="#333";$("adStatus").textContent=`⏳ ${list.length} ಜಾಹೀರಾತುಗಳನ್ನು Websiteಗೆ sync ಮಾಡಲಾಗುತ್ತಿದೆ...`;$("adStatus").style.display="block";
-   let ok=0;for(const a of list){try{await publishAdToWebsite(a);ok++;}catch(e){}}
-   $("adStatus").style.color="#16803c";$("adStatus").textContent=`✓ ${ok}/${list.length} ಜಾಹೀರಾತುಗಳು Websiteಗೆ sync ಆಯಿತು.`;$("adStatus").style.display="block";renderAds();
- }catch(e){$("adStatus").style.color="#b40000";$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block";}
+   let ok=0;
+   for(const a of list){try{await publishAdToWebsite(a);ok++;}catch(e){}}
+   $("adStatus").style.color="#16803c";
+   $("adStatus").textContent=`✓ Sync complete — Bloggerನಿಂದ ${imported} ಹೊಸ ads, AI Editorನ ${ok} ads websiteಗೆ sync.`;
+   $("adStatus").style.display="block"; renderAds();
+ }catch(e){
+   $("adStatus").style.color="#b40000";
+   $("adStatus").textContent="✕ Advertisement sync ಆಗಲಿಲ್ಲ: "+e.message;
+   $("adStatus").style.display="block";
+ }
 };
 $("saveAd").onclick=async()=>{
  const title=$("adTitle").value.trim();
@@ -807,15 +1129,9 @@ $("saveAd").onclick=async()=>{
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
 
 function updateSafeDraftMeta(){
-  const raw=localStorage.getItem("bn_draft");
   const meta=$("safeDraftMeta");
   if(!meta)return;
-  if(!raw){meta.textContent="Draft ಇನ್ನೂ save ಆಗಿಲ್ಲ.";return}
-  try{
-    const d=JSON.parse(raw);
-    const dt=d.savedAt?new Date(d.savedAt).toLocaleString():"";
-    meta.textContent=`✓ Last saved: ${dt}${d.headline?" · "+d.headline:""}`;
-  }catch(e){meta.textContent="✓ Draft saved."}
+  meta.textContent="✓ ಇಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ";
 }
 function saveDraftAutoV6(){
   try{
@@ -843,6 +1159,7 @@ function restoreSafeDraft(){
     $("headline").value=d.headline||"";
     $("sub").value=d.sub||"";
     $("bodyOut").value=d.body||"";
+    if($("category")) $("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
     keyPoints=Array.isArray(d.keyPoints)?d.keyPoints:[];
     englishSummary=d.englishSummary||"";
     photos=Array.isArray(d.photos)?d.photos:[];
@@ -851,7 +1168,7 @@ function restoreSafeDraft(){
     setEditingPost(d.editingPostId||null,d.editingPostUrl||"");
     chatHistory=Array.isArray(d.chatHistory)?d.chatHistory:[];
     renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;
-    renderPhotos();render();renderChat();
+    renderPhotos();render();
     msg("✓ Latest draft restore ಆಯಿತು.");setTimeout(()=>msg(""),1200);
   }catch(e){msg("Draft restore ಆಗಲಿಲ್ಲ: "+e.message)}
 }
@@ -943,70 +1260,207 @@ $("transcribeAudio").onclick=async()=>{
   }catch(e){$("audioStatus").textContent="✕ Audio transcription error: "+e.message}
 };
 
-/* News Chat */
-function renderChat(){
-  const box=$("chatMessages");if(!box)return;
-  box.innerHTML=chatHistory.length?chatHistory.map(m=>`<div class="chat-msg ${m.role==="user"?"chat-user":"chat-ai"}">${esc(m.text)}</div>`).join(""):'<div class="chat-msg chat-system">ನಿಮ್ಮ raw news ಆಧಾರವಾಗಿ ಇಲ್ಲಿ AI ಜೊತೆ ಚರ್ಚಿಸಬಹುದು.</div>';
-  box.scrollTop=box.scrollHeight;
-}
-function chatContext(){
-  return `CURRENT RAW NEWS:
-${$("raw").value.trim()}
-
-CURRENT HEADLINE:
-${$("headline").value.trim()}
-
-CURRENT SUBHEADLINE:
-${$("sub").value.trim()}
-
-CURRENT NEWS BODY:
-${$("bodyOut").value.trim()}
-
-IMPORTANT: User may ask to add/change information. Only apply information explicitly provided by the user in the current raw news or chat. Never invent facts.`;
-}
-async function sendNewsChat(applyChange=false){
-  const userText=$("chatInput").value.trim();if(!userText)return;
-  const apiKey=safeGet("bn_key","");if(!apiKey){$("chatStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
-  chatHistory.push({role:"user",text:userText});renderChat();$("chatInput").value="";
-  saveEmergencyDraft();$("chatStatus").style.display="block";$("chatStatus").textContent="AI ಯೋಚಿಸುತ್ತಿದೆ...";
-  const instruction=applyChange
-    ?`User wants a concrete edit to the current news. Apply ONLY the requested change using ONLY facts already present in the raw news/chat. Return JSON with keys reply,rawNews,headline,subheadline,body,keyPoints,englishSummary. If the requested change needs a new fact not supplied, do not invent it; explain what information is missing in reply and leave affected fields unchanged.`
-    :`Answer the user's request as a news-editor assistant. Help them decide what information to add/change, but do not invent facts. Return JSON with keys reply,rawNews,headline,subheadline,body,keyPoints,englishSummary. Unless the user explicitly asks to apply a change, keep the existing fields unchanged.`;
-  const prompt=`You are Bidire News AI Assistant.\n${instruction}\n${chatContext()}\n\nCHAT HISTORY:\n${chatHistory.map(m=>m.role.toUpperCase()+": "+m.text).join("\n")}\n\nUSER REQUEST:\n${userText}`;
-  try{
-    const {j}=await geminiRequest(apiKey,[{parts:[{text:prompt}]}],{responseMimeType:"application/json"});
-    const t=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").replace(/^```json\s*/,"").replace(/\s*```$/,"");
-    const o=JSON.parse(t);
-    chatHistory.push({role:"assistant",text:o.reply||"ಸಿದ್ಧವಾಗಿದೆ."});
-    if(applyChange){
-      if(typeof o.rawNews==="string"&&o.rawNews) $("raw").value=o.rawNews;
-      if(typeof o.headline==="string"&&o.headline) $("headline").value=o.headline;
-      if(typeof o.subheadline==="string"&&o.subheadline) $("sub").value=o.subheadline;
-      if(typeof o.body==="string"&&o.body) $("bodyOut").value=o.body;
-      if(Array.isArray(o.keyPoints)) keyPoints=o.keyPoints.filter(Boolean);
-      if(typeof o.englishSummary==="string") englishSummary=o.englishSummary;
-      renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;render();scheduleAutosave();saveEmergencyDraft();
-    }
-    renderChat();$("chatStatus").textContent=applyChange?"✓ Change applied.":"✓ ಉತ್ತರ ಸಿದ್ಧವಾಗಿದೆ.";
-  }catch(e){chatHistory.push({role:"assistant",text:"AI error: "+e.message});renderChat();$("chatStatus").textContent="AI error: "+e.message}
-}
-$("chatSend").onclick=()=>sendNewsChat(false);
-$("chatApply").onclick=()=>sendNewsChat(true);
-$("chatClear").onclick=()=>{chatHistory=[];renderChat();saveEmergencyDraft()};
-$("chatInput").addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();sendNewsChat(false)}});
-
 /* Stronger autosave hooks */
 ["raw","headline","sub","bodyOut","englishSummaryEdit"].forEach(id=>{
   $(id)?.addEventListener("input",()=>{clearTimeout(draftTimer);draftTimer=setTimeout(saveEmergencyDraft,350)});
 });
 try{
   updateSafeDraftMeta();
-  renderChat();
   $("status").style.display="none";
 }catch(e){
   const el=$("status");
   if(el){el.textContent="⚠️ Editor startup error: "+e.message;el.style.display="block";}
 }
 
+
+/* ===== Modern UI V2 navigation ===== */
+(function(){
+  const nav=document.getElementById("sectionNav");
+  if(!nav)return;
+  const buttons=[...nav.querySelectorAll("[data-target]")];
+  function go(id){
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(el.classList.contains("hide")) el.classList.remove("hide");
+    el.scrollIntoView({behavior:"smooth",block:"start"});
+    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===id));
+  }
+  buttons.forEach(b=>b.addEventListener("click",()=>go(b.dataset.target)));
+  document.querySelectorAll(".subtool-toggle").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const box=btn.closest(".subtool");
+      box.classList.toggle("open");
+    });
+  });
+  const ids=buttons.map(b=>b.dataset.target);
+  const obs=new IntersectionObserver(entries=>{
+    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(!visible)return;
+    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===visible.target.id));
+  },{rootMargin:"-95px 0px -55% 0px",threshold:[.1,.3,.6]});
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+})();
+
+
+/* V6 compact edit accordions */
+(function(){
+  function bindToggle(btnId,boxId){
+    const btn=$(btnId),box=$(boxId); if(!btn||!box)return;
+    btn.addEventListener("click",e=>{ if(e.target.closest("input,label")) return; box.classList.toggle("open"); });
+  }
+  bindToggle("keyPointsToggle","keyPointsBox");
+  bindToggle("englishToggle","englishBox");
+  const jump=$("editDraftJump"); if(jump)jump.onclick=()=>$("restoreSafeDraft")?.click();
+})();
+
+/* V3 compact top controls */
+(function(){
+  const s=document.getElementById("settingsBtn");
+  if(s){
+    s.title="Settings";
+    s.setAttribute("aria-label","Settings");
+  }
+  const t=document.getElementById("themeBtn");
+  if(t){
+    t.title="Dark / Light mode";
+    t.setAttribute("aria-label","Dark / Light mode");
+  }
+})();
+
+
+/* ===== V5 Clean Raw News Chat ===== */
+(function(){
+  const raw=document.getElementById("raw");
+  const input=document.getElementById("rawChatInput");
+  const log=document.getElementById("rawChatLog");
+  const send=document.getElementById("rawChatSend");
+  const clear=document.getElementById("rawChatClear");
+  const write=document.getElementById("rawAiWrite");
+  const st=document.getElementById("rawChatStatus");
+  if(!raw||!input||!log||!send||!write)return;
+
+  function bubble(text,who){
+    const d=document.createElement("div");
+    d.className="chat-bubble "+who;
+    d.textContent=text;
+    log.appendChild(d);
+    log.scrollTop=log.scrollHeight;
+  }
+  function setStatus(t){if(st)st.textContent=t||""}
+
+  async function chat(){
+    const q=input.value.trim();
+    if(!q)return;
+    const news=raw.value.trim();
+    if(!news){setStatus("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
+    bubble(q,"user");
+    input.value="";
+    setStatus("AI ಉತ್ತರಿಸುತ್ತಿದೆ...");
+    const key=safeGet("bn_key","");
+    if(!key){setStatus("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
+    const promptText=`You are the Bidire News AI Assistant.
+Use ONLY the supplied raw news and the user's current request. Never invent facts.
+Help the user discuss, clarify, reorganize or correct the raw news. If the user asks for a revised version, return the revised raw news only.
+USER REQUEST:
+${q}
+RAW NEWS:
+${news}`;
+    try{
+      const {j}=await geminiRequest(key,[{parts:[{text:promptText}]}],{});
+      const ans=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim();
+      if(ans)bubble(ans,"ai");
+      setStatus("");
+      saveEmergencyDraft();
+    }catch(e){setStatus("AI error: "+e.message)}
+  }
+
+  send.onclick=chat;
+  clear.onclick=()=>{log.innerHTML="";input.value="";setStatus("")};
+  input.addEventListener("keydown",e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+      e.preventDefault();chat();
+    }
+  });
+
+  write.onclick=()=>{
+    if(!raw.value.trim()){setStatus("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
+    const p=promptFor("Create the complete final news report from the raw news. Return headline, subheadline, body, keyPoints and englishSummary.");
+    if(!p)return;
+    gemini(p).then(()=>{
+      const edit=document.getElementById("editSection");
+      if(edit)edit.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+  };
+})();
+
+
+/* ===== V7 Edit AI Chat ===== */
+(function(){
+  const copyBtn=document.getElementById("copyAllEdit");
+  const headline=document.getElementById("headline"), sub=document.getElementById("sub"), body=document.getElementById("bodyOut");
+  const copyStatus=document.getElementById("publishStatus");
+  function editCopyText(){
+    return [headline?.value?.trim()||"",sub?.value?.trim()||"",body?.value?.trim()||""] .filter(Boolean).join("\n\n");
+  }
+  async function copyAll(){
+    const txt=editCopyText();
+    if(!txt){ if(copyStatus){copyStatus.textContent="Copy ಮಾಡಲು ಸುದ್ದಿ ಇಲ್ಲ.";copyStatus.style.display="block";setTimeout(()=>copyStatus.style.display="none",1200)} return; }
+    try{
+      if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(txt);
+      else { const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove(); }
+      if(copyStatus){copyStatus.textContent="✓ Headline + Subheadline + News Body copied";copyStatus.style.display="block";setTimeout(()=>copyStatus.style.display="none",1400)}
+    }catch(e){ if(copyStatus){copyStatus.textContent="Copy ಆಗಲಿಲ್ಲ: "+e.message;copyStatus.style.display="block";} }
+  }
+  if(copyBtn) copyBtn.onclick=copyAll;
+
+  const log=document.getElementById("editChatLog"), input=document.getElementById("editChatInput"), send=document.getElementById("editChatSend"), apply=document.getElementById("editChatApply"), clear=document.getElementById("editChatClear"), status=document.getElementById("editChatStatus"), box=document.getElementById("editAiChat");
+  if(!log||!input||!send||!apply)return;
+  let pendingEdit=null;
+  function bubble(t,who){const d=document.createElement("div");d.className="edit-chat-bubble "+who;d.textContent=t;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+  function setStatus(t){if(status)status.textContent=t||""}
+  function currentEdit(){
+    return {headline:headline?.value||"",subheadline:sub?.value||"",body:body?.value||"",keyPoints:Array.isArray(window.keyPoints)?window.keyPoints:[],englishSummary:window.englishSummary||"",category:document.getElementById("category")?.value||""};
+  }
+  async function askEditAI(){
+    const q=input.value.trim(); if(!q)return;
+    const data=currentEdit();
+    if(!data.headline&&!data.body){setStatus("ಮೊದಲು ಸುದ್ದಿ ಬರೆಯಿರಿ.");return;}
+    bubble(q,"user"); input.value=""; setStatus("AI ಬದಲಾವಣೆ ತಯಾರಿಸುತ್ತಿದೆ..."); send.disabled=true; apply.disabled=true; pendingEdit=null;
+    const key=safeGet("bn_key",""); if(!key){setStatus("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");send.disabled=false;return;}
+    const promptText=`You are the Bidire News AI Editor.
+Use ONLY the current editor content and the user's request. Never invent facts.
+Modify only what the user asks. Preserve all supplied names and facts.
+Return ONLY valid JSON with exactly these keys: headline, subheadline, body, keyPoints, englishSummary, category.
+If a field does not need a change, return its current value. keyPoints must be an array of strings.
+USER REQUEST:
+${q}
+CURRENT EDITOR CONTENT:
+${JSON.stringify(data)}`;
+    try{
+      const {j}=await geminiRequest(key,[{parts:[{text:promptText}]}],{responseMimeType:"application/json"});
+      let raw=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^```json\s*/i,"").replace(/```$/i,"").trim();
+      const parsed=JSON.parse(raw);
+      pendingEdit=parsed;
+      bubble("ಬದಲಾವಣೆ ಸಿದ್ಧವಾಗಿದೆ. Apply Change ಒತ್ತಿದರೆ ಸಂಪಾದನೆಗೆ ಅನ್ವಯವಾಗುತ್ತದೆ.","ai");
+      box.classList.add("has-answer"); apply.disabled=false; setStatus("");
+    }catch(e){setStatus("AI error: "+e.message);}
+    finally{send.disabled=false;}
+  }
+  function applyEdit(){
+    if(!pendingEdit)return;
+    if(headline)headline.value=pendingEdit.headline??headline.value;
+    if(sub)sub.value=pendingEdit.subheadline??sub.value;
+    if(body)body.value=pendingEdit.body??body.value;
+    if(document.getElementById("category")){ const allowed=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"]; document.getElementById("category").value=allowed.includes(pendingEdit.category)?pendingEdit.category:"ಮೂಡುಬಿದಿರೆ"; }
+    if(Array.isArray(pendingEdit.keyPoints)){ window.keyPoints=pendingEdit.keyPoints; if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor(); }
+    if(typeof pendingEdit.englishSummary==='string'){ window.englishSummary=pendingEdit.englishSummary; const es=document.getElementById("englishSummaryEdit"); if(es)es.value=window.englishSummary; }
+    if(typeof render==='function')render();
+    if(typeof saveDraftAutoV6==='function')saveDraftAutoV6(); else if(typeof saveDraftAuto==='function')saveDraftAuto();
+    bubble("✓ ಬದಲಾವಣೆಗಳು ಸುದ್ದಿ ಸಂಪಾದನೆಗೆ ಅನ್ವಯಿಸಲಾಗಿದೆ.","ai"); pendingEdit=null; apply.disabled=true; setStatus("✓ Updated"); setTimeout(()=>setStatus(""),1000);
+  }
+  send.onclick=askEditAI; apply.onclick=applyEdit;
+  clear.onclick=()=>{log.innerHTML="";input.value="";pendingEdit=null;apply.disabled=true;setStatus("");box.classList.remove("has-answer")};
+  input.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();askEditAI();}});
+})();
 </script>
 </body></html>
