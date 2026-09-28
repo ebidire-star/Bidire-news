@@ -353,7 +353,21 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 .social-share-box{margin:8px 0 12px;padding:8px 9px;border:1px solid #ddd;border-radius:9px;background:#fafafa;font-size:11px}
 .social-share-title{font-weight:800;color:#333}.social-share-actions{display:flex;gap:5px;margin-top:6px}
 .social-share-actions a{flex:1;text-align:center;text-decoration:none;padding:6px 5px;border-radius:6px;background:#111;color:#fff;font-weight:700;font-size:10px}
-.social-share-box.hide{display:none}</style>
+.social-share-box.hide{display:none}
+/* ===== V13 Settings Button Fix ===== */
+#settingsBtn{
+  position:relative!important;
+  z-index:20!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+#settings{
+  position:relative;
+  z-index:10;
+}
+
+</style>
 </head>
 <body>
 <header>
@@ -567,7 +581,37 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 </main>
 
 <script>
+
 const $=id=>document.getElementById(id);
+
+function openSettingsPanel(){
+  const panel=$("settings");
+  if(!panel)return;
+  panel.classList.toggle("hide");
+  const isOpen=!panel.classList.contains("hide");
+  const key=$("apiKey"), model=$("model"), client=$("clientId"), blog=$("blogId"), label=$("blogLabel");
+  if(key)key.value=safeGet("bn_key","");
+  if(model)model.value=cleanModel(safeGet("bn_model",""));
+  if(client)client.value=safeGet("bn_client","");
+  if(blog)blog.value=safeGet("bn_blog","")||blogDefault;
+  if(label)label.value=safeGet("bn_label","");
+  const btn=$("settingsBtn");
+  if(btn){
+    btn.setAttribute("aria-expanded",String(isOpen));
+    btn.textContent=isOpen?"✕ Close Settings":"⚙ Settings";
+  }
+  if(isOpen)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),50);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const btn=$("settingsBtn");
+  if(btn){
+    btn.type="button";
+    btn.addEventListener("click",openSettingsPanel);
+    btn.setAttribute("aria-expanded","false");
+  }
+});
+
 function safeGet(key, fallback=""){
   try { return localStorage.getItem(key) ?? fallback; } catch(e) { return fallback; }
 }
@@ -1133,15 +1177,16 @@ async function loadPostForEdit(id){
 
 $("copy").onclick=()=>navigator.clipboard.writeText($("headline").value+"\n\n"+$("sub").value+"\n\n"+$("bodyOut").value);
 $("save").onclick=()=>{saveDraftAuto();msg("Draft saved.");};
-$("settingsBtn").onclick=()=>{$("settings").classList.toggle("hide");$("apiKey").value=safeGet("bn_key","")||"";$("model").value=cleanModel(safeGet("bn_model",""));$("clientId").value=safeGet("bn_client","")||"";$("blogId").value=safeGet("bn_blog","")||blogDefault;$("blogLabel").value=safeGet("bn_label","")||"";if(!$("settings").classList.contains("hide"))$("settings").scrollIntoView({behavior:"smooth"})};
+
 $("saveSettings").onclick=()=>{
- safeSet("bn_key",$("apiKey").value.trim());
- safeSet("bn_model",cleanModel($("model").value));
- safeSet("bn_client",$("clientId").value.trim());
- safeSet("bn_blog",$("blogId").value.trim()||blogDefault);
- safeSet("bn_label",$("blogLabel").value.trim());
- setAIModelStatus(cleanModel($("model").value),"Primary selected; automatic fallback enabled");
- $("settingsStatus").textContent="✓ Settings saved.";
+ const key=$("apiKey"),model=$("model"),client=$("clientId"),blog=$("blogId"),label=$("blogLabel");
+ safeSet("bn_key",key?.value.trim()||"");
+ safeSet("bn_model",cleanModel(model?.value||""));
+ safeSet("bn_client",client?.value.trim()||"");
+ safeSet("bn_blog",blog?.value.trim()||blogDefault);
+ safeSet("bn_label",label?.value.trim()||"");
+ setAIModelStatus(cleanModel(model?.value||""),"Primary selected; automatic fallback enabled");
+ if($("settingsStatus"))$("settingsStatus").textContent="✓ Settings saved.";
 };
 $("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";if($("category"))$("category").value="ಮೂಡುಬಿದಿರೆ";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");autoLabels=[];syncEditors();renderAutoLabelsEditor();renderPhotos();render();setupSocialShares("");localStorage.removeItem("bn_draft");undoStack=[];redoStack=[];pushUndoSnapshot();window.scrollTo({top:0,behavior:"smooth"})};
 let d=safeJsonGet("bn_draft",null);
