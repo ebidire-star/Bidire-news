@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0d1117">
 <link rel="manifest" href="manifest.webmanifest">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<title>Bidire News AI Editor</title>
+<title>Bidire News AI Editor — Advertisement Sync</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
 header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;z-index:5}
@@ -221,13 +221,13 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
       <label>ವಿಳಾಸ / Website / Link</label><input id="adContact">
       <div class="row"><div><label>Start Date</label><input id="adStart" type="date"></div><div><label>Expiry Date</label><input id="adExpiry" type="date"></div></div>
       <label>Advertisement Image</label><input id="adImage" type="file" accept="image/*">
-      <div class="small">Websiteನಲ್ಲಿ ತೋರಿಸಲು Advertisement Image ಕಡ್ಡಾಯ. Text/ವಿವರಗಳು AI Editorನಲ್ಲಿ ನಿರ್ವಹಣೆಗೆ ಮಾತ್ರ; websiteನಲ್ಲಿ image ಮಾತ್ರ ಕಾಣಿಸುತ್ತದೆ.</div>
+      <div class="small">NEWS TOPಗೆ 728×240, SIDEBARಗೆ 300×250, NEWS MIDDLEಗೆ 728×120 ಬಳಸಬಹುದು. Websiteನಲ್ಲಿ ತೋರಿಸಲು Advertisement Image ಕಡ್ಡಾಯ. Google/Blogger connected ಇದ್ದರೆ Save/Update ಮಾಡಿದ ತಕ್ಷಣ Websiteಗೆ auto-sync ಆಗುತ್ತದೆ.</div>
       <div class="actions"><button type="button" class="primary" id="saveAd">💾 Save Advertisement</button><button type="button" class="black" id="publishAdWebsite">🌐 Publish / Sync to Website</button><button type="button" class="light" id="previewAdBtn">👁 Preview</button><button type="button" class="light" id="clearAd">Clear</button></div>
       <div id="adStatus" class="status"></div><div id="adPreview" class="ad-preview hide"></div>
     </div>
     <div id="adManagePanel" class="ad-panel hide">
       <div class="small">Expiry date ಮುಗಿದ ಜಾಹೀರಾತು automatic ಆಗಿ Expired ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ.</div>
-      <div class="actions"><button type="button" class="black" id="refreshAds">↻ Refresh Ads</button><button type="button" class="light" id="clearAds">Delete All Ads</button></div>
+      <div class="actions"><button type="button" class="black" id="refreshAds">↻ Refresh Ads</button><button type="button" class="primary" id="syncAllAds">🌐 Sync All Ads</button><button type="button" class="light" id="clearAds">Delete All Ads</button></div>
       <div id="adList" class="ad-list"></div>
     </div>
   </div>
@@ -661,7 +661,7 @@ async function publishAdToWebsite(ad){
     });
   }
   j=await r.json();
-  if(!r.ok) throw Error(j.error?.message||"Blogger Advertisement publish failed");
+  if(!r.ok) throw Error((j.error&&j.error.message)||"Blogger Advertisement publish failed");
   ad.websitePostId=j.id;
   ad.imageUrl=imageUrl;
   ad.websiteUrl=j.url||"";
@@ -682,16 +682,45 @@ function renderAdPreview(){
 function readAdImage(file){return new Promise((resolve,reject)=>{if(!file)return resolve("");const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
 function saveAds(){ if(!safeSet("bn_ads",JSON.stringify(ads))){ $("adStatus").textContent="⚠️ Advertisement save failed — storage full."; $("adStatus").style.display="block"; } }
 function renderAds(){
- const box=$("adList");if(!ads.length){box.innerHTML='<div class="small">ಯಾವುದೇ ಜಾಹೀರಾತು ಇಲ್ಲ.</div>';return}
- box.innerHTML=ads.slice().sort((a,b)=>String(a.expiry||"9999").localeCompare(String(b.expiry||"9999"))).map(a=>`<div class="ad-card"><div class="ad-card-title">${adEsc(a.title||"Untitled Advertisement")}</div><div class="ad-meta">${adEsc(a.size)} · ${adEsc(a.position)} · ${a.expiry?"Expiry: "+adEsc(a.expiry):"No expiry"}</div><span class="ad-status ${adIsActive(a)?"active":"expired"}">${adIsActive(a)?"ACTIVE":"EXPIRED / INACTIVE"}</span>${a.imageData?`<img src="${a.imageData}" style="max-width:180px;max-height:70px;object-fit:contain;display:block;margin-top:7px">`:""}<div class="ad-actions"><button type="button" class="light" data-ad-edit="${adEsc(a.id)}">✏ Edit</button><button type="button" class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?"Enable":"Disable"}</button><button type="button" class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button></div></div>`).join("");
+ const box=$("adList");
+ if(!ads.length){box.innerHTML='<div class="small">ಯಾವುದೇ ಜಾಹೀರಾತು ಇಲ್ಲ.</div>';return}
+ box.innerHTML=ads.slice().sort((a,b)=>String(b.createdAt||b.id||"").localeCompare(String(a.createdAt||a.id||""))).map(a=>{
+   const active=adIsActive(a);
+   const syncLabel=a.websitePostId?"↻ Sync Website":"🌐 Publish Website";
+   const syncClass=a.websitePostId?"black":"primary";
+   return `<div class="ad-card">
+   <div class="ad-card-title">${adEsc(a.title||"Untitled Advertisement")}</div>
+   <div class="ad-meta">${adEsc(a.size)} · ${adEsc(a.position)} · ${a.expiry?"Expiry: "+adEsc(a.expiry):"No expiry"}</div>
+   <span class="ad-status ${active?"active":"expired"}">${active?"ACTIVE":"EXPIRED / INACTIVE"}</span>
+   ${a.websitePostId?`<span class="ad-status active" style="margin-left:4px">WEBSITE SYNCED</span>`:""}
+   ${a.imageData?`<img src="${a.imageData}" style="max-width:180px;max-height:70px;object-fit:contain;display:block;margin-top:7px">`:""}
+   <div class="ad-actions">
+     <button type="button" class="${syncClass}" data-ad-publish="${adEsc(a.id)}">${syncLabel}</button>
+     <button type="button" class="light" data-ad-edit="${adEsc(a.id)}">✏ Edit</button>
+     <button type="button" class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?"Enable":"Disable"}</button>
+     <button type="button" class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button>
+   </div></div>`;
+ }).join("");
+ box.querySelectorAll("[data-ad-publish]").forEach(b=>b.onclick=async()=>{
+   const a=ads.find(x=>x.id===b.dataset.adPublish); if(!a)return;
+   b.disabled=true; const old=b.textContent; b.textContent="⏳ Syncing...";
+   try{ await publishAdToWebsite(a); }
+   catch(e){ $("adStatus").style.color="#b40000"; $("adStatus").textContent="✕ Website sync ಆಗಲಿಲ್ಲ: "+e.message; $("adStatus").style.display="block"; }
+   finally{ b.disabled=false; b.textContent=old; renderAds(); }
+ });
  box.querySelectorAll("[data-ad-edit]").forEach(b=>b.onclick=()=>editAd(b.dataset.adEdit));
- box.querySelectorAll("[data-ad-toggle]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adToggle);if(!a)return;a.enabled=a.enabled===false;saveAds();renderAds()});
+ box.querySelectorAll("[data-ad-toggle]").forEach(b=>b.onclick=async()=>{
+   const a=ads.find(x=>x.id===b.dataset.adToggle);if(!a)return;
+   a.enabled=a.enabled===false;saveAds();renderAds();
+   // Keep the Blogger copy in sync when possible.
+   if(a.websitePostId && token){try{await publishAdToWebsite(a)}catch(e){}}
+ });
  box.querySelectorAll("[data-ad-delete]").forEach(b=>b.onclick=()=>{if(!confirm("ಈ ಜಾಹೀರಾತನ್ನು delete ಮಾಡಬೇಕೇ?"))return;ads=ads.filter(x=>x.id!==b.dataset.adDelete);saveAds();renderAds()});
 }
 function editAd(id){
  const a=ads.find(x=>x.id===id);if(!a)return;editingAdId=id;
  $("adTitle").value=a.title||"";$("adText").value=a.text||"";$("adBusiness").value=a.business||"";$("adPhone").value=a.phone||"";$("adContact").value=a.contact||"";
- $("adSize").value=a.size||"728x120";$("adPosition").value=a.position||"top";$("adStart").value=a.start||"";$("adExpiry").value=a.expiry||"";
+ $("adSize").value=a.size||"728x240";$("adPosition").value=a.position||"top";$("adStart").value=a.start||"";$("adExpiry").value=a.expiry||"";
  $("saveAd").textContent="🔄 Update Advertisement";$("adCreateTab").click();renderAdPreview();window.scrollTo({top:$("adsPanel").offsetTop-60,behavior:"smooth"})
 }
 $("adsBtn").onclick=()=>{$("adsPanel").classList.toggle("hide");if(!$("adsPanel").classList.contains("hide"))renderAds()};
@@ -717,14 +746,62 @@ $("publishAdWebsite").onclick=async()=>{
   }
 };
 $("clearAds").onclick=()=>{if(!confirm("ಎಲ್ಲಾ ಜಾಹೀರಾತುಗಳನ್ನು delete ಮಾಡಬೇಕೇ?"))return;ads=[];saveAds();renderAds()};
+$("syncAllAds").onclick=async()=>{
+ try{
+   if(!token) await access();
+   const list=ads.filter(a=>a.imageData||a.imageUrl);
+   if(!list.length){$("adStatus").textContent="Publish ಮಾಡಲು ಜಾಹೀರಾತುಗಳಿಲ್ಲ.";$("adStatus").style.display="block";return;}
+   $("adStatus").style.color="#333";$("adStatus").textContent=`⏳ ${list.length} ಜಾಹೀರಾತುಗಳನ್ನು Websiteಗೆ sync ಮಾಡಲಾಗುತ್ತಿದೆ...`;$("adStatus").style.display="block";
+   let ok=0;for(const a of list){try{await publishAdToWebsite(a);ok++;}catch(e){}}
+   $("adStatus").style.color="#16803c";$("adStatus").textContent=`✓ ${ok}/${list.length} ಜಾಹೀರಾತುಗಳು Websiteಗೆ sync ಆಯಿತು.`;$("adStatus").style.display="block";renderAds();
+ }catch(e){$("adStatus").style.color="#b40000";$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block";}
+};
 $("saveAd").onclick=async()=>{
- const title=$("adTitle").value.trim();if(!title){$("adStatus").textContent="ಜಾಹೀರಾತಿನ ಶೀರ್ಷಿಕೆ ಹಾಕಿ.";$("adStatus").style.display="block";return}
+ const title=$("adTitle").value.trim();
+ if(!title){$("adStatus").textContent="ಜಾಹೀರಾತಿನ ಶೀರ್ಷಿಕೆ ಹಾಕಿ.";$("adStatus").style.display="block";return}
  const existing=editingAdId?ads.find(x=>x.id===editingAdId):null,file=$("adImage").files?.[0];
  const wasEditing=!!editingAdId;
- const ad={id:editingAdId||("ad_"+Date.now()+"_"+Math.random().toString(16).slice(2)),title,text:$("adText").value.trim(),business:$("adBusiness").value.trim(),phone:$("adPhone").value.trim(),contact:$("adContact").value.trim(),size:$("adSize").value,position:$("adPosition").value,start:$("adStart").value,expiry:$("adExpiry").value,imageData:file?await readAdImage(file):(existing?.imageData||""),enabled:existing?.enabled!==false,websitePostId:existing?.websitePostId||"",imageUrl:existing?.imageUrl||""};
- const idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);editingAdId=ad.id;saveAds();renderAds();$("adStatus").textContent=wasEditing?"✓ Advertisement updated.":"✓ Advertisement saved. ಈಗ Publish / Sync to Website ಒತ್ತಿ.";$("adStatus").style.display="block";
+ const ad={
+   id:editingAdId||("ad_"+Date.now()+"_"+Math.random().toString(16).slice(2)),
+   title,
+   text:$("adText").value.trim(),
+   business:$("adBusiness").value.trim(),
+   phone:$("adPhone").value.trim(),
+   contact:$("adContact").value.trim(),
+   size:$("adSize").value||"728x240",
+   position:$("adPosition").value||"top",
+   start:$("adStart").value,
+   expiry:$("adExpiry").value,
+   imageData:file?await readAdImage(file):(existing?.imageData||""),
+   enabled:existing?.enabled!==false,
+   websitePostId:existing?.websitePostId||"",
+   imageUrl:existing?.imageUrl||"",
+   websiteUrl:existing?.websiteUrl||"",
+   createdAt:existing?.createdAt||new Date().toISOString()
+ };
+ if(!ad.imageData && !ad.imageUrl){
+   $("adStatus").textContent="Websiteಗೆ publish ಮಾಡಲು Advertisement Image upload ಮಾಡಿ.";
+   $("adStatus").style.display="block";return;
+ }
+ const idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);
+ editingAdId=ad.id;saveAds();renderAds();
+ $("adStatus").style.color="#16803c";
+ $("adStatus").textContent=wasEditing?"✓ Advertisement updated.":"✓ Advertisement saved.";
+ $("adStatus").style.display="block";
+ // If Google/Blogger is already connected, save + sync in one click.
+ if(token){
+   try{
+     $("adStatus").textContent="⏳ Advertisement saved. Websiteಗೆ sync ಆಗುತ್ತಿದೆ...";
+     await publishAdToWebsite(ad);
+   }catch(e){
+     $("adStatus").style.color="#b40000";
+     $("adStatus").textContent="✓ Advertisement saved, ಆದರೆ Website sync ಆಗಲಿಲ್ಲ: "+e.message+". ನಂತರ Publish / Sync ಒತ್ತಿ.";
+     $("adStatus").style.display="block";
+   }
+ }else{
+   $("adStatus").textContent="✓ Advertisement saved. Websiteಗೆ ಹಾಕಲು Google / Blogger Connect ಮಾಡಿ, ನಂತರ 🌐 Publish / Sync ಒತ್ತಿ.";
+ }
 };
-
 
 /* ================= Bidire V6: Audio + Chat + Safe Draft ================= */
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
