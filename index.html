@@ -86,9 +86,9 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 <header>
   <div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div>
   <div class="actions" style="margin:0">
-    <button id="newBtn" class="primary">＋ New Post</button>
-    <button id="themeBtn" class="light">☀️ Light</button>
-    <button id="allPostsBtn" class="light">📰 All Posts</button><button id="adsBtn" class="light">📢 Advertisement</button><button id="settingsBtn" class="black">⚙ Settings</button>
+    <button type="button" id="newBtn" class="primary">＋ New Post</button>
+    <button type="button" id="themeBtn" class="light">☀️ Light</button>
+    <button type="button" id="allPostsBtn" class="light">📰 All Posts</button><button type="button" id="adsBtn" class="light">📢 Advertisement</button><button type="button" id="settingsBtn" class="black">⚙ Settings</button>
   </div>
 </header>
 
@@ -110,15 +110,15 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
   <strong style="font-size:13px">🎙️ Audio to Text / ಧ್ವನಿಯಿಂದ ಪಠ್ಯ</strong>
   <div class="small">ನೇರವಾಗಿ audio record ಮಾಡಬಹುದು ಅಥವಾ ನಿಮ್ಮ deviceನಲ್ಲಿ ಇರುವ audio file upload ಮಾಡಬಹುದು.</div>
   <div class="audio-actions">
-    <button class="primary" id="recordAudio">🎙️ Start Recording</button>
-    <button class="light" id="stopAudio" disabled>⏹ Stop</button>
+    <button type="button" class="primary" id="recordAudio">🎙️ Start Recording</button>
+    <button type="button" class="light" id="stopAudio" disabled>⏹ Stop</button>
   </div>
   <input class="audio-file" id="audioInput" type="file" accept="audio/*">
   <div id="audioStatus" class="small"></div>
   <audio id="audioPreview" class="hide" controls style="width:100%;margin-top:8px"></audio>
   <div class="audio-actions">
-    <button class="black" id="transcribeAudio">✨ Audio → Text</button>
-    <button class="light" id="clearAudio">Clear Audio</button>
+    <button type="button" class="black" id="transcribeAudio">✨ Audio → Text</button>
+    <button type="button" class="light" id="clearAudio">Clear Audio</button>
   </div>
 </div>
 
@@ -127,7 +127,7 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 <div><label>ಶೈಲಿ</label><select id="style"><option value="normal">Bidire News</option><option value="vijayavani">ವಿಜಯವಾಣಿ ಶೈಲಿ</option></select></div>
 </div>
 <div class="actions">
-<button class="primary" id="generate">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ</button><button class="light" id="shorten">✂ ಸಂಕ್ಷಿಪ್ತ</button><button class="light" id="grammar">✓ Grammar</button><button class="light" id="translate">English</button>
+<button type="button" class="primary" id="generate">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ</button><button type="button" class="light" id="shorten">✂ ಸಂಕ್ಷಿಪ್ತ</button><button type="button" class="light" id="grammar">✓ Grammar</button><button type="button" class="light" id="translate">English</button>
 </div>
 <div id="status" class="status"></div>
 </div></section>
@@ -144,8 +144,8 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
   </div>
   <div id="pointsEditor" class="points-editor"></div>
   <div class="tool-row">
-    <button class="light" id="addPoint">＋ Add Point</button>
-    <button class="light" id="aiPoints">✨ AI Generate</button>
+    <button type="button" class="light" id="addPoint">＋ Add Point</button>
+    <button type="button" class="light" id="aiPoints">✨ AI Generate</button>
   </div>
 </div>
 
@@ -155,11 +155,11 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
     <label style="margin:0"><input id="englishEnabled" type="checkbox" checked> Enable</label>
   </div>
   <textarea id="englishSummaryEdit" style="min-height:100px" placeholder="English summary..."></textarea>
-  <div class="tool-row"><button class="light" id="aiEnglish">✨ AI Generate</button></div>
+  <div class="tool-row"><button type="button" class="light" id="aiEnglish">✨ AI Generate</button></div>
 </div>
 
 <div class="autosave" id="autosaveStatus"></div>
-<div class="actions"><button class="primary" id="publish">🚀 Publish to Blogger</button><button class="black" id="copy">📋 Copy to Blogger</button><button class="light" id="save">💾 Save Draft</button></div>
+<div class="actions"><button type="button" class="primary" id="publish">🚀 Publish to Blogger</button><button type="button" class="black" id="copy">📋 Copy to Blogger</button><button type="button" class="light" id="save">💾 Save Draft</button></div>
 <div id="publishStatus" class="status"></div>
 </div></section>
 
@@ -172,9 +172,9 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
     </div>
     <textarea id="chatInput" class="chat-input" placeholder="ಉದಾ: 'ಈ ಸುದ್ದಿಗೆ ನಾನು ನೀಡಿದ ಮಾಹಿತಿಯಲ್ಲಿರುವ ಕಾರ್ಯಕ್ರಮದ ಸಮಯವನ್ನು ಸೇರಿಸಿ' ಅಥವಾ 'ಈ paragraph ಅನ್ನು ಇನ್ನಷ್ಟು ಸ್ಪಷ್ಟವಾಗಿ ಬದಲಾಯಿಸಿ'"></textarea>
     <div class="chat-actions">
-      <button class="primary" id="chatSend">💬 Send</button>
-      <button class="light" id="chatApply">↙ Apply AI Change</button>
-      <button class="light" id="chatClear">Clear Chat</button>
+      <button type="button" class="primary" id="chatSend">💬 Send</button>
+      <button type="button" class="light" id="chatApply">↙ Apply AI Change</button>
+      <button type="button" class="light" id="chatClear">Clear Chat</button>
     </div>
     <div id="chatStatus" class="status"></div>
   </div>
@@ -187,8 +187,8 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
       <div class="safe-draft-title">✓ ನಿಮ್ಮ ಕೆಲಸ automatic ಆಗಿ ಉಳಿಸಲಾಗುತ್ತಿದೆ</div>
       <div class="safe-draft-meta" id="safeDraftMeta">Draft ಇನ್ನೂ save ಆಗಿಲ್ಲ.</div>
       <div class="safe-draft-actions">
-        <button class="black" id="restoreSafeDraft">↩ Restore Latest Draft</button>
-        <button class="light" id="deleteSafeDraft">Delete Saved Draft</button>
+        <button type="button" class="black" id="restoreSafeDraft">↩ Restore Latest Draft</button>
+        <button type="button" class="light" id="deleteSafeDraft">Delete Saved Draft</button>
       </div>
     </div>
   </div>
@@ -207,8 +207,8 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
   <div class="bar">📢 Bidire Advertisement Manager</div>
   <div class="body">
     <div class="ad-tabs">
-      <button class="ad-tab active" id="adCreateTab">➕ Create Ad</button>
-      <button class="ad-tab" id="adManageTab">📋 Manage Ads</button>
+      <button type="button" class="ad-tab active" id="adCreateTab">➕ Create Ad</button>
+      <button type="button" class="ad-tab" id="adManageTab">📋 Manage Ads</button>
     </div>
     <div id="adCreatePanel" class="ad-panel">
       <label>ಜಾಹೀರಾತಿನ ಶೀರ್ಷಿಕೆ</label><input id="adTitle" placeholder="ಉದಾ: ಹೊಸ ಅಂಗಡಿ ಉದ್ಘಾಟನೆ">
@@ -222,12 +222,12 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
       <div class="row"><div><label>Start Date</label><input id="adStart" type="date"></div><div><label>Expiry Date</label><input id="adExpiry" type="date"></div></div>
       <label>Advertisement Image</label><input id="adImage" type="file" accept="image/*">
       <div class="small">ಚಿತ್ರವಿಲ್ಲದಿದ್ದರೆ text advertisement ಆಗಿಯೂ save ಮಾಡಬಹುದು.</div>
-      <div class="actions"><button class="primary" id="saveAd">💾 Save Advertisement</button><button class="light" id="previewAdBtn">👁 Preview</button><button class="light" id="clearAd">Clear</button></div>
+      <div class="actions"><button type="button" class="primary" id="saveAd">💾 Save Advertisement</button><button type="button" class="light" id="previewAdBtn">👁 Preview</button><button type="button" class="light" id="clearAd">Clear</button></div>
       <div id="adStatus" class="status"></div><div id="adPreview" class="ad-preview hide"></div>
     </div>
     <div id="adManagePanel" class="ad-panel hide">
       <div class="small">Expiry date ಮುಗಿದ ಜಾಹೀರಾತು automatic ಆಗಿ Expired ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ.</div>
-      <div class="actions"><button class="black" id="refreshAds">↻ Refresh Ads</button><button class="light" id="clearAds">Delete All Ads</button></div>
+      <div class="actions"><button type="button" class="black" id="refreshAds">↻ Refresh Ads</button><button type="button" class="light" id="clearAds">Delete All Ads</button></div>
       <div id="adList" class="ad-list"></div>
     </div>
   </div>
@@ -240,7 +240,7 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 <label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com">
 <label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619">
 <label>Default Blogger Label</label><input id="blogLabel">
-<div class="actions"><button class="primary" id="saveSettings">Save Settings</button><button class="black" id="connect">🔐 Connect Google / Blogger</button><button class="light" id="disconnect">Disconnect</button></div>
+<div class="actions"><button type="button" class="primary" id="saveSettings">Save Settings</button><button type="button" class="black" id="connect">🔐 Connect Google / Blogger</button><button type="button" class="light" id="disconnect">Disconnect</button></div>
 <div id="settingsStatus" class="small"></div><div id="bloggerStatus" class="small"></div>
 </div></section>
 
@@ -248,7 +248,7 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
   <div class="bar">📰 All Posts</div>
   <div class="body">
     <div class="small">Blogger postsನ್ನು load ಮಾಡಿ AI Editorನಲ್ಲಿ edit/update ಮಾಡಬಹುದು.</div>
-    <div class="actions"><button class="black" id="loadPosts">↻ Load Posts</button></div>
+    <div class="actions"><button type="button" class="black" id="loadPosts">↻ Load Posts</button></div>
     <div id="allPostsStatus" class="status"></div>
     <div id="allPostsList" class="all-posts-list"></div>
   </div>
@@ -257,6 +257,32 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 
 <script>
 const $=id=>document.getElementById(id);
+function safeGet(key, fallback=""){
+  try { return localStorage.getItem(key) ?? fallback; } catch(e) { return fallback; }
+}
+function safeJsonGet(key, fallback){
+  try {
+    const v=localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  } catch(e) {
+    try { localStorage.removeItem(key); } catch(_) {}
+    return fallback;
+  }
+}
+function safeSet(key,value){
+  try { localStorage.setItem(key,value); return true; }
+  catch(e){ return false; }
+}
+window.addEventListener("error",e=>{
+  const m=e?.error?.message||e?.message||"Unknown JavaScript error";
+  const el=$("status");
+  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
+});
+window.addEventListener("unhandledrejection",e=>{
+  const m=e?.reason?.message||String(e?.reason||"Unhandled promise error");
+  const el=$("status");
+  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
+});
 let photos=[], keyPoints=[], englishSummary="", token=null, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
 const blogDefault="2799540703054854619";
 function esc(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
@@ -266,7 +292,7 @@ function cleanModel(v){
  return"gemini-3.8-flash";
 }
 function aiModelList(){
- const primary=cleanModel(localStorage.getItem("bn_model"));
+ const primary=cleanModel(safeGet("bn_model",""));
  const fallback=primary==="gemini-3.8-flash"?"gemini-3.5-flash-lite":"gemini-3.8-flash";
  return [primary,fallback];
 }
@@ -294,7 +320,7 @@ async function geminiRequest(apiKey, contents, generationConfig){
      const j=await r.json();
      if(r.ok){
        if(i>0){
-         localStorage.setItem("bn_model",model);
+         safeSet("bn_model",model);
          setAIModelStatus(model,"Primary model quota reached; switched automatically");
        }else{
          setAIModelStatus(model,"Primary");
@@ -330,7 +356,7 @@ function render(){
 
 function renderKeyPointsEditor(){
   const box=$("pointsEditor");
-  box.innerHTML=keyPoints.map((p,i)=>`<div class="point-row"><input data-point="${i}" value="${esc(p)}"><button class="light" data-remove-point="${i}">✕</button></div>`).join("");
+  box.innerHTML=keyPoints.map((p,i)=>`<div class="point-row"><input data-point="${i}" value="${esc(p)}"><button type="button" class="light" data-remove-point="${i}">✕</button></div>`).join("");
   box.querySelectorAll("[data-point]").forEach(inp=>inp.oninput=()=>{keyPoints[+inp.dataset.point]=inp.value;render();scheduleAutosave()});
   box.querySelectorAll("[data-remove-point]").forEach(btn=>btn.onclick=()=>{keyPoints.splice(+btn.dataset.removePoint,1);renderKeyPointsEditor();render();scheduleAutosave()});
 }
@@ -343,16 +369,25 @@ function scheduleAutosave(){
   draftTimer=setTimeout(saveDraftAuto,500);
 }
 function draftObject(){
+  const draftPhotos=(Array.isArray(photos)?photos:[]).map(p=>({
+    name:p.name||"",
+    dataUrl:"",
+    driveUrl:p.driveUrl||"",
+    caption:p.caption||""
+  }));
   return {
     headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,
     keyPoints,englishSummary:$("englishSummaryEdit").value,
     keyPointsEnabled:$("keyPointsEnabled").checked,englishEnabled:$("englishEnabled").checked,
-    photos,editingPostId,editingPostUrl,savedAt:new Date().toISOString()
+    photos:draftPhotos,editingPostId,editingPostUrl,savedAt:new Date().toISOString()
   };
 }
 function saveDraftAuto(){
-  localStorage.setItem("bn_draft",JSON.stringify(draftObject()));
-  $("autosaveStatus").textContent="✓ Draft auto-saved";
+  if(!safeSet("bn_draft",JSON.stringify(draftObject()))){
+    $("autosaveStatus").textContent="⚠️ Draft save failed — storage full.";
+  }else{
+    $("autosaveStatus").textContent="✓ Draft auto-saved";
+  }
 }
 function setEditingPost(id,url){
   editingPostId=id||null;editingPostUrl=url||"";
@@ -369,9 +404,9 @@ $("aiEnglish").onclick=async()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮ
 $("loadPosts").onclick=loadAllPosts;
 $("allPostsBtn").onclick=()=>{let p=$("allPostsPanel");p.classList.toggle("hide");if(!p.classList.contains("hide"))loadAllPosts()};
 
-$("themeBtn").onclick=()=>{let d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";localStorage.setItem("bn_theme",d?"light":"dark");$("themeBtn").textContent=d?"🌙 Dark":"☀️ Light"};
-document.documentElement.dataset.theme=localStorage.getItem("bn_theme")||"dark";$("themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀️ Light":"🌙 Dark";
-setAIModelStatus(cleanModel(localStorage.getItem("bn_model")),"Primary selected; automatic fallback enabled");
+$("themeBtn").onclick=()=>{let d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";safeSet("bn_theme",d?"light":"dark");$("themeBtn").textContent=d?"🌙 Dark":"☀️ Light"};
+document.documentElement.dataset.theme=safeGet("bn_theme","")||"dark";$("themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀️ Light":"🌙 Dark";
+setAIModelStatus(cleanModel(safeGet("bn_model","")),"Primary selected; automatic fallback enabled");
 
 function promptFor(task){
  const raw=$("raw").value.trim();if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return null}
@@ -388,7 +423,7 @@ RAW NEWS:
 ${raw}`;
 }
 async function gemini(text){
- const key=localStorage.getItem("bn_key");
+ const key=safeGet("bn_key","");
  if(!key){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
  msg("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
  try{
@@ -403,7 +438,7 @@ async function gemini(text){
 }
 
 async function geminiExtra(text,key){
- const apiKey=localStorage.getItem("bn_key");
+ const apiKey=safeGet("bn_key","");
  if(!apiKey){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
  try{
    msg("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
@@ -422,7 +457,7 @@ $("translate").onclick=()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮೊ�
 
 function fileData(f){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
 async function caption(data){
- const key=localStorage.getItem("bn_key");if(!key)return"";
+ const key=safeGet("bn_key","");if(!key)return"";
  try{
   const base64=data.split(",")[1],mime=(data.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
   const prompt=`Write ONE short factual Kannada newspaper photo caption using only the supplied news context and visible image. Do not invent identities or facts. News headline: ${$("headline").value}. News: ${$("bodyOut").value}`;
@@ -431,7 +466,7 @@ async function caption(data){
  }catch(e){return""}
 }
 function renderPhotos(){
- $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl}"><div class="pcap">${esc(p.caption||"Caption")}</div><div class="pname">${esc(p.name)}</div><button class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
+ $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl||p.driveUrl||""}"><div class="pcap">${esc(p.caption||"Caption")}</div><div class="pname">${esc(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
  document.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();render()});
 }
 $("photoInput").onchange=async e=>{
@@ -446,7 +481,7 @@ $("photoInput").onchange=async e=>{
 async function access(){
  if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಿಲ್ಲ. Page refresh ಮಾಡಿ.");
  const cid=$("clientId").value.trim();if(!cid)throw Error("OAuth Client ID ಹಾಕಿ.");
- tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:r=>{if(r.error){pending?.reject(Error(r.error_description||r.error));return}token=r.access_token;localStorage.setItem("bn_client",cid);$("bloggerStatus").textContent="✓ Blogger connected.";pending?.resolve(token);pending=null}});
+ tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:r=>{if(r.error){pending?.reject(Error(r.error_description||r.error));return}token=r.access_token;safeSet("bn_client",cid);$("bloggerStatus").textContent="✓ Blogger connected.";pending?.resolve(token);pending=null}});
  return new Promise((resolve,reject)=>{pending={resolve,reject};tokenClient.requestAccessToken({prompt:"consent"})})
 }
 $("connect").onclick=async()=>{try{await access()}catch(e){$("bloggerStatus").textContent="✕ "+e.message}};
@@ -510,7 +545,7 @@ $("publish").onclick=async()=>{
       });
     }
     j=await r.json();if(!r.ok)throw Error(j.error?.message||"Blogger API error");
-    setEditingPost(j.id,j.url);localStorage.removeItem("bn_draft");
+    const wasUpdate=!!editingPostId; setEditingPost(j.id,j.url); try{localStorage.removeItem("bn_draft")}catch(_){}
     $("publishStatus").style.color="#16803c";
     $("publishStatus").textContent=editingPostId?"✓ Blogger post updated.":"✓ Bloggerಗೆ publish ಆಯಿತು.";
   }catch(e){$("publishStatus").style.color="#b40000";$("publishStatus").textContent="✕ "+(editingPostId?"Update":"Publish")+" ಆಗಲಿಲ್ಲ: "+e.message}
@@ -525,7 +560,7 @@ async function loadAllPosts(){
     const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Could not load posts");
     const all=j.items||[];
     if(!all.length){box.innerHTML='<div class="small">ಯಾವುದೇ posts ಸಿಗಲಿಲ್ಲ.</div>';st.style.display="none";return}
-    box.innerHTML=all.map(p=>`<div class="post-card"><div class="post-card-title">${esc(p.title||"(No title)")}</div><div class="post-card-meta">${esc(p.published||p.updated||"")}</div><div class="post-card-actions"><button class="light" data-edit-post="${esc(p.id)}">✏ Edit</button><a class="light" style="text-decoration:none;text-align:center" href="${esc(p.url||"#")}" target="_blank">View</a></div></div>`).join("");
+    box.innerHTML=all.map(p=>`<div class="post-card"><div class="post-card-title">${esc(p.title||"(No title)")}</div><div class="post-card-meta">${esc(p.published||p.updated||"")}</div><div class="post-card-actions"><button type="button" class="light" data-edit-post="${esc(p.id)}">✏ Edit</button><a class="light" style="text-decoration:none;text-align:center" href="${esc(p.url||"#")}" target="_blank">View</a></div></div>`).join("");
     box.querySelectorAll("[data-edit-post]").forEach(b=>b.onclick=()=>loadPostForEdit(b.dataset.editPost));
     st.style.display="none";
   }catch(e){st.textContent="✕ "+e.message;st.style.display="block"}
@@ -564,18 +599,18 @@ async function loadPostForEdit(id){
 
 $("copy").onclick=()=>navigator.clipboard.writeText($("headline").value+"\n\n"+$("sub").value+"\n\n"+$("bodyOut").value);
 $("save").onclick=()=>{saveDraftAuto();msg("Draft saved.");};
-$("settingsBtn").onclick=()=>{$("settings").classList.toggle("hide");$("apiKey").value=localStorage.getItem("bn_key")||"";$("model").value=cleanModel(localStorage.getItem("bn_model"));$("clientId").value=localStorage.getItem("bn_client")||"";$("blogId").value=localStorage.getItem("bn_blog")||blogDefault;$("blogLabel").value=localStorage.getItem("bn_label")||"";if(!$("settings").classList.contains("hide"))$("settings").scrollIntoView({behavior:"smooth"})};
+$("settingsBtn").onclick=()=>{$("settings").classList.toggle("hide");$("apiKey").value=safeGet("bn_key","")||"";$("model").value=cleanModel(safeGet("bn_model",""));$("clientId").value=safeGet("bn_client","")||"";$("blogId").value=safeGet("bn_blog","")||blogDefault;$("blogLabel").value=safeGet("bn_label","")||"";if(!$("settings").classList.contains("hide"))$("settings").scrollIntoView({behavior:"smooth"})};
 $("saveSettings").onclick=()=>{
- localStorage.setItem("bn_key",$("apiKey").value.trim());
- localStorage.setItem("bn_model",cleanModel($("model").value));
- localStorage.setItem("bn_client",$("clientId").value.trim());
- localStorage.setItem("bn_blog",$("blogId").value.trim()||blogDefault);
- localStorage.setItem("bn_label",$("blogLabel").value.trim());
+ safeSet("bn_key",$("apiKey").value.trim());
+ safeSet("bn_model",cleanModel($("model").value));
+ safeSet("bn_client",$("clientId").value.trim());
+ safeSet("bn_blog",$("blogId").value.trim()||blogDefault);
+ safeSet("bn_label",$("blogLabel").value.trim());
  setAIModelStatus(cleanModel($("model").value),"Primary selected; automatic fallback enabled");
  $("settingsStatus").textContent="✓ Settings saved.";
 };
 $("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");syncEditors();renderPhotos();render();localStorage.removeItem("bn_draft");window.scrollTo({top:0,behavior:"smooth"})};
-let d=JSON.parse(localStorage.getItem("bn_draft")||"null");
+let d=safeJsonGet("bn_draft",null);
 if(d){
   $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";
   keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||"";photos=d.photos||[];
@@ -585,7 +620,7 @@ if(d){
 ["raw","headline","sub","bodyOut"].forEach(id=>$(id).addEventListener("input",scheduleAutosave));
 
 /* ---------------- Bidire Advertisement Manager V5 ---------------- */
-let ads=JSON.parse(localStorage.getItem("bn_ads")||"[]"),editingAdId=null;
+let ads=safeJsonGet("bn_ads",[]); if(!Array.isArray(ads)) ads=[]; let editingAdId=null;
 function adToday(){return new Date().toISOString().slice(0,10)}
 function adIsActive(a){const t=adToday();return a.enabled!==false&&(!a.start||t>=a.start)&&(!a.expiry||t<=a.expiry)}
 function adEsc(v){return esc(v||"")}
@@ -596,10 +631,10 @@ function renderAdPreview(){
  const img=$("adImage").files?.[0];if(img){const r=new FileReader();r.onload=()=>{p.innerHTML=`<img src="${r.result}" alt="">`+p.innerHTML};r.readAsDataURL(img)}else if(editingAdId){const a=ads.find(x=>x.id===editingAdId);if(a?.imageData)p.innerHTML=`<img src="${a.imageData}" alt="">`+p.innerHTML}
 }
 function readAdImage(file){return new Promise((resolve,reject)=>{if(!file)return resolve("");const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
-function saveAds(){localStorage.setItem("bn_ads",JSON.stringify(ads))}
+function saveAds(){ if(!safeSet("bn_ads",JSON.stringify(ads))){ $("adStatus").textContent="⚠️ Advertisement save failed — storage full."; $("adStatus").style.display="block"; } }
 function renderAds(){
  const box=$("adList");if(!ads.length){box.innerHTML='<div class="small">ಯಾವುದೇ ಜಾಹೀರಾತು ಇಲ್ಲ.</div>';return}
- box.innerHTML=ads.slice().sort((a,b)=>String(a.expiry||"9999").localeCompare(String(b.expiry||"9999"))).map(a=>`<div class="ad-card"><div class="ad-card-title">${adEsc(a.title||"Untitled Advertisement")}</div><div class="ad-meta">${adEsc(a.size)} · ${adEsc(a.position)} · ${a.expiry?"Expiry: "+adEsc(a.expiry):"No expiry"}</div><span class="ad-status ${adIsActive(a)?"active":"expired"}">${adIsActive(a)?"ACTIVE":"EXPIRED / INACTIVE"}</span>${a.imageData?`<img src="${a.imageData}" style="max-width:180px;max-height:70px;object-fit:contain;display:block;margin-top:7px">`:""}<div class="ad-actions"><button class="light" data-ad-edit="${adEsc(a.id)}">✏ Edit</button><button class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?"Enable":"Disable"}</button><button class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button></div></div>`).join("");
+ box.innerHTML=ads.slice().sort((a,b)=>String(a.expiry||"9999").localeCompare(String(b.expiry||"9999"))).map(a=>`<div class="ad-card"><div class="ad-card-title">${adEsc(a.title||"Untitled Advertisement")}</div><div class="ad-meta">${adEsc(a.size)} · ${adEsc(a.position)} · ${a.expiry?"Expiry: "+adEsc(a.expiry):"No expiry"}</div><span class="ad-status ${adIsActive(a)?"active":"expired"}">${adIsActive(a)?"ACTIVE":"EXPIRED / INACTIVE"}</span>${a.imageData?`<img src="${a.imageData}" style="max-width:180px;max-height:70px;object-fit:contain;display:block;margin-top:7px">`:""}<div class="ad-actions"><button type="button" class="light" data-ad-edit="${adEsc(a.id)}">✏ Edit</button><button type="button" class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?"Enable":"Disable"}</button><button type="button" class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button></div></div>`).join("");
  box.querySelectorAll("[data-ad-edit]").forEach(b=>b.onclick=()=>editAd(b.dataset.adEdit));
  box.querySelectorAll("[data-ad-toggle]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adToggle);if(!a)return;a.enabled=a.enabled===false;saveAds();renderAds()});
  box.querySelectorAll("[data-ad-delete]").forEach(b=>b.onclick=()=>{if(!confirm("ಈ ಜಾಹೀರಾತನ್ನು delete ಮಾಡಬೇಕೇ?"))return;ads=ads.filter(x=>x.id!==b.dataset.adDelete);saveAds();renderAds()});
@@ -646,7 +681,7 @@ function saveDraftAutoV6(){
 function saveEmergencyDraft(){
   try{
     saveDraftAutoV6();
-    localStorage.setItem("bn_emergency_snapshot",JSON.stringify({
+    safeSet("bn_emergency_snapshot",JSON.stringify({
       ...draftObject(),
       raw:$("raw").value,
       chatHistory,
@@ -655,7 +690,7 @@ function saveEmergencyDraft(){
   }catch(e){}
 }
 function restoreSafeDraft(){
-  let raw=localStorage.getItem("bn_emergency_snapshot")||localStorage.getItem("bn_draft");
+  let raw=safeGet("bn_emergency_snapshot","")||safeGet("bn_draft","");
   if(!raw){msg("Saved draft ಸಿಗಲಿಲ್ಲ.");return}
   try{
     const d=JSON.parse(raw);
@@ -731,7 +766,7 @@ function blobToBase64(blob){
 }
 $("transcribeAudio").onclick=async()=>{
   if(!audioBlob){$("audioStatus").textContent="ಮೊದಲು audio record ಅಥವಾ upload ಮಾಡಿ.";return}
-  const apiKey=localStorage.getItem("bn_key");
+  const apiKey=safeGet("bn_key","");
   if(!apiKey){$("audioStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
   try{
     $("audioStatus").textContent="🎧 Audio transcription ನಡೆಯುತ್ತಿದೆ...";
@@ -749,7 +784,7 @@ $("transcribeAudio").onclick=async()=>{
           body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}]})
         });
         const j=await r.json();
-        if(r.ok){result=j;if(i>0){localStorage.setItem("bn_model",model);setAIModelStatus(model,"Audio quota fallback");}break}
+        if(r.ok){result=j;if(i>0){safeSet("bn_model",model);setAIModelStatus(model,"Audio quota fallback");}break}
         last=j.error?.message||`API error (${r.status})`;
         if(!isQuotaError(r.status,last))break;
       }catch(e){last=e.message}
@@ -786,7 +821,7 @@ IMPORTANT: User may ask to add/change information. Only apply information explic
 }
 async function sendNewsChat(applyChange=false){
   const userText=$("chatInput").value.trim();if(!userText)return;
-  const apiKey=localStorage.getItem("bn_key");if(!apiKey){$("chatStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
+  const apiKey=safeGet("bn_key","");if(!apiKey){$("chatStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
   chatHistory.push({role:"user",text:userText});renderChat();$("chatInput").value="";
   saveEmergencyDraft();$("chatStatus").style.display="block";$("chatStatus").textContent="AI ಯೋಚಿಸುತ್ತಿದೆ...";
   const instruction=applyChange
@@ -819,8 +854,14 @@ $("chatInput").addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==
 ["raw","headline","sub","bodyOut","englishSummaryEdit"].forEach(id=>{
   $(id)?.addEventListener("input",()=>{clearTimeout(draftTimer);draftTimer=setTimeout(saveEmergencyDraft,350)});
 });
-updateSafeDraftMeta();
-renderChat();
+try{
+  updateSafeDraftMeta();
+  renderChat();
+  $("status").style.display="none";
+}catch(e){
+  const el=$("status");
+  if(el){el.textContent="⚠️ Editor startup error: "+e.message;el.style.display="block";}
+}
 
 </script>
 </body></html>
