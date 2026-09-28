@@ -213,7 +213,7 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
     <div id="adCreatePanel" class="ad-panel">
       <label>ಜಾಹೀರಾತಿನ ಶೀರ್ಷಿಕೆ</label><input id="adTitle" placeholder="ಉದಾ: ಹೊಸ ಅಂಗಡಿ ಉದ್ಘಾಟನೆ">
       <div class="row">
-        <div><label>Ad Size</label><select id="adSize"><option value="728x120">728 × 120</option><option value="300x250">300 × 250</option><option value="720x240">720 × 240</option><option value="300x600">300 × 600</option><option value="custom">Custom</option></select></div>
+        <div><label>Ad Size</label><select id="adSize"><option value="728x240">728 × 240</option><option value="728x120">728 × 120</option><option value="300x250">300 × 250</option><option value="720x240">720 × 240</option><option value="300x600">300 × 600</option><option value="custom">Custom</option></select></div>
         <div><label>Position</label><select id="adPosition"><option value="top">NEWS TOP</option><option value="sidebar">SIDEBAR</option><option value="middle">NEWS MIDDLE</option></select></div>
       </div>
       <label>ಜಾಹೀರಾತಿನ ವಿಷಯ</label><textarea id="adText" style="min-height:110px" placeholder="ಜಾಹೀರಾತಿನ ಮುಖ್ಯ ಮಾಹಿತಿ..."></textarea>
@@ -221,8 +221,8 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
       <label>ವಿಳಾಸ / Website / Link</label><input id="adContact">
       <div class="row"><div><label>Start Date</label><input id="adStart" type="date"></div><div><label>Expiry Date</label><input id="adExpiry" type="date"></div></div>
       <label>Advertisement Image</label><input id="adImage" type="file" accept="image/*">
-      <div class="small">ಚಿತ್ರವಿಲ್ಲದಿದ್ದರೆ text advertisement ಆಗಿಯೂ save ಮಾಡಬಹುದು.</div>
-      <div class="actions"><button type="button" class="primary" id="saveAd">💾 Save Advertisement</button><button type="button" class="light" id="previewAdBtn">👁 Preview</button><button type="button" class="light" id="clearAd">Clear</button></div>
+      <div class="small">Websiteನಲ್ಲಿ ತೋರಿಸಲು Advertisement Image ಕಡ್ಡಾಯ. Text/ವಿವರಗಳು AI Editorನಲ್ಲಿ ನಿರ್ವಹಣೆಗೆ ಮಾತ್ರ; websiteನಲ್ಲಿ image ಮಾತ್ರ ಕಾಣಿಸುತ್ತದೆ.</div>
+      <div class="actions"><button type="button" class="primary" id="saveAd">💾 Save Advertisement</button><button type="button" class="black" id="publishAdWebsite">🌐 Publish / Sync to Website</button><button type="button" class="light" id="previewAdBtn">👁 Preview</button><button type="button" class="light" id="clearAd">Clear</button></div>
       <div id="adStatus" class="status"></div><div id="adPreview" class="ad-preview hide"></div>
     </div>
     <div id="adManagePanel" class="ad-panel hide">
@@ -624,6 +624,55 @@ let ads=safeJsonGet("bn_ads",[]); if(!Array.isArray(ads)) ads=[]; let editingAdI
 function adToday(){return new Date().toISOString().slice(0,10)}
 function adIsActive(a){const t=adToday();return a.enabled!==false&&(!a.start||t>=a.start)&&(!a.expiry||t<=a.expiry)}
 function adEsc(v){return esc(v||"")}
+
+function adWebsiteMeta(ad){
+  return {
+    id:String(ad.id||""),
+    position:String(ad.position||"top"),
+    size:String(ad.size||""),
+    start:String(ad.start||""),
+    expiry:String(ad.expiry||""),
+    enabled:ad.enabled!==false,
+    link:String(ad.contact||"")
+  };
+}
+async function publishAdToWebsite(ad){
+  if(!ad || !ad.imageData) throw Error("Websiteಗೆ publish ಮಾಡಲು Advertisement Image upload ಮಾಡಿ.");
+  if(!token) await access();
+  const p={dataUrl:ad.imageData,name:(ad.id||"bidire-ad")+".jpg"};
+  const imageUrl=ad.imageUrl||await uploadDrive(p);
+  const meta=adWebsiteMeta(ad);
+  const metaEsc=esc(JSON.stringify(meta)).replace(/&quot;/g,'"');
+  const safeLink=meta.link && /^https?:\/\//i.test(meta.link)?meta.link:"";
+  const imageEsc=esc(imageUrl);
+  const content=`<div data-bidire-ad="1" data-ad-id="${esc(meta.id)}" data-position="${esc(meta.position)}" data-size="${esc(meta.size)}" data-start="${esc(meta.start)}" data-expiry="${esc(meta.expiry)}" data-enabled="${meta.enabled?"true":"false"}" data-link="${esc(safeLink)}" style="display:none!important"><a href="${esc(safeLink||"#")}"><img src="${imageEsc}" alt=""></a></div>`;
+  const blogId=$("blogId").value.trim()||blogDefault;
+  const title="[BIDIRE_AD] "+(ad.title||"Advertisement");
+  const labels=["BidireAd","BidireAIEditor"];
+  let r,j;
+  const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
+  if(ad.websitePostId){
+    r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(ad.websitePostId)}`,{
+      method:"PUT",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
+    });
+  }else{
+    r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
+      method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
+    });
+  }
+  j=await r.json();
+  if(!r.ok) throw Error(j.error?.message||"Blogger Advertisement publish failed");
+  ad.websitePostId=j.id;
+  ad.imageUrl=imageUrl;
+  ad.websiteUrl=j.url||"";
+  const idx=ads.findIndex(x=>x.id===ad.id);
+  if(idx>=0) ads[idx]=ad; else ads.push(ad);
+  saveAds(); renderAds();
+  $("adStatus").style.color="#16803c";
+  $("adStatus").textContent="✓ Websiteಗೆ Advertisement publish/sync ಆಯಿತು.";
+  $("adStatus").style.display="block";
+  return j;
+}
 function clearAdForm(){editingAdId=null;["adTitle","adText","adBusiness","adPhone","adContact","adStart","adExpiry"].forEach(id=>$(id).value="");$("adImage").value="";$("adPreview").classList.add("hide");$("adPreview").innerHTML="";$("adStatus").style.display="none";$("saveAd").textContent="💾 Save Advertisement"}
 function renderAdPreview(){
  const title=$("adTitle").value.trim(),text=$("adText").value.trim(),business=$("adBusiness").value.trim(),phone=$("adPhone").value.trim(),contact=$("adContact").value.trim(),size=$("adSize").value,p=$("adPreview");
@@ -649,12 +698,31 @@ $("adsBtn").onclick=()=>{$("adsPanel").classList.toggle("hide");if(!$("adsPanel"
 $("adCreateTab").onclick=()=>{$("adCreateTab").classList.add("active");$("adManageTab").classList.remove("active");$("adCreatePanel").classList.remove("hide");$("adManagePanel").classList.add("hide")};
 $("adManageTab").onclick=()=>{$("adManageTab").classList.add("active");$("adCreateTab").classList.remove("active");$("adManagePanel").classList.remove("hide");$("adCreatePanel").classList.add("hide");renderAds()};
 $("previewAdBtn").onclick=renderAdPreview;$("clearAd").onclick=clearAdForm;$("refreshAds").onclick=renderAds;
+$("publishAdWebsite").onclick=async()=>{
+  try{
+    const id=editingAdId;
+    const ad=id?ads.find(x=>x.id===id):null;
+    if(!ad){
+      $("adStatus").textContent="ಮೊದಲು Advertisement ಅನ್ನು Save ಮಾಡಿ; ನಂತರ Publish / Sync to Website ಒತ್ತಿ.";
+      $("adStatus").style.display="block"; return;
+    }
+    $("adStatus").style.color="#333";
+    $("adStatus").textContent="Websiteಗೆ Advertisement upload/publish ಆಗುತ್ತಿದೆ...";
+    $("adStatus").style.display="block";
+    await publishAdToWebsite(ad);
+  }catch(e){
+    $("adStatus").style.color="#b40000";
+    $("adStatus").textContent="✕ Website publish ಆಗಲಿಲ್ಲ: "+e.message;
+    $("adStatus").style.display="block";
+  }
+};
 $("clearAds").onclick=()=>{if(!confirm("ಎಲ್ಲಾ ಜಾಹೀರಾತುಗಳನ್ನು delete ಮಾಡಬೇಕೇ?"))return;ads=[];saveAds();renderAds()};
 $("saveAd").onclick=async()=>{
  const title=$("adTitle").value.trim();if(!title){$("adStatus").textContent="ಜಾಹೀರಾತಿನ ಶೀರ್ಷಿಕೆ ಹಾಕಿ.";$("adStatus").style.display="block";return}
  const existing=editingAdId?ads.find(x=>x.id===editingAdId):null,file=$("adImage").files?.[0];
- const ad={id:editingAdId||("ad_"+Date.now()+"_"+Math.random().toString(16).slice(2)),title,text:$("adText").value.trim(),business:$("adBusiness").value.trim(),phone:$("adPhone").value.trim(),contact:$("adContact").value.trim(),size:$("adSize").value,position:$("adPosition").value,start:$("adStart").value,expiry:$("adExpiry").value,imageData:file?await readAdImage(file):(existing?.imageData||""),enabled:existing?.enabled!==false};
- const idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);saveAds();renderAds();$("adStatus").textContent=editingAdId?"✓ Advertisement updated.":"✓ Advertisement saved.";$("adStatus").style.display="block";clearAdForm();
+ const wasEditing=!!editingAdId;
+ const ad={id:editingAdId||("ad_"+Date.now()+"_"+Math.random().toString(16).slice(2)),title,text:$("adText").value.trim(),business:$("adBusiness").value.trim(),phone:$("adPhone").value.trim(),contact:$("adContact").value.trim(),size:$("adSize").value,position:$("adPosition").value,start:$("adStart").value,expiry:$("adExpiry").value,imageData:file?await readAdImage(file):(existing?.imageData||""),enabled:existing?.enabled!==false,websitePostId:existing?.websitePostId||"",imageUrl:existing?.imageUrl||""};
+ const idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);editingAdId=ad.id;saveAds();renderAds();$("adStatus").textContent=wasEditing?"✓ Advertisement updated.":"✓ Advertisement saved. ಈಗ Publish / Sync to Website ಒತ್ತಿ.";$("adStatus").style.display="block";
 };
 
 
