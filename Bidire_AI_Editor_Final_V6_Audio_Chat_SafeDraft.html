@@ -370,7 +370,8 @@ $("loadPosts").onclick=loadAllPosts;
 $("allPostsBtn").onclick=()=>{let p=$("allPostsPanel");p.classList.toggle("hide");if(!p.classList.contains("hide"))loadAllPosts()};
 
 $("themeBtn").onclick=()=>{let d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";localStorage.setItem("bn_theme",d?"light":"dark");$("themeBtn").textContent=d?"🌙 Dark":"☀️ Light"};
-document.documentElement.dataset.theme=localStorage.getItem("bn_theme")||"dark";$("themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀️ Light":"🌙 Dark";\nsetAIModelStatus(cleanModel(localStorage.getItem("bn_model")),"Primary selected; automatic fallback enabled");
+document.documentElement.dataset.theme=localStorage.getItem("bn_theme")||"dark";$("themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀️ Light":"🌙 Dark";
+setAIModelStatus(cleanModel(localStorage.getItem("bn_model")),"Primary selected; automatic fallback enabled");
 
 function promptFor(task){
  const raw=$("raw").value.trim();if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return null}
