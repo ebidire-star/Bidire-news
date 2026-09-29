@@ -1076,4 +1076,31 @@ if($("settingsBtn")){
   };
 }
 </script>
+  <script>
+(function(){
+  try{
+    if(!localStorage.getItem("bidire_v16_cache_cleaned")){
+      localStorage.setItem("bidire_v16_cache_cleaned","1");
+
+      if("serviceWorker" in navigator){
+        navigator.serviceWorker.getRegistrations().then(function(regs){
+          regs.forEach(function(reg){
+            reg.unregister();
+          });
+        });
+      }
+
+      if("caches" in window){
+        caches.keys().then(function(keys){
+          keys.forEach(function(key){
+            if(key.indexOf("bidire-ai-") === 0){
+              caches.delete(key);
+            }
+          });
+        });
+      }
+    }
+  }catch(e){}
+})();
+</script>
 </body></html>
