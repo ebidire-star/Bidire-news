@@ -81,8 +81,6 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 .safe-draft-actions button{flex:1}
 
 
-/* ===== Bidire News AI Editor — Integrated Update ===== */
-/* Existing functionality retained + Normal News parsing + Manual Caption. */
 /* ===== Bidire Modern UI V2 ===== */
 :root{
   --bn-red:#b40000; --bn-blue:#1769aa; --bn-purple:#6f42c1;
@@ -228,7 +226,6 @@ label{font-size:11px}
   background:#b40000!important;color:#fff!important;
   box-shadow:0 3px 10px rgba(180,0,0,.18)
 }
-#rawNormalWrite{background:#fff!important;color:#b40000!important;border:1px solid #d9a6a6!important}
 .chat-send-btn{background:#202938!important;color:#fff!important}
 .chat-clear-btn{background:#edf1f5!important;color:#344054!important}
 .raw-chat-status{font-size:11px;color:#667085;margin-top:7px;min-height:14px}
@@ -370,7 +367,6 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
   z-index:10;
 }
 
-.photo-caption-editor{padding:7px 8px;border-top:1px solid #eee;background:#fafafa}.photo-caption-editor textarea{min-height:58px;padding:7px;font-size:11px;line-height:1.45}.photo-caption-actions{display:flex;gap:5px;margin-top:5px}.photo-caption-actions button{flex:1;padding:6px 7px;font-size:10px}.caption-source{font-size:9px;color:#16803c;margin-top:3px}html[data-theme="dark"] .photo-caption-editor{background:#11161d;border-color:#30363d}@media(max-width:600px){.photo-caption-editor textarea{min-height:52px}}
 </style>
 </head>
 <body>
@@ -390,12 +386,12 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <main class="wrap">
 
 <nav class="section-nav" id="sectionNav" aria-label="Bidire News sections">
-  <button data-target="newSection">📰 ಹೊಸ ಸುದ್ದಿ</button>
-  <button data-target="editSection">✍️ ಸಂಪಾದನೆ</button>
-  <button data-target="safeSection">🛡️ Draft</button>
-  <button data-target="previewSection">👁️ Preview</button>
-  <button data-target="adsPanel">📢 Ads</button>
-  <button data-target="allPostsPanel">📰 All Posts</button>
+  <button type="button" data-target="newSection">📰 ಹೊಸ ಸುದ್ದಿ</button>
+  <button type="button" data-target="editSection">✍️ ಸಂಪಾದನೆ</button>
+  <button type="button" data-target="safeSection">🛡️ Draft</button>
+  <button type="button" data-target="previewSection">👁️ Preview</button>
+  <button type="button" data-target="adsPanel">📢 Ads</button>
+  <button type="button" data-target="allPostsPanel">📰 All Posts</button>
 </nav>
 
 <section class="panel" id="newSection"><div class="bar">📰 ಹೊಸ ಸುದ್ದಿ</div><div class="body">
@@ -410,7 +406,6 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
     <div class="raw-chat-actions">
       <button type="button" id="rawChatSend" class="chat-send-btn">➤ Chat</button>
       <button type="button" id="rawChatClear" class="chat-clear-btn">Clear</button>
-      <button type="button" id="rawNormalWrite" class="light grow">✍️ ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
       <button type="button" id="rawAiWrite" class="ai-write-btn grow">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
     </div>
     <div id="rawChatStatus" class="raw-chat-status"></div>
@@ -421,7 +416,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <strong style="font-size:13px">📷 Photo + Automatic Caption</strong>
 <label>📷 Photos / ಫೋಟೋಗಳು</label>
 <input id="photoInput" type="file" accept="image/*" multiple>
-<div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ AI automatic caption ತಯಾರಿಸುತ್ತದೆ. ಬೇಕಾದರೆ ಪ್ರತಿ ಫೋಟೋಗೆ Manual Caption ಬರೆಯಬಹುದು.</div>
+<div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಸಿದ್ಧವಾದ ಸುದ್ದಿಯ ಆಧಾರದ ಮೇಲೆ caption automatic ಆಗಿ ತಯಾರಾಗುತ್ತದೆ.</div>
 <div id="photoGrid" class="photo-grid"></div><div id="photoStatus" class="small"></div>
 </div>
 
@@ -742,10 +737,9 @@ function draftObject(){
     name:p.name||"",
     dataUrl:"",
     driveUrl:p.driveUrl||"",
-    caption:p.caption||"",manualCaption:p.manualCaption===true
+    caption:p.caption||""
   }));
   return {
-    raw:$("raw")?.value||"",
     headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,category:$("category")?.value||"",
     keyPoints,englishSummary:$("englishSummaryEdit").value,autoLabels,
     keyPointsEnabled:$("keyPointsEnabled").checked,englishEnabled:$("englishEnabled").checked,
@@ -1005,16 +999,25 @@ $("translate").onclick=()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮೊ�
 function fileData(f){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
 async function caption(data){
  const key=safeGet("bn_key","");if(!key)return"";
- try{const base64=data.split(",")[1],mime=(data.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";const prompt=`Write ONE short factual Kannada newspaper photo caption using only the supplied news context and visible image. Do not invent identities, names, roles, places, numbers, dates or facts. If the visible image does not provide enough factual information, return an empty string. News headline: ${$("headline").value}. News: ${$("bodyOut").value}`;const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"")}catch(e){return""}
+ try{
+  const base64=data.split(",")[1],mime=(data.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
+  const prompt=`Write ONE short factual Kannada newspaper photo caption using only the supplied news context and visible image. Do not invent identities or facts. News headline: ${$("headline").value}. News: ${$("bodyOut").value}`;
+  const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});
+  return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"")
+ }catch(e){return""}
 }
 function renderPhotos(){
- const box=$("photoGrid");
- box.innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl||p.driveUrl||""}" alt="${esc(p.caption||p.name||"")}"><div class="pcap">${esc(p.caption||"Caption not set")}</div><div class="photo-caption-editor"><textarea data-caption-input="${i}" placeholder="✏️ Manual Caption / Edit Caption">${esc(p.caption||"")}</textarea><div class="photo-caption-actions"><button type="button" class="light" data-caption-save="${i}">💾 Save Caption</button><button type="button" class="light" data-caption-ai="${i}">✨ AI Caption</button></div><div class="caption-source">${p.manualCaption?"Manual caption":"Automatic caption"}</div></div><div class="pname">${esc(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
- box.querySelectorAll("[data-caption-save]").forEach(b=>b.onclick=()=>{const i=+b.dataset.captionSave,inp=box.querySelector(`[data-caption-input="${i}"]`);if(!photos[i]||!inp)return;photos[i].caption=inp.value.trim();photos[i].manualCaption=true;renderPhotos();render();scheduleAutosave()});
- box.querySelectorAll("[data-caption-ai]").forEach(b=>b.onclick=async()=>{const i=+b.dataset.captionAi;if(!photos[i])return;if(!photos[i].dataUrl){$("photoStatus").textContent="ಈ ಫೋಟೋಗೆ AI caption ಮಾಡಲು image data ಲಭ್ಯವಿಲ್ಲ. Manual caption ಬಳಸಿ.";return}$("photoStatus").textContent=`ಫೋಟೋ ${i+1} caption ತಯಾರಿಸಲಾಗುತ್ತಿದೆ...`;const c=await caption(photos[i].dataUrl);if(c){photos[i].caption=c;photos[i].manualCaption=false;renderPhotos();render();scheduleAutosave();$("photoStatus").textContent="✓ Automatic caption updated."}else $("photoStatus").textContent="AI caption ಸಿಗಲಿಲ್ಲ. Manual Caption ಬರೆಯಬಹುದು."});
- box.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();render();scheduleAutosave()});
+ $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl||p.driveUrl||""}"><div class="pcap">${esc(p.caption||"Caption")}</div><div class="pname">${esc(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
+ document.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();render()});
 }
-$("photoInput").onchange=async e=>{for(const f of [...e.target.files||[]]){if(!f.type.startsWith("image/"))continue;const dataUrl=await fileData(f),p={name:f.name,dataUrl,caption:"",manualCaption:false,driveUrl:""};photos.push(p);renderPhotos();const c=await caption(dataUrl);if(c&&!p.manualCaption){p.caption=c;p.manualCaption=false;renderPhotos();render()}scheduleAutosave()}e.target.value=""};
+$("photoInput").onchange=async e=>{
+ for(const f of [...e.target.files||[]]){
+  if(!f.type.startsWith("image/"))continue;
+  const dataUrl=await fileData(f),p={name:f.name,dataUrl,caption:"",driveUrl:""};photos.push(p);renderPhotos();
+  p.caption=await caption(dataUrl)||($("headline").value||"ಸುದ್ದಿ")+" — Bidire News";renderPhotos();render();
+ }
+ e.target.value="";
+};
 
 async function access(){
  if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಿಲ್ಲ. Page refresh ಮಾಡಿ.");
@@ -1160,7 +1163,7 @@ async function loadPostForEdit(id){
         name:"existing-photo-"+(i+1),
         dataUrl:"",
         driveUrl:driveId?"https://drive.google.com/thumbnail?id="+encodeURIComponent(driveId)+"&sz=w2000":src,
-        caption:img.parentElement?.querySelector("figcaption")?.textContent?.trim()||img.getAttribute("alt")||"",manualCaption:false
+        caption:img.parentElement?.querySelector("figcaption")?.textContent?.trim()||img.getAttribute("alt")||""
       };
     });
     [...tmp.querySelectorAll("figure")].forEach(f=>f.remove());
@@ -1188,7 +1191,6 @@ $("saveSettings").onclick=()=>{
 $("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";if($("category"))$("category").value="ಮೂಡುಬಿದಿರೆ";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");autoLabels=[];syncEditors();renderAutoLabelsEditor();renderPhotos();render();setupSocialShares("");localStorage.removeItem("bn_draft");undoStack=[];redoStack=[];pushUndoSnapshot();window.scrollTo({top:0,behavior:"smooth"})};
 let d=safeJsonGet("bn_draft",null);
 if(d){
-  $("raw").value=d.raw||"";
   $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
   keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||""; autoLabels=Array.isArray(d.autoLabels)?d.autoLabels:[];photos=d.photos||[];
   $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;$("englishEnabled").checked=d.englishEnabled!==false;
@@ -1637,14 +1639,6 @@ ${news}`;
     }
   });
 
-  const normalWrite=document.getElementById("rawNormalWrite");
-  function parseNormalNews(text){
-    const lines=String(text||"").replace(/\r/g,"").split("\n"),out={};let current=null;
-    for(const line of lines){const t=line.trim();const m=t.match(/^(ಶೀರ್ಷಿಕೆ|Headline)\s*:\s*(.*)$/i)||t.match(/^(ಉಪಶೀರ್ಷಿಕೆ|Subheadline)\s*:\s*(.*)$/i)||t.match(/^(ಸುದ್ದಿ|News Body)\s*:\s*(.*)$/i)||t.match(/^(ಪ್ರಮುಖ ಅಂಶಗಳು|Key Points)\s*:\s*(.*)$/i)||t.match(/^English Summary\s*:\s*(.*)$/i);if(m){const label=m[1];current=/^(ಶೀರ್ಷಿಕೆ|Headline)$/i.test(label)?"headline":/^(ಉಪಶೀರ್ಷಿಕೆ|Subheadline)$/i.test(label)?"sub":/^(ಸುದ್ದಿ|News Body)$/i.test(label)?"body":/^(ಪ್ರಮುಖ ಅಂಶಗಳು|Key Points)$/i.test(label)?"keyPoints":"englishSummary";out[current]=m[2]||"";continue}if(current)out[current]=(out[current]?out[current]+"\n":"")+line}
-    if(!Object.keys(out).length)return{headline:"",sub:"",body:String(text||"").trim(),keyPoints:[],englishSummary:""};
-    return{headline:String(out.headline||"").trim(),sub:String(out.sub||"").trim(),body:String(out.body||"").trim(),keyPoints:String(out.keyPoints||"").split(/\n+/).map(x=>x.replace(/^\s*(?:[-*•·]|\d+[.)])\s*/,"").trim()).filter(Boolean),englishSummary:String(out.englishSummary||"").trim()};
-  }
-  normalWrite.onclick=()=>{const rawText=raw.value.trim();if(!rawText){setStatus("ಮೊದಲು ಸಂಪೂರ್ಣ ಸುದ್ದಿಯನ್ನು Raw Newsನಲ್ಲಿ paste ಮಾಡಿ.");raw.focus();return}const parsed=parseNormalNews(rawText);$("headline").value=parsed.headline||"";$("sub").value=parsed.sub||"";$("bodyOut").value=parsed.body||"";keyPoints=parsed.keyPoints;englishSummary=parsed.englishSummary;$("englishSummaryEdit").value=englishSummary;renderKeyPointsEditor();render();scheduleAutosave();pushUndoSnapshot();setStatus("✓ ಸುದ್ದಿ ಸಂಪಾದನೆ ವಿಭಾಗಕ್ಕೆ ಸೇರಿಸಲಾಗಿದೆ — AI ಬಳಸಲಾಗಿಲ್ಲ.");setTimeout(()=>setStatus(""),1600);document.getElementById("editSection")?.scrollIntoView({behavior:"smooth",block:"start"})};
   write.onclick=()=>{
     if(!raw.value.trim()){setStatus("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
     const p=promptFor("Create the complete final news report from the raw news. Return headline, subheadline, body, keyPoints and englishSummary.");
@@ -1726,4 +1720,66 @@ ${JSON.stringify(data)}`;
   input.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();askEditAI();}});
 })();
 </script>
+
+
+
+<script>
+(function(){
+  // Ensure navigation buttons never submit a form on mobile/Chrome.
+  document.querySelectorAll('button:not([type])').forEach(function(btn){ btn.type='button'; });
+
+  // Keep every click from being swallowed by an accidental form submission.
+  document.addEventListener('click', function(e){
+    const btn=e.target.closest && e.target.closest('button');
+    if(btn && !btn.getAttribute('type')) btn.setAttribute('type','button');
+  }, true);
+})();
+</script>
+
+<!-- ===== Bidire News V17 — Settings & Button Safety Patch ===== -->
+<script>
+(function(){
+  function saveSettingsFallback(){
+    const $id=id=>document.getElementById(id);
+    try{
+      const key=$id('apiKey');
+      const model=$id('model');
+      const client=$id('clientId');
+      const blog=$id('blogId');
+      const label=$id('blogLabel');
+      const cleanModel=v=>String(v||'').replace(/^models\\//i,'').trim();
+      localStorage.setItem('bn_key',key?.value?.trim()||'');
+      localStorage.setItem('bn_model',cleanModel(model?.value||''));
+      localStorage.setItem('bn_client',client?.value?.trim()||'');
+      localStorage.setItem('bn_blog',blog?.value?.trim()||'2799540703054854619');
+      localStorage.setItem('bn_label',label?.value?.trim()||'');
+      const status=$id('settingsStatus');
+      if(status){
+        status.textContent='✓ Settings saved successfully.';
+        status.style.display='block';
+      }
+      return true;
+    }catch(e){
+      const status=$id('settingsStatus');
+      if(status){
+        status.textContent='⚠️ Settings save error: '+e.message;
+        status.style.display='block';
+      }
+      return false;
+    }
+  }
+
+  /* Capture-phase fallback works even if an earlier script failed before
+     assigning the original onclick handler. */
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest && e.target.closest('#saveSettings');
+    if(!btn)return;
+    saveSettingsFallback();
+  },true);
+
+  /* If the original handler is present, also expose a stable manual method. */
+  window.bidireSaveSettings=saveSettingsFallback;
+})();
+</script>
+
 </body></html>
