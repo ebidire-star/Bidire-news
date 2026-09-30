@@ -1304,11 +1304,59 @@ function autoOpenPersonalWhatsApp(url){
  const link="https://wa.me/919731410761?text="+encodeURIComponent(text);
  try{window.open(link,"_blank");}catch(_){}
 }
+function dataUrlToShareFile(dataUrl,name="Bidire-News-Thumbnail.jpg"){
+ try{
+   const m=String(dataUrl||"").match(/^data:([^;]+);base64,(.+)$/);
+   if(!m)return null;
+   const bin=atob(m[2]);const bytes=new Uint8Array(bin.length);
+   for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+   return new File([bytes],name,{type:m[1]||"image/jpeg"});
+ }catch(_){return null;}
+}
+async function getShareThumbnailFile(){
+ const p=photos?.[0];
+ if(!p)return null;
+ if(p.dataUrl){
+   const f=dataUrlToShareFile(p.dataUrl,p.name||"Bidire-News-Thumbnail.jpg");
+   if(f)return f;
+ }
+ if(p.driveUrl){
+   try{
+     const r=await fetch(p.driveUrl,{mode:"cors"});
+     if(r.ok){
+       const blob=await r.blob();
+       if(blob.type.startsWith("image/"))return new File([blob],p.name||"Bidire-News-Thumbnail.jpg",{type:blob.type});
+     }
+   }catch(_){ }
+ }
+ return null;
+}
+function buildWhatsAppShareText(url){
+ const title=$("headline").value.trim();
+ const sub=$("sub").value.trim();
+ return [title,sub,"Bidire News",url,
+   "WhatsApp Group: https://chat.whatsapp.com/HaSXuXonS5b5iklUgth1Nq?s=sh&p=a&mlu=4",
+   "Instagram: https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl",
+   "Facebook: https://www.facebook.com/share/1HeeJXHzaE/"]
+   .filter(Boolean).join("\n\n");
+}
+async function shareWhatsAppWithThumbnail(url){
+ const file=await getShareThumbnailFile();
+ if(!file){alert("WhatsApp share ಮಾಡಲು Thumbnail photo ಕಡ್ಡಾಯ. ಮೊದಲು ಸುದ್ದಿಗೆ photo ಸೇರಿಸಿ.");return;}
+ const text=buildWhatsAppShareText(url);
+ if(navigator.share){
+   try{
+     if(navigator.canShare && !navigator.canShare({files:[file]}))throw Error("File sharing not supported");
+     await navigator.share({title:$("headline").value.trim(),text,files:[file]});
+     return;
+   }catch(e){if(e?.name==="AbortError")return;}
+ }
+ alert("ಈ browser ನಲ್ಲಿ photo ಜೊತೆಗೆ WhatsApp share ಬೆಂಬಲಿತವಾಗಿಲ್ಲ. Android Chrome ನಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.");
+}
 function setupSocialShares(url){
  const box=$("socialShareBox");if(!box)return;
  const hint=$("socialShareHint");
  const wa=$("waShare"), fb=$("fbShare"), ig=$("igShare"), personal=$("personalWaUpdate");
- const title=$("headline").value.trim();
  if(!url){
    const msg="ಮೊದಲು ಸುದ್ದಿಯನ್ನು Publish ಮಾಡಿ.";
    if(hint)hint.textContent=msg;
@@ -1317,22 +1365,17 @@ function setupSocialShares(url){
    if(personal)personal.onclick=(e)=>{e.preventDefault();alert(msg);};
    return;
  }
- const sub=$('sub').value.trim();
- const body=$('bodyOut').value.trim();
- const paras=splitNewsParagraphs(body);
- const shortDescription=(paras[0]||"").replace(/\s+/g," ").trim();
- const shareText=[title,sub,shortDescription,"Bidire News",url,
-   "WhatsApp Group: https://chat.whatsapp.com/HaSXuXonS5b5iklUgth1Nq?s=sh&p=a&mlu=4",
-   "Instagram: https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl",
-   "Facebook: https://www.facebook.com/share/1HeeJXHzaE/"]
-   .filter(Boolean).join("\n\n");
+ const shareText=buildWhatsAppShareText(url);
  const waUrl="https://wa.me/?text="+encodeURIComponent(shareText);
  const personalUrl="https://wa.me/919731410761?text="+encodeURIComponent(shareText);
- if(wa){wa.href=waUrl;wa.onclick=null;}
+ if(wa){
+   wa.href=waUrl;
+   wa.onclick=async(e)=>{e.preventDefault();await shareWhatsAppWithThumbnail(url);};
+ }
  if(fb){fb.href="https://www.facebook.com/share/1HeeJXHzaE/";fb.onclick=null;}
  if(ig){ig.href="https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl";ig.onclick=null;}
  if(personal){personal.href=personalUrl;personal.onclick=null;}
- if(hint)hint.textContent="✓ Published news ready — Headline, Subheadline, Short Description, Website link ಮತ್ತು Social links ಸಿದ್ಧವಾಗಿದೆ.";
+ if(hint)hint.textContent="✓ WhatsApp Share: Thumbnail photo ಕಡ್ಡಾಯ • Short Description ಇಲ್ಲ.";
 }
 async function loadAllPosts(){
   const box=$("allPostsList"),st=$("allPostsStatus");box.innerHTML="";st.style.display="block";st.textContent="Loading posts...";
