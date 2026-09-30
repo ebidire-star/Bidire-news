@@ -537,7 +537,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com">
 <label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619">
 <label>Default Blogger Label</label><input id="blogLabel">
-<div class="actions"><button type="button" class="primary" id="saveSettings">Save Settings</button><button type="button" class="black" id="connect">🔐 Connect Google / Blogger</button><button type="button" class="light" id="disconnect">Disconnect</button></div>
+<div class="actions"><button type="button" class="primary" id="saveSettings">Save Settings</button><button type="button" class="black" id="connect">🔐 Sign in with Google</button><button type="button" class="light" id="disconnect">Sign out</button></div>
 <div id="settingsStatus" class="small"></div><div id="bloggerStatus" class="small"></div>
 </div></section>
 <section class="panel hide" id="allPostsPanel">
@@ -610,7 +610,7 @@ window.addEventListener("unhandledrejection",e=>{
   const el=$("status");
   if(el){el.textContent="⚠️ "+m;el.style.display="block";}
 });
-let photos=[], keyPoints=[], englishSummary="", token=null, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
+let photos=[], keyPoints=[], englishSummary="", token=null, tokenExpiresAt=0, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
 let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels=[];
 const blogDefault="2799540703054854619";
 const BIDIRE_CATEGORIES=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"];
@@ -1087,45 +1087,110 @@ function ensureGoogleIdentityServices(){
   document.head.appendChild(sc);
  });
 }
-async function access(){
+async function getGoogleToken(interactive=false){
  await ensureGoogleIdentityServices();
  const cid=$("clientId")?.value.trim()||safeGet("bn_client","");
  const blog=$("blogId")?.value.trim()||safeGet("bn_blog","")||blogDefault;
- if(!cid)throw Error("Google OAuth Client ID ಹಾಕಿ ಮತ್ತು ಮೊದಲು Save Settings ಒತ್ತಿ.");
+ if(!cid)throw Error("Google OAuth Client ID ಹಾಕಿ ಮತ್ತು Save Settings ಒತ್ತಿ.");
  if(!blog)throw Error("Blogger Blog ID ಹಾಕಿ.");
  safeSet("bn_client",cid);safeSet("bn_blog",blog);
- const status=$("bloggerStatus");if(status){status.style.color="#333";status.textContent="⏳ Google / Blogger connection ತೆರೆಯುತ್ತಿದೆ...";status.style.display="block";}
+ if(token && Date.now()<tokenExpiresAt)return token;
+ token=null;tokenExpiresAt=0;
+ const status=$("bloggerStatus");
+ if(status){
+   status.style.color="#333";
+   status.textContent=interactive?"⏳ Google sign-in ತೆರೆಯುತ್ತಿದೆ...":"⏳ Google session restore ಆಗುತ್ತಿದೆ...";
+   status.style.display="block";
+ }
  return new Promise((resolve,reject)=>{
   try{
    tokenClient=google.accounts.oauth2.initTokenClient({
     client_id:cid,
     scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",
     callback:r=>{
-     if(r.error){pending=null;const err=Error(r.error_description||r.error);if(status){status.style.color="#b40000";status.textContent="✕ Google connection failed: "+err.message;}reject(err);return;}
+     if(r.error){
+       pending=null;
+       const err=Error(r.error_description||r.error);
+       if(status){
+         status.style.color="#b40000";
+         status.textContent=interactive
+           ?"✕ Google sign-in failed: "+err.message
+           :"⚠️ Session restore ಆಗಲಿಲ್ಲ. 'Sign in with Google' ಒಮ್ಮೆ ಒತ್ತಿ.";
+       }
+       reject(err);return;
+     }
      token=r.access_token;
+     tokenExpiresAt=Date.now()+Math.max(60,(Number(r.expires_in)||3600)-60)*1000;
      safeSet("bn_oauth_granted","1");
-     if(status){status.style.color="#16803c";status.textContent="✓ Google / Blogger connected successfully.";}
+     safeSet("bn_google_signed_in","1");
+     if(status){
+       status.style.color="#16803c";
+       status.textContent="✓ Google / Blogger signed in.";
+     }
+     updateGoogleAuthUI();
      pending=null;resolve(token);
     }
    });
    pending={resolve,reject};
-   // First authorization may need consent; after that, request silently so
-   // publishing another news item does not show Google verification every time.
-   const needsConsent=safeGet("bn_oauth_granted","")!=="1";
-   tokenClient.requestAccessToken({prompt:needsConsent?"consent":"none"});
-  }catch(e){pending=null;if(status){status.style.color="#b40000";status.textContent="✕ "+e.message;}reject(e);}
+   tokenClient.requestAccessToken({prompt:interactive?"select_account":"none"});
+  }catch(e){
+   pending=null;
+   if(status){status.style.color="#b40000";status.textContent="✕ "+e.message;}
+   reject(e);
+  }
  });
+}
+async function access(){
+ const signed=safeGet("bn_google_signed_in","")||safeGet("bn_oauth_granted","");
+ if(!signed)throw Error("Blogger ಬಳಸಲು ಮೊದಲು 'Sign in with Google' ಒಮ್ಮೆ ಒತ್ತಿ.");
+ return getGoogleToken(false);
+}
+function updateGoogleAuthUI(){
+ const signIn=$("connect"),signOut=$("disconnect");
+ const signed=safeGet("bn_google_signed_in","")==="1" && !!token;
+ if(signIn){
+   signIn.textContent=signed?"✓ Google Signed In":"🔐 Sign in with Google";
+   signIn.disabled=signed;
+   signIn.style.opacity=signed?".75":"1";
+ }
+ if(signOut){
+   signOut.disabled=!signed;
+   signOut.style.opacity=signed?"1":".55";
+ }
+ const bs=$("bloggerStatus");
+ if(bs && signed){
+   bs.style.color="#16803c";
+   bs.textContent="✓ Google / Blogger signed in — ಮತ್ತೆ sign in ಅಗತ್ಯವಿಲ್ಲ.";
+   bs.style.display="block";
+ }
 }
 $("connect").onclick=async()=>{
  try{
-  const st=$("settingsStatus");if(st){st.style.color="#333";st.textContent="⏳ Connecting...";st.style.display="block";}
-  await access();
-  if(st){st.style.color="#16803c";st.textContent="✓ Google / Blogger connected.";}
+  const st=$("settingsStatus");
+  if(st){st.style.color="#333";st.textContent="⏳ Google sign-in...";st.style.display="block";}
+  await getGoogleToken(true);
+  if(st){st.style.color="#16803c";st.textContent="✓ Signed in. ಈಗ Publish / Update ಬಳಸಬಹುದು.";st.style.display="block";}
  }catch(e){
-  const bs=$("bloggerStatus");if(bs){bs.style.color="#b40000";bs.textContent="✕ "+e.message;bs.style.display="block";}
+  const bs=$("bloggerStatus");
+  if(bs){bs.style.color="#b40000";bs.textContent="✕ "+e.message;bs.style.display="block";}
  }
 };
-$("disconnect").onclick=()=>{token=null;tokenClient=null;pending=null;const bs=$("bloggerStatus");if(bs){bs.style.color="#555";bs.textContent="Disconnected.";bs.style.display="block";}};
+$("disconnect").onclick=()=>{
+ token=null;tokenExpiresAt=0;tokenClient=null;pending=null;
+ try{localStorage.removeItem("bn_google_signed_in");localStorage.removeItem("bn_oauth_granted");}catch(_){}
+ const bs=$("bloggerStatus");
+ if(bs){bs.style.color="#555";bs.textContent="Signed out. Publish ಮಾಡಲು ಮತ್ತೆ Sign in with Google ಒಮ್ಮೆ ಒತ್ತಿ.";bs.style.display="block";}
+ const st=$("settingsStatus");
+ if(st){st.style.color="#555";st.textContent="Google account signed out.";st.style.display="block";}
+ updateGoogleAuthUI();
+};
+setTimeout(async()=>{
+ updateGoogleAuthUI();
+ if(safeGet("bn_google_signed_in","")==="1"){
+   try{await getGoogleToken(false);}catch(_){updateGoogleAuthUI();}
+ }
+},300);
+
 function blob(data){let a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
 async function uploadDrive(p){
  const b=blob(p.dataUrl),boundary="bn_"+Date.now()+"_"+Math.random().toString(16).slice(2),meta={name:p.name,mimeType:b.type};
