@@ -1276,7 +1276,14 @@ $("publish").onclick=async()=>{
     const category=$("category")?.value.trim();
     const userLabel=$("blogLabel").value.trim();if(userLabel)labels.push(userLabel);
     if(category && !labels.includes(category))labels.push(category);
-    if(!autoLabels.length) await generateAutoLabels();
+    // Publish must never call Gemini just to create a label.
+    // Use the already saved label; if none exists, create a deterministic
+    // factual label locally from the supplied news. This prevents a Gemini
+    // quota error from blocking Blogger publishing.
+    if(!autoLabels.length){
+      const direct=deterministicLabels(($("raw").value||"")+"\n"+title+"\n"+body);
+      setAutoLabels(direct.slice(0,1));
+    }
     autoLabels.forEach(x=>{if(x&&!labels.includes(x))labels.push(x)});
     const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
     let r,j;
