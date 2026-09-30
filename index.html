@@ -344,7 +344,6 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
   position:relative;
   z-index:10;
 }
-
 .draft-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}.draft-modal.hide{display:none}.draft-modal-card{width:min(680px,100%);max-height:85vh;overflow:auto;background:#fff;color:#111;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}.draft-modal-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #ddd}.draft-list{padding:10px}.draft-item{border:1px solid #ddd;border-radius:10px;padding:10px;margin-bottom:8px}.draft-item-title{font-weight:800;margin-bottom:4px}.draft-item-meta{font-size:11px;color:#666;margin-bottom:8px}.draft-item-actions{display:flex;gap:6px}.draft-item-actions button{flex:1}
 </style>
 </head>
@@ -1195,7 +1194,6 @@ setTimeout(async()=>{
    try{await getGoogleToken(false);}catch(_){updateGoogleAuthUI();}
  }
 },300);
-
 function blob(data){let a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
 async function googleFetch(url, options={}, retry=true){
   // Use the current Google OAuth token. If it is expired/revoked, silently
@@ -1275,11 +1273,9 @@ $("publish").onclick=async()=>{
   try{
     status.textContent="⏳ Step 1/4: Google authorization ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...";
     if(!token)await access();
-
     status.textContent="⏳ Step 2/4: Photo processing...";
     const ph=await hostedPhotos();
     status.textContent=photos.length?`⏳ Step 2/4: ${photos.length} photo ready.`:"⏳ Step 2/4: Photo ಇಲ್ಲ — ಮುಂದುವರಿಯುತ್ತಿದೆ...";
-
     status.textContent="⏳ Step 3/4: Blogger content ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...";
     const content=htmlContent(ph),labels=[];
     const category=$("category")?.value.trim();
@@ -1291,7 +1287,6 @@ $("publish").onclick=async()=>{
     }
     autoLabels.forEach(x=>{if(x&&!labels.includes(x))labels.push(x)});
     const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
-
     status.textContent=editingPostId?"⏳ Step 4/4: Blogger post update...":"⏳ Step 4/4: Blogger publish...";
     let r,j;
     if(editingPostId){
@@ -1305,8 +1300,23 @@ $("publish").onclick=async()=>{
     }
     j=await r.json().catch(()=>({}));
     if(!r.ok){
-      const apiMsg=j?.error?.message||"Blogger API error";
-      throw Error("BLOGGER_PUBLISH: "+apiMsg);
+      const apiErr=j?.error||{};
+      const retryAfter=r.headers?.get("Retry-After")||"";
+      const detailParts=[
+        `HTTP ${r.status}`,
+        apiErr.status?`status=${apiErr.status}`:"",
+        apiErr.code?`code=${apiErr.code}`:"",
+        apiErr.message?`message=${apiErr.message}`:"",
+        Array.isArray(apiErr.errors)?apiErr.errors.map(x=>[
+          x?.reason?`reason=${x.reason}`:"",
+          x?.domain?`domain=${x.domain}`:"",
+          x?.message?`detail=${x.message}`:"",
+          x?.location?`location=${x.location}`:"",
+          x?.locationType?`locationType=${x.locationType}`:""
+        ].filter(Boolean).join(" | ")).filter(Boolean).join(" || "):"",
+        retryAfter?`Retry-After=${retryAfter}`:""
+      ].filter(Boolean);
+      throw Error("BLOGGER_PUBLISH: "+(detailParts.join(" — ")||"Blogger API error"));
     }
     setEditingPost(j.id,j.url); try{localStorage.removeItem("bn_draft")}catch(_){}
     status.style.color="#16803c";
@@ -1492,7 +1502,6 @@ function resetNewNewsEditor(){
   undoStack=[];redoStack=[];pushUndoSnapshot();
 }
 $("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ? ಹಿಂದಿನ editor data clear ಆಗುತ್ತದೆ."))return;resetNewNewsEditor();window.scrollTo({top:0,behavior:"smooth"})};
-
 let d=safeJsonGet("bn_draft",null);
 if(d){
   $("raw").value=d.raw||"";
@@ -1882,7 +1891,6 @@ $("extractImageText").onclick=async()=>{
     $("imageTextStatus").textContent="✓ Image text ಕಚ್ಚಾ ಸುದ್ದಿಗೆ ಸೇರಿಸಲಾಗಿದೆ.";
   }catch(e){$("imageTextStatus").textContent="✕ Image text error: "+e.message}
 };
-
 /* Stronger autosave hooks */
 ["raw","headline","sub","bodyOut","englishSummaryEdit"].forEach(id=>{
   $(id)?.addEventListener("input",()=>{clearTimeout(draftTimer);draftTimer=setTimeout(saveEmergencyDraft,350)});
