@@ -370,13 +370,13 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
     <strong>💬 Chat</strong>
   </div>
   <div class="raw-chat-body">
-    <textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea><div class="normal-parse-note">✍️ Normal News Parsing = AI-free. ಇದು raw information ಅನ್ನು ಮಾತ್ರ ವಿಭಾಗಿಸುತ್ತದೆ; ಹೊಸ facts ಸೇರಿಸುವುದಿಲ್ಲ.</div>
+    <textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea><div class="normal-parse-note">✍️ Normal News Update = AI-free. ಇದು raw information ಅನ್ನು ಮಾತ್ರ ವಿಭಾಗಿಸುತ್ತದೆ; ಹೊಸ facts ಸೇರಿಸುವುದಿಲ್ಲ.</div>
     <div id="rawChatLog" class="chat-log"></div>
     <textarea id="rawChatInput" class="chat-input" placeholder="AIಗೆ ಕೇಳಿ..."></textarea>
     <div class="raw-chat-actions">
       <button type="button" id="rawChatSend" class="chat-send-btn">➤ Chat</button>
       <button type="button" id="rawChatClear" class="chat-clear-btn">Clear</button>
-      <button type="button" id="normalParse" class="light">✍️ Normal News Parsing</button>
+      <button type="button" id="normalParse" class="light">✍️ Normal News Update</button>
       <button type="button" id="rawAiWrite" class="ai-write-btn grow">✨ AI ಮೂಲಕ ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
     </div>
     <div id="rawChatStatus" class="raw-chat-status"></div>
@@ -588,6 +588,10 @@ window.addEventListener("unhandledrejection",e=>{
 let photos=[], keyPoints=[], englishSummary="", token=null, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
 let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels=[];
 const blogDefault="2799540703054854619";
+const BIDIRE_CATEGORIES=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"];
+function isBidireCategory(v){return BIDIRE_CATEGORIES.includes(String(v||""));}
+function setCategoryValue(v){const el=$("category");if(!el)return;el.value=isBidireCategory(v)?v:BIDIRE_CATEGORIES[0];}
+function categoryOptionsHTML(selected){return BIDIRE_CATEGORIES.map(c=>`<option value="${esc(c)}" ${c===selected?"selected":""}>${esc(c)}</option>`).join("");}
 function esc(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function cleanModel(v){
  v=String(v||"").replace(/^models\\//i,"");
@@ -752,7 +756,7 @@ function applyEditorSnapshot(st){
  $("headline").value=st.headline||"";
  $("sub").value=st.sub||"";
  $("bodyOut").value=st.body||"";
- if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(st.category)?st.category:"ಮೂಡುಬಿದಿರೆ";
+ if($("category"))$("category").value=isBidireCategory(st.category)?st.category:BIDIRE_CATEGORIES[0];
  keyPoints=Array.isArray(st.keyPoints)?[...st.keyPoints]:[];
  englishSummary=st.englishSummary||"";
  if($("keyPointsEnabled"))$("keyPointsEnabled").checked=st.keyPointsEnabled!==false;
@@ -1020,14 +1024,58 @@ $("photoInput").onchange=async e=>{
  }
  e.target.value="";
 };
-async function access(){
- if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಿಲ್ಲ. Page refresh ಮಾಡಿ.");
- const cid=$("clientId").value.trim();if(!cid)throw Error("OAuth Client ID ಹಾಕಿ.");
- tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:r=>{if(r.error){pending?.reject(Error(r.error_description||r.error));return}token=r.access_token;safeSet("bn_client",cid);$("bloggerStatus").textContent="✓ Blogger connected.";pending?.resolve(token);pending=null}});
- return new Promise((resolve,reject)=>{pending={resolve,reject};tokenClient.requestAccessToken({prompt:"consent"})})
+function ensureGoogleIdentityServices(){
+ return new Promise((resolve,reject)=>{
+  if(window.google?.accounts?.oauth2){resolve();return;}
+  const existing=document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+  if(existing){
+   let n=0;const timer=setInterval(()=>{
+    if(window.google?.accounts?.oauth2){clearInterval(timer);resolve();}
+    else if(++n>=40){clearInterval(timer);reject(Error("Google authorization library load ಆಗಲಿಲ್ಲ. Internet connection ಪರಿಶೀಲಿಸಿ."));}
+   },250);
+   return;
+  }
+  const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.async=true;sc.defer=true;
+  sc.onload=()=>window.google?.accounts?.oauth2?resolve():reject(Error("Google authorization library available ಇಲ್ಲ."));
+  sc.onerror=()=>reject(Error("Google authorization library load ಆಗಲಿಲ್ಲ."));
+  document.head.appendChild(sc);
+ });
 }
-$("connect").onclick=async()=>{try{await access()}catch(e){$("bloggerStatus").textContent="✕ "+e.message}};
-$("disconnect").onclick=()=>{token=null;$("bloggerStatus").textContent="Disconnected."};
+async function access(){
+ await ensureGoogleIdentityServices();
+ const cid=$("clientId")?.value.trim()||safeGet("bn_client","");
+ const blog=$("blogId")?.value.trim()||safeGet("bn_blog","")||blogDefault;
+ if(!cid)throw Error("Google OAuth Client ID ಹಾಕಿ ಮತ್ತು ಮೊದಲು Save Settings ಒತ್ತಿ.");
+ if(!blog)throw Error("Blogger Blog ID ಹಾಕಿ.");
+ safeSet("bn_client",cid);safeSet("bn_blog",blog);
+ const status=$("bloggerStatus");if(status){status.style.color="#333";status.textContent="⏳ Google / Blogger connection ತೆರೆಯುತ್ತಿದೆ...";status.style.display="block";}
+ return new Promise((resolve,reject)=>{
+  try{
+   tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:cid,
+    scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",
+    callback:r=>{
+     if(r.error){pending=null;const err=Error(r.error_description||r.error);if(status){status.style.color="#b40000";status.textContent="✕ Google connection failed: "+err.message;}reject(err);return;}
+     token=r.access_token;
+     if(status){status.style.color="#16803c";status.textContent="✓ Google / Blogger connected successfully.";}
+     pending=null;resolve(token);
+    }
+   });
+   pending={resolve,reject};
+   tokenClient.requestAccessToken({prompt:"consent"});
+  }catch(e){pending=null;if(status){status.style.color="#b40000";status.textContent="✕ "+e.message;}reject(e);}
+ });
+}
+$("connect").onclick=async()=>{
+ try{
+  const st=$("settingsStatus");if(st){st.style.color="#333";st.textContent="⏳ Connecting...";st.style.display="block";}
+  await access();
+  if(st){st.style.color="#16803c";st.textContent="✓ Google / Blogger connected.";}
+ }catch(e){
+  const bs=$("bloggerStatus");if(bs){bs.style.color="#b40000";bs.textContent="✕ "+e.message;bs.style.display="block";}
+ }
+};
+$("disconnect").onclick=()=>{token=null;tokenClient=null;pending=null;const bs=$("bloggerStatus");if(bs){bs.style.color="#555";bs.textContent="Disconnected.";bs.style.display="block";}};
 function blob(data){let a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
 async function uploadDrive(p){
  const b=blob(p.dataUrl),boundary="bn_"+Date.now()+"_"+Math.random().toString(16).slice(2),meta={name:p.name,mimeType:b.type};
@@ -1150,7 +1198,7 @@ async function loadPostForEdit(id){
     const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(id)}`,{headers:{Authorization:"Bearer "+token}});
     const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Could not load post");
     $("headline").value=j.title||"";
-    if($("category")){ const existing=(j.labels||[]).find(x=>x!=="BidireAIEditor" && x!=="BidireAd" && x!==$("blogLabel").value.trim()); if(existing && ["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(existing)) $("category").value=existing; else $("category").value="ಮೂಡುಬಿದಿರೆ"; }
+    if($("category")){ const existing=(j.labels||[]).find(x=>x!=="BidireAIEditor" && x!=="BidireAd" && x!==$("blogLabel").value.trim()); if(existing && isBidireCategory(existing)) $("category").value=existing; else $("category").value=BIDIRE_CATEGORIES[0]; }
     const tmp=document.createElement("div");tmp.innerHTML=j.content||"";
     const summary=tmp.querySelector('p[style*="border-left"]');$("sub").value=summary?.textContent?.trim()||"";
     const english=tmp.querySelector(".english-box p")||tmp.querySelector('div[style*="border-left:4px solid #555"] div:last-child');
@@ -1180,19 +1228,27 @@ async function loadPostForEdit(id){
 $("copy").onclick=()=>navigator.clipboard.writeText($("headline").value+"\n\n"+$("sub").value+"\n\n"+$("bodyOut").value);
 $("save").onclick=()=>{saveDraftAuto();msg("Draft saved.");};
 $("saveSettings").onclick=()=>{
- const key=$("apiKey"),model=$("model"),client=$("clientId"),blog=$("blogId"),label=$("blogLabel");
- safeSet("bn_key",key?.value.trim()||"");
- safeSet("bn_model",cleanModel(model?.value||""));
- safeSet("bn_client",client?.value.trim()||"");
- safeSet("bn_blog",blog?.value.trim()||blogDefault);
- safeSet("bn_label",label?.value.trim()||"");
- setAIModelStatus(cleanModel(model?.value||""),"Primary selected; automatic fallback enabled");
- if($("settingsStatus"))$("settingsStatus").textContent="✓ Settings saved.";
+ try{
+  const key=$("apiKey"),model=$("model"),client=$("clientId"),blog=$("blogId"),label=$("blogLabel");
+  const values={key:key?.value.trim()||"",model:cleanModel(model?.value||""),client:client?.value.trim()||"",blog:blog?.value.trim()||blogDefault,label:label?.value.trim()||""};
+  safeSet("bn_key",values.key);
+  safeSet("bn_model",values.model);
+  safeSet("bn_client",values.client);
+  safeSet("bn_blog",values.blog);
+  safeSet("bn_label",values.label);
+  setAIModelStatus(values.model,"Primary selected; automatic fallback enabled");
+  const st=$("settingsStatus");
+  if(st){st.style.color="#16803c";st.textContent="✓ Settings saved successfully.";st.style.display="block";}
+  const bs=$("bloggerStatus");
+  if(bs)bs.textContent=values.client?"OAuth Client ID saved. ಈಗ Connect Google / Blogger ಒತ್ತಿ.":"OAuth Client ID ಹಾಕಿ, ನಂತರ Connect Google / Blogger ಒತ್ತಿ.";
+ }catch(e){
+  const st=$("settingsStatus");if(st){st.style.color="#b40000";st.textContent="✕ Settings save ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block";}
+ }
 };
-$("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";if($("category"))$("category").value="ಮೂಡುಬಿದಿರೆ";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");autoLabels=[];syncEditors();renderAutoLabelsEditor();renderPhotos();render();setupSocialShares("");localStorage.removeItem("bn_draft");undoStack=[];redoStack=[];pushUndoSnapshot();window.scrollTo({top:0,behavior:"smooth"})};
+$("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";if($("category"))$("category").value=BIDIRE_CATEGORIES[0];photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");autoLabels=[];syncEditors();renderAutoLabelsEditor();renderPhotos();render();setupSocialShares("");localStorage.removeItem("bn_draft");undoStack=[];redoStack=[];pushUndoSnapshot();window.scrollTo({top:0,behavior:"smooth"})};
 let d=safeJsonGet("bn_draft",null);
 if(d){
-  $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
+  $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";if($("category"))$("category").value=isBidireCategory(d.category)?d.category:BIDIRE_CATEGORIES[0];
   keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||""; autoLabels=Array.isArray(d.autoLabels)?d.autoLabels:[];photos=Array.isArray(d.photos)?d.photos.map(p=>({...p,caption:p.caption||"",captionDraft:Object.prototype.hasOwnProperty.call(p,"captionDraft")?p.captionDraft:(p.caption||""),aiCaption:p.aiCaption||""})):[];
   $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;$("englishEnabled").checked=d.englishEnabled!==false;
   setEditingPost(d.editingPostId||null,d.editingPostUrl||"");syncEditors();renderPhotos();render();
@@ -1413,7 +1469,7 @@ function restoreSafeDraft(){
     $("headline").value=d.headline||"";
     $("sub").value=d.sub||"";
     $("bodyOut").value=d.body||"";
-    if($("category")) $("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
+    if($("category")) $("category").value=isBidireCategory(d.category)?d.category:BIDIRE_CATEGORIES[0];
     keyPoints=Array.isArray(d.keyPoints)?d.keyPoints:[];
     englishSummary=d.englishSummary||"";
     photos=Array.isArray(d.photos)?d.photos.map(p=>({...p,caption:p.caption||"",captionDraft:Object.prototype.hasOwnProperty.call(p,"captionDraft")?p.captionDraft:(p.caption||""),aiCaption:p.aiCaption||""})):[];
@@ -1489,19 +1545,23 @@ $("transcribeAudio").onclick=async()=>{
     const mime=audioBlob.type||"audio/webm";
     const prompt=`Transcribe this audio accurately into Kannada if the spoken content is Kannada, otherwise preserve the spoken language. Do not summarize. Do not invent missing words. Return ONLY the transcription text.`;
     const models=aiModelList();
-    let result=null,last="";
-    for(let i=0;i<models.length;i++){
-      const model=models[i];
+    let result=null,last="",attemptIndex=0;
+    for(const model of models){
       try{
         const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{
           method:"POST",headers:{"Content-Type":"application/json"},
           body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}]})
         });
-        const j=await r.json();
-        if(r.ok){result=j;if(i>0){safeSet("bn_model",model);setAIModelStatus(model,"Audio quota fallback");}break}
+        const j=await r.json().catch(()=>({}));
+        if(r.ok){
+          result=j;
+          if(attemptIndex>0){safeSet("bn_model",model);setAIModelStatus(model,"Audio fallback");}
+          break;
+        }
         last=j.error?.message||`API error (${r.status})`;
         if(!isQuotaError(r.status,last))break;
-      }catch(e){last=e.message}
+      }catch(e){last=e?.message||String(e)}
+      attemptIndex++;
     }
     if(!result)throw Error(last||"Audio transcription failed");
     const text=(result.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").trim();
@@ -1572,49 +1632,80 @@ try{
     t.setAttribute("aria-label","Dark / Light mode");
   }
 })();
-/* ===== Normal News Parsing — AI FREE ===== */
+/* ===== Bidire Category Registry ===== */
+(function(){const el=$("category");if(el)el.innerHTML=categoryOptionsHTML(el.value||BIDIRE_CATEGORIES[0]);setCategoryValue(el?.value||BIDIRE_CATEGORIES[0]);})();
+/* ===== Normal News Update — AI FREE ===== */
 (function(){
  const raw=$("raw"),btn=$("normalParse");
  if(!raw||!btn)return;
- function cleanLine(v){return String(v||"").trim().replace(/\s+/g," ")}
- function extractLabeled(text,labelPattern){
-   const re=new RegExp("^\\s*(?:"+labelPattern+")\\s*[:：-]\\s*(.*)$","i");
-   return text.split(/\r?\n/).map(cleanLine).filter(Boolean).map(x=>x.match(re)).filter(Boolean).map(m=>m[1].trim());
- }
- function parseNormalNews(text){
-   const lines=String(text||"").replace(/\r/g,"").split("\n").map(cleanLine).filter(Boolean);
-   if(!lines.length)return {headline:"",sub:"",body:"",keyPoints:[],englishSummary:""};
-   const headline=extractLabeled(text,"ಶೀರ್ಷಿಕೆ|headline")[0]||"";
-   const sub=extractLabeled(text,"ಉಪಶೀರ್ಷಿಕೆ|subheadline|sub-headline")[0]||"";
-   const bodyLabeled=extractLabeled(text,"ಸುದ್ದಿ|news body|news")[0]||"";
-   const kp=[];
-   const kpMatch=text.match(/(?:ಪ್ರಮುಖ ಅಂಶಗಳು|key points?)\s*[:：]?\s*([\s\S]*?)(?=\n\s*(?:English Summary|ಇಂಗ್ಲಿಷ್ ಸಾರಾಂಶ|$))/i);
-   if(kpMatch)kpMatch[1].split(/\n|•|-\s+|\d+[.)]/).map(cleanLine).filter(Boolean).forEach(x=>kp.push(x));
-   const en=extractLabeled(text,"English Summary|ಇಂಗ್ಲಿಷ್ ಸಾರಾಂಶ")[0]||"";
-   let remaining=lines.slice();
-   if(headline)remaining=remaining.filter(x=>x!==headline);
-   if(sub)remaining=remaining.filter(x=>x!==sub);
-   if(bodyLabeled)remaining=remaining.filter(x=>x!==bodyLabeled);
-   if(kp.length)remaining=remaining.filter(x=>!kp.includes(x));
-   if(en)remaining=remaining.filter(x=>x!==en);
-   let h=headline,sh=sub,body=bodyLabeled;
-   if(!h)h=remaining.shift()||"";
-   if(!sh && remaining.length>1)sh=remaining.shift()||"";
-   if(!body)body=remaining.join("\n\n");
-   return {headline:h,sub:sh,body,keyPoints:kp,englishSummary:en};
+ const labels={
+  headline:/^(?:ಶೀರ್ಷಿಕೆ|headline)\s*[:：-]?\s*/i,
+  sub:/^(?:ಉಪಶೀರ್ಷಿಕೆ|ಉಪ ಶೀರ್ಷಿಕೆ|subheadline|sub-headline)\s*[:：-]?\s*/i,
+  body:/^(?:ಸುದ್ದಿ|ಸುದ್ದಿ ವಿಷಯ|news body|news)\s*[:：-]?\s*/i,
+  points:/^(?:ಪ್ರಮುಖ ಅಂಶಗಳು|ಪ್ರಮುಖ ಅಂಶ|key points?)\s*[:：-]?\s*/i,
+  english:/^(?:English Summary|ಇಂಗ್ಲಿಷ್ ಸಾರಾಂಶ)\s*[:：-]?\s*/i
+ };
+ function clean(v){return String(v||"").trim().replace(/[ \t]+/g," ")}
+ function isLabelLine(line){return Object.values(labels).some(re=>re.test(line))}
+ function parse(text){
+  const lines=String(text||"").replace(/\r/g,"").split("\n");
+  const out={headline:"",sub:"",body:"",keyPoints:[],englishSummary:""};
+  let section="body", body=[];
+  for(const rawLine of lines){
+   const line=clean(rawLine);
+   if(!line)continue;
+   let matched=false;
+   for(const [name,re] of Object.entries(labels)){
+    if(re.test(line)){
+     const value=clean(line.replace(re,""));
+     section=name;matched=true;
+     if(name==="headline"&&value)out.headline=value;
+     else if(name==="sub"&&value)out.sub=value;
+     else if(name==="body"&&value)body.push(value);
+     else if(name==="points"&&value)out.keyPoints.push(value.replace(/^[•*-]\s*/,""));
+     else if(name==="english"&&value)out.englishSummary=value;
+     break;
+    }
+   }
+   if(matched)continue;
+   if(section==="headline"){
+    if(!out.sub){out.sub=line;section="sub";continue;}
+    body.push(line);section="body";continue;
+   }
+   if(section==="sub"){body.push(line);section="body";continue;}
+   if(section==="points"){
+    const v=line.replace(/^(?:•|-|–|—|\d+[.)])\s*/,"");if(v)out.keyPoints.push(v);continue;
+   }
+   if(section==="english"){out.englishSummary=out.englishSummary?out.englishSummary+" "+line:line;continue;}
+   body.push(line);
+  }
+  const hasAnyLabel=lines.some(x=>isLabelLine(clean(x)));
+  if(!hasAnyLabel){
+   const plain=lines.map(clean).filter(Boolean);
+   out.headline=plain.shift()||"";
+   out.sub=plain.length>1?plain.shift()||"":"";
+   body=plain;
+  }else{
+   if(!out.headline){const plain=lines.map(clean).filter(Boolean);out.headline=plain.shift()||"";}
+   if(!out.sub){const plain=lines.map(clean).filter(Boolean);out.sub=plain.length>1?plain[1]:"";}
+  }
+  out.body=body.join("\n\n").trim();
+  out.keyPoints=[...new Set(out.keyPoints.map(clean).filter(Boolean))];
+  return out;
  }
  btn.onclick=()=>{
+  try{
    const text=raw.value.trim();
-   if(!text){msg("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
-   const o=parseNormalNews(text);
+   if(!text){msg("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return;}
+   const o=parse(text);
    $("headline").value=o.headline;$("sub").value=o.sub;$("bodyOut").value=o.body;
    keyPoints=o.keyPoints;englishSummary=o.englishSummary;
    setAutoLabels(deterministicLabels(text));
    renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;
    render();scheduleAutosave();scheduleHistory();pushUndoSnapshot();
-   const st=$("status");
-   if(st){st.textContent="✓ Normal News Parsing — AI ಬಳಸಲಾಗಿಲ್ಲ.";st.style.display="block";}
+   const st=$("status");if(st){st.style.color="#16803c";st.textContent="✓ Normal News Update completed — AI ಬಳಸಲಾಗಿಲ್ಲ.";st.style.display="block";}
    const edit=$("editSection");if(edit)edit.scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){msg("✕ Normal News Update failed: "+e.message);}
  };
 })();
 /* ===== V5 Clean Raw News Chat ===== */
@@ -1733,7 +1824,7 @@ ${JSON.stringify(data)}`;
     if(headline)headline.value=pendingEdit.headline??headline.value;
     if(sub)sub.value=pendingEdit.subheadline??sub.value;
     if(body)body.value=pendingEdit.body??body.value;
-    if(document.getElementById("category")){ const allowed=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"]; document.getElementById("category").value=allowed.includes(pendingEdit.category)?pendingEdit.category:"ಮೂಡುಬಿದಿರೆ"; }
+    if(document.getElementById("category")){ document.getElementById("category").value=isBidireCategory(pendingEdit.category)?pendingEdit.category:BIDIRE_CATEGORIES[0]; }
     if(Array.isArray(pendingEdit.keyPoints)){ window.keyPoints=pendingEdit.keyPoints; if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor(); }
     if(typeof pendingEdit.englishSummary==='string'){ window.englishSummary=pendingEdit.englishSummary; const es=document.getElementById("englishSummaryEdit"); if(es)es.value=window.englishSummary; }
     if(typeof render==='function')render();
