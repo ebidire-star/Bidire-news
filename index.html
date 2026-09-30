@@ -23,7 +23,7 @@ button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{back
 .photo-box{margin-top:10px;border:1px dashed #ccc;border-radius:8px;padding:10px;background:#fafafa}
 .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:9px}.photo-item{border:1px solid #ddd;border-radius:7px;overflow:hidden;background:#fff}
 .photo-item img{display:block;width:100%;height:120px;object-fit:cover}.photo-item .pcap{padding:6px 8px;font-size:11px;color:#666;font-style:italic;line-height:1.35}
-.photo-item .pname{padding:5px 8px;font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo-remove{margin:6px 8px 8px;width:calc(100% - 16px);font-size:11px}
+.photo-item .pname{padding:5px 8px;font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo-remove{margin:6px 8px 8px;width:calc(100% - 16px);font-size:11px}.ai-work-status{display:none;margin-top:8px;padding:7px 9px;border-left:3px solid #b40000;background:#fff7d6;font-size:11px;color:#555;line-height:1.45}.ai-work-status.show{display:block}
 .hide{display:none}.summary-box{margin:18px 0;padding:13px 15px;border-left:4px solid #b40000;background:#fff4ef;border-radius:4px}.summary-box h3{margin:0 0 8px;font-size:19px}
 .summary-box ul{margin:0;padding-left:20px}.summary-box li{margin:5px 0;line-height:1.55}.english-box{border-left-color:#555;background:#f7f7f7}.english-box p{margin:0!important;font-size:15px;line-height:1.65!important;color:#444}
 @media(max-width:600px){header{padding:9px 8px}.brand{font-size:17px}.sub{font-size:10px}.actions button{min-width:100px;padding:8px}.post-preview h1{font-size:22px}}
@@ -393,7 +393,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <label>📷 Photos / ಫೋಟೋಗಳು</label>
 <input id="photoInput" type="file" accept="image/*" multiple>
 <div class="small">ಪ್ರತಿ photoಗೆ Manual Caption / Save Caption / ✨ AI Caption ಪ್ರತ್ಯೇಕವಾಗಿ ಇದೆ. Photo upload ಮಾಡಿದಾಗ AI caption automatic ಆಗಿ run ಆಗುವುದಿಲ್ಲ.</div>
-<div id="photoGrid" class="photo-grid"></div><div id="photoStatus" class="small"></div>
+<div id="photoGrid" class="photo-grid"></div><div id="photoStatus" class="small"></div><div id="aiWorkStatus" class="ai-work-status" aria-live="polite"></div>
 </div>
 <div class="subtool audio">
   <button type="button" class="subtool-toggle">🎙️ Audio to Text <span class="chev">▼</span></button><div class="subtool-body">
@@ -677,6 +677,7 @@ async function geminiRequest(apiKey, contents, generationConfig){
  throw Error(lastError);
 }
 function msg(t){$("status").textContent=t;$("status").style.display=t?"block":"none"}
+function aiMsg(t){const el=$("aiWorkStatus");if(el){el.textContent=t||"";el.classList.toggle("show",!!t)}msg(t)}
 function render(){
   $("ph").textContent=$("headline").value||"ಶೀರ್ಷಿಕೆ";
   $("ps").textContent=$("sub").value||"ಸಬ್‌ಹೆಡ್ಲೈನ್ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.";
@@ -869,7 +870,7 @@ function deterministicLabels(text){
    if(r.terms.some(x=>t.includes(x.toLowerCase()))&&!found.includes(r.label))found.push(r.label);
    if(found.length>=2)break;
  }
- return found.slice(0,2);
+ return found.slice(0,1);
 }
 function setAutoLabels(labels){
  autoLabels=[...new Set((labels||[]).map(x=>String(x||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"")).filter(Boolean))].slice(0,2);
@@ -880,7 +881,7 @@ function renderAutoLabelsEditor(){
  box.innerHTML=autoLabels.map((x,i)=>`<div class="label-edit-item"><input data-auto-label="${i}" value="${esc(x)}" maxlength="40"><button type="button" class="light" data-remove-auto-label="${i}">✕</button></div>`).join("");
  box.querySelectorAll("[data-auto-label]").forEach(inp=>inp.oninput=()=>{
    autoLabels[+inp.dataset.autoLabel]=inp.value.toUpperCase().replace(/[^A-Z0-9_-]/g,"");
-   autoLabels=[...new Set(autoLabels.filter(Boolean))].slice(0,2);
+   autoLabels=[...new Set(autoLabels.filter(Boolean))].slice(0,1);
    scheduleAutosave();
  });
  box.querySelectorAll("[data-remove-auto-label]").forEach(btn=>btn.onclick=()=>{
@@ -892,7 +893,7 @@ function updateAutoLabelsDisplay(){
  const el=$("autoLabelsDisplay");if(el) el.textContent=autoLabels.length?autoLabels.join(" · "):"—";
 }
 function addAutoLabel(){
- if(autoLabels.length>=2){msg("ಗರಿಷ್ಠ 2 English labels ಮಾತ್ರ.");setTimeout(()=>msg(""),1000);return}
+ if(autoLabels.length>=1){msg("ಗರಿಷ್ಠ 1 English label ಮಾತ್ರ.");setTimeout(()=>msg(""),1000);return}
  autoLabels.push("");renderAutoLabelsEditor();
  const inputs=document.querySelectorAll("[data-auto-label]");inputs[inputs.length-1]?.focus();
  scheduleAutosave();
@@ -907,14 +908,14 @@ async function generateAutoLabels(){
  if(direct.length>=2){setAutoLabels(direct);return direct}
  const key=safeGet("bn_key","");
  if(!key){setAutoLabels(direct.length?direct:[]);return direct}
- const prompt=`Generate 1 or 2 English Blogger labels for this news.
+ const prompt=`Generate ONE English Blogger label for this news.
 Rules:
 - Use ONLY entities/places/institutions explicitly present in the supplied news.
 - Prefer a major institution/organization/brand first (example: ಆಳ್ವಾಸ್ -> ALVAS; Excellent -> EXCELLENT).
 - If no institution/brand is present, use the main place/town name in simple English transliteration (example: ಪಾಲಡ್ಕ -> PALADKA).
 - If an institution and a place are both clearly present, return both.
 - Never return generic labels such as NEWS, INDIA, KARNATAKA, EDUCATION, EVENT.
-- Return ONLY valid JSON: {"labels":["LABEL1","LABEL2"]}. Maximum 2 labels.
+- Return ONLY valid JSON: {"labels":["LABEL1"]}. Maximum 1 label.
 NEWS:
 ${raw}\n${body}`;
  try{
@@ -922,10 +923,14 @@ ${raw}\n${body}`;
    const txt=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").replace(/^```json\s*/,"").replace(/\s*```$/,"").trim();
    const o=JSON.parse(txt);
    const ai=Array.isArray(o.labels)?o.labels:direct;
-   const cleaned=ai.map(x=>String(x).replace(/[^A-Za-z0-9_-]/g,"").toUpperCase()).filter(Boolean).slice(0,2);
+   const cleaned=ai.map(x=>String(x).replace(/[^A-Za-z0-9_-]/g,"").toUpperCase()).filter(Boolean).slice(0,1);
    setAutoLabels(cleaned.length?cleaned:direct);
  }catch(e){setAutoLabels(direct)}
  return autoLabels;
+}
+function normalizeMoodubidireText(v){
+ const s=String(v||"");
+ return s.replace(/\b(?:moodubidri|moodubidre|moodubidire|moodbidri|moodbidre|moodbidire|moodabidri|moodabidre|moodabidire)\b/gi,"Moodubidire");
 }
 function promptFor(task){
  const raw=$("raw").value.trim();if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return null}
@@ -937,21 +942,21 @@ Do not use honorifics such as ಶ್ರೀ/ಶ್ರೀಮತಿ/ಕುಮಾರ
 Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences.
 Return ONLY valid JSON with keys: headline, subheadline, body, keyPoints, englishSummary, autoLabels.
 keyPoints: Return only factual Kannada points explicitly supported by the RAW NEWS. If the raw news does not contain enough distinct information for a key point, return fewer points or an empty array. NEVER invent or infer facts.
-englishSummary: Return a concise factual English summary only when the RAW NEWS contains enough information to summarize. If not enough information is present, return an empty string. NEVER invent or infer facts.
-autoLabels: 1-2 English labels only; prefer the main institution/brand, otherwise the main place; never invent a label not supported by the supplied news.
+englishSummary: Return a concise factual English summary only when the RAW NEWS contains enough information to summarize. If not enough information is present, return an empty string. NEVER invent or infer facts. When referring to the town in English, use only the spelling "Moodubidire".
+autoLabels: ONE English label only; prefer the main institution/brand, otherwise the main place; never invent a label not supported by the supplied news.
 RAW NEWS:
 ${raw}`;
 }
 async function gemini(text){
  const key=safeGet("bn_key","");
  if(!key){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
- msg("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
+ aiMsg("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
  try{
   const {j}=await geminiRequest(key,[{parts:[{text}]}],{responseMimeType:"application/json"});
   let t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\\s*/,"").replace(/\\s*```$/,""),o=JSON.parse(t);
-  $("headline").value=o.headline||"";$("sub").value=o.subheadline||"";$("bodyOut").value=o.body||"";
+  $("headline").value=normalizeMoodubidireText(o.headline||"");$("sub").value=normalizeMoodubidireText(o.subheadline||"");$("bodyOut").value=normalizeMoodubidireText(o.body||"");
   keyPoints=Array.isArray(o.keyPoints)?o.keyPoints.filter(Boolean):[];
-  englishSummary=String(o.englishSummary||"").trim();
+  englishSummary=normalizeMoodubidireText(String(o.englishSummary||"").trim());
   setAutoLabels(Array.isArray(o.autoLabels)?o.autoLabels:deterministicLabels(($("raw").value||"")+"\n"+($("headline").value||"")+"\n"+($("bodyOut").value||"")));
   renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;render();scheduleAutosave();
   // When AI writes the news, generate photo captions automatically as well.
@@ -961,8 +966,8 @@ async function gemini(text){
     }
     render();scheduleAutosave();
   }
-  msg("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>msg(""),1200);
- }catch(e){msg("AI error: "+e.message)}
+  aiMsg("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>aiMsg(""),1200);
+ }catch(e){aiMsg("AI error: "+e.message)}
 }
 async function geminiExtra(text,key){
  const apiKey=safeGet("bn_key","");
@@ -972,8 +977,8 @@ async function geminiExtra(text,key){
    const {j}=await geminiRequest(apiKey,[{parts:[{text}]}],{responseMimeType:"application/json"});
    const t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\\s*/,"").replace(/\\s*```$/,""),o=JSON.parse(t);
    if(key==="keyPoints")keyPoints=Array.isArray(o.keyPoints)?o.keyPoints.filter(Boolean):[];
-   if(key==="englishSummary")englishSummary=String(o.englishSummary||"").trim();
-   syncEditors();render();scheduleAutosave();msg("ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>msg(""),1000);
+   if(key==="englishSummary")englishSummary=normalizeMoodubidireText(String(o.englishSummary||"").trim());
+   syncEditors();render();scheduleAutosave();aiMsg("ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>aiMsg(""),1000);
  }catch(e){msg("AI error: "+e.message)}
 }
 $("generate").onclick=()=>{let p=promptFor("Create the complete news report.");if(p)gemini(p)};
@@ -985,9 +990,9 @@ async function generateAICaption(index,autoSaveCaption=false){
  const p=photos[index];
  if(!p)return "";
  const key=safeGet("bn_key","");
- if(!key){if(!autoSaveCaption)msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return ""}
+ if(!key){if(!autoSaveCaption)aiMsg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return ""}
  if(!p.dataUrl){
-   if(!autoSaveCaption)msg("ಈ photoಗೆ AI Caption ಮಾಡಲು image data ಲಭ್ಯವಿಲ್ಲ. ಹೊಸದಾಗಿ photo upload ಮಾಡಿ ಅಥವಾ manual caption ಬಳಸಿ.");
+   if(!autoSaveCaption)aiMsg("ಈ photoಗೆ AI Caption ಮಾಡಲು image data ಲಭ್ಯವಿಲ್ಲ. ಹೊಸದಾಗಿ photo upload ಮಾಡಿ ಅಥವಾ manual caption ಬಳಸಿ.");
    return "";
  }
  try{
@@ -1009,12 +1014,12 @@ async function generateAICaption(index,autoSaveCaption=false){
    renderPhotos();
    scheduleAutosave();
    if(!autoSaveCaption){
-     msg(ai?"AI caption ready. Edit it and press Save Caption.":"AI caption could not be generated from the available information.");
-     setTimeout(()=>msg(""),1800);
+     aiMsg(ai?"AI caption ready. Edit it and press Save Caption.":"AI caption could not be generated from the available information.");
+     setTimeout(()=>aiMsg(""),1800);
    }
    return ai;
  }catch(e){
-   if(!autoSaveCaption)msg("AI caption error: "+e.message);
+   if(!autoSaveCaption)aiMsg("AI caption error: "+e.message);
    return "";
  }
 }
@@ -1192,13 +1197,44 @@ setTimeout(async()=>{
 },300);
 
 function blob(data){let a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
+async function googleFetch(url, options={}, retry=true){
+  // Use the current Google OAuth token. If it is expired/revoked, silently
+  // restore the session first; only fall back to an interactive sign-in once.
+  if(!token || (tokenExpiresAt && Date.now() >= tokenExpiresAt)){
+    try{
+      await getGoogleToken(false);
+    }catch(e){
+      await getGoogleToken(true);
+    }
+  }
+  let r=await fetch(url, options);
+  if((r.status===401 || r.status===403) && retry){
+    let detail="";
+    try{
+      const clone=r.clone();
+      const j=await clone.json();
+      detail=j?.error?.message||"";
+    }catch(_){}
+    const looksAuth=r.status===401 || /invalid authentication|invalid credentials|unauthorized|invalid_token|expired/i.test(detail);
+    if(looksAuth){
+      token=null; tokenExpiresAt=0;
+      try{
+        await getGoogleToken(false);
+      }catch(_){
+        await getGoogleToken(true);
+      }
+      return googleFetch(url, options, false);
+    }
+  }
+  return r;
+}
 async function uploadDrive(p){
  const b=blob(p.dataUrl),boundary="bn_"+Date.now()+"_"+Math.random().toString(16).slice(2),meta={name:p.name,mimeType:b.type};
  const body=new Blob(["--"+boundary+"\r\n","Content-Type: application/json; charset=UTF-8\r\n\r\n",JSON.stringify(meta),"\r\n--"+boundary+"\r\n","Content-Type: "+b.type+"\r\n\r\n",b,"\r\n--"+boundary+"--\r\n"],{type:"multipart/related; boundary="+boundary});
- let r=await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"multipart/related; boundary="+boundary},body}),j=await r.json();
+ let r=await googleFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"multipart/related; boundary="+boundary},body}),j=await r.json();
  if(!r.ok)throw Error(j.error?.message||"Drive upload failed");
  let id=j.id;
- r=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/permissions`,{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
+ r=await googleFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/permissions`,{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
  if(!r.ok){j=await r.json().catch(()=>({}));throw Error(j.error?.message||"Drive permission failed")}
  return `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w2000`;
 }
@@ -1242,15 +1278,14 @@ $("publish").onclick=async()=>{
     if(category && !labels.includes(category))labels.push(category);
     if(!autoLabels.length) await generateAutoLabels();
     autoLabels.forEach(x=>{if(x&&!labels.includes(x))labels.push(x)});
-    if(!labels.includes("BidireAIEditor"))labels.push("BidireAIEditor");
     const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
     let r,j;
     if(editingPostId){
-      r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
+      r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
         method:"PUT",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
       });
     }else{
-      r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
+      r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
         method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
       });
     }
@@ -1282,21 +1317,29 @@ function setupSocialShares(url){
    if(personal)personal.onclick=(e)=>{e.preventDefault();alert(msg);};
    return;
  }
- const text=`${title}\n\n${url}`;
- const waUrl="https://wa.me/?text="+encodeURIComponent(text);
- const personalUrl="https://wa.me/919731410761?text="+encodeURIComponent(text);
+ const sub=$('sub').value.trim();
+ const body=$('bodyOut').value.trim();
+ const paras=splitNewsParagraphs(body);
+ const shortDescription=(paras[0]||"").replace(/\s+/g," ").trim();
+ const shareText=[title,sub,shortDescription,"Bidire News",url,
+   "WhatsApp Group: https://chat.whatsapp.com/HaSXuXonS5b5iklUgth1Nq?s=sh&p=a&mlu=4",
+   "Instagram: https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl",
+   "Facebook: https://www.facebook.com/share/1HeeJXHzaE/"]
+   .filter(Boolean).join("\n\n");
+ const waUrl="https://wa.me/?text="+encodeURIComponent(shareText);
+ const personalUrl="https://wa.me/919731410761?text="+encodeURIComponent(shareText);
  if(wa){wa.href=waUrl;wa.onclick=null;}
  if(fb){fb.href="https://www.facebook.com/share/1HeeJXHzaE/";fb.onclick=null;}
  if(ig){ig.href="https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl";ig.onclick=null;}
  if(personal){personal.href=personalUrl;personal.onclick=null;}
- if(hint)hint.textContent="✓ Published news ready — 9731410761ಗೆ WhatsApp update link ಸಿದ್ಧವಾಗಿದೆ.";
+ if(hint)hint.textContent="✓ Published news ready — Headline, Subheadline, Short Description, Website link ಮತ್ತು Social links ಸಿದ್ಧವಾಗಿದೆ.";
 }
 async function loadAllPosts(){
   const box=$("allPostsList"),st=$("allPostsStatus");box.innerHTML="";st.style.display="block";st.textContent="Loading posts...";
   try{
     if(!token)await access();
     const blogId=$("blogId").value.trim()||blogDefault;
-    const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts?maxResults=100`,{headers:{Authorization:"Bearer "+token}});
+    const r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts?maxResults=100`,{headers:{Authorization:"Bearer "+token}});
     const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Could not load posts");
     const all=j.items||[];
     if(!all.length){box.innerHTML='<div class="small">ಯಾವುದೇ posts ಸಿಗಲಿಲ್ಲ.</div>';st.style.display="none";return}
@@ -1309,7 +1352,7 @@ async function loadPostForEdit(id){
   try{
     if(!token)await access();
     const blogId=$("blogId").value.trim()||blogDefault;
-    const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(id)}`,{headers:{Authorization:"Bearer "+token}});
+    const r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(id)}`,{headers:{Authorization:"Bearer "+token}});
     const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Could not load post");
     $("headline").value=j.title||"";
     if($("category")){ const existing=(j.labels||[]).find(x=>x!=="BidireAIEditor" && x!=="BidireAd" && x!==$("blogLabel").value.trim()); if(existing && isBidireCategory(existing)) $("category").value=existing; else $("category").value=BIDIRE_CATEGORIES[0]; }
@@ -1423,11 +1466,11 @@ async function publishAdToWebsite(ad){
   let r,j;
   const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
   if(ad.websitePostId){
-    r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(ad.websitePostId)}`,{
+    r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(ad.websitePostId)}`,{
       method:"PUT",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
     });
   }else{
-    r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
+    r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
       method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
     });
   }
