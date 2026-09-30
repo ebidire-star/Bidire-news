@@ -1231,11 +1231,12 @@ async function googleFetch(url, options={}, retry=true){
 async function uploadDrive(p){
  const b=blob(p.dataUrl),boundary="bn_"+Date.now()+"_"+Math.random().toString(16).slice(2),meta={name:p.name,mimeType:b.type};
  const body=new Blob(["--"+boundary+"\r\n","Content-Type: application/json; charset=UTF-8\r\n\r\n",JSON.stringify(meta),"\r\n--"+boundary+"\r\n","Content-Type: "+b.type+"\r\n\r\n",b,"\r\n--"+boundary+"--\r\n"],{type:"multipart/related; boundary="+boundary});
- let r=await googleFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"multipart/related; boundary="+boundary},body}),j=await r.json();
- if(!r.ok)throw Error(j.error?.message||"Drive upload failed");
+ let r=await googleFetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"multipart/related; boundary="+boundary},body}),j=await r.json().catch(()=>({}));
+ if(!r.ok)throw Error("PHOTO_UPLOAD: "+(j.error?.message||"Google Drive upload failed"));
  let id=j.id;
  r=await googleFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/permissions`,{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
- if(!r.ok){j=await r.json().catch(()=>({}));throw Error(j.error?.message||"Drive permission failed")}
+ j=await r.json().catch(()=>({}));
+ if(!r.ok)throw Error("PHOTO_PERMISSION: "+(j.error?.message||"Google Drive permission failed"));
  return `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w2000`;
 }
 async function hostedPhotos(){
@@ -1269,23 +1270,29 @@ function htmlContent(ph){
 $("publish").onclick=async()=>{
   const title=$("headline").value.trim(),body=$("bodyOut").value.trim(),blogId=$("blogId").value.trim()||blogDefault;
   if(!title||!body){$("publishStatus").textContent="Headline ಮತ್ತು News Body ಸಿದ್ಧಪಡಿಸಿ.";return}
-  $("publishStatus").style.display="block";
+  const status=$("publishStatus");
+  status.style.display="block"; status.style.color="#333";
   try{
+    status.textContent="⏳ Step 1/4: Google authorization ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...";
     if(!token)await access();
-    const ph=await hostedPhotos(),content=htmlContent(ph),labels=[];
+
+    status.textContent="⏳ Step 2/4: Photo processing...";
+    const ph=await hostedPhotos();
+    status.textContent=photos.length?`⏳ Step 2/4: ${photos.length} photo ready.`:"⏳ Step 2/4: Photo ಇಲ್ಲ — ಮುಂದುವರಿಯುತ್ತಿದೆ...";
+
+    status.textContent="⏳ Step 3/4: Blogger content ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...";
+    const content=htmlContent(ph),labels=[];
     const category=$("category")?.value.trim();
     const userLabel=$("blogLabel").value.trim();if(userLabel)labels.push(userLabel);
     if(category && !labels.includes(category))labels.push(category);
-    // Publish must never call Gemini just to create a label.
-    // Use the already saved label; if none exists, create a deterministic
-    // factual label locally from the supplied news. This prevents a Gemini
-    // quota error from blocking Blogger publishing.
     if(!autoLabels.length){
       const direct=deterministicLabels(($("raw").value||"")+"\n"+title+"\n"+body);
       setAutoLabels(direct.slice(0,1));
     }
     autoLabels.forEach(x=>{if(x&&!labels.includes(x))labels.push(x)});
     const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
+
+    status.textContent=editingPostId?"⏳ Step 4/4: Blogger post update...":"⏳ Step 4/4: Blogger publish...";
     let r,j;
     if(editingPostId){
       r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
@@ -1296,13 +1303,24 @@ $("publish").onclick=async()=>{
         method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
       });
     }
-    j=await r.json();if(!r.ok)throw Error(j.error?.message||"Blogger API error");
-    const wasUpdate=!!editingPostId; setEditingPost(j.id,j.url); try{localStorage.removeItem("bn_draft")}catch(_){}
-    $("publishStatus").style.color="#16803c";
-    $("publishStatus").textContent=editingPostId?"✓ Blogger post updated.":"✓ Bloggerಗೆ publish ಆಯಿತು.";
+    j=await r.json().catch(()=>({}));
+    if(!r.ok){
+      const apiMsg=j?.error?.message||"Blogger API error";
+      throw Error("BLOGGER_PUBLISH: "+apiMsg);
+    }
+    setEditingPost(j.id,j.url); try{localStorage.removeItem("bn_draft")}catch(_){}
+    status.style.color="#16803c";
+    status.textContent=editingPostId?"✓ Blogger post updated.":"✓ Bloggerಗೆ publish ಆಯಿತು.";
     setupSocialShares(j.url||editingPostUrl||"");
     setTimeout(()=>document.getElementById("socialShareBox")?.scrollIntoView({behavior:"smooth",block:"center"}),120);
-  }catch(e){$("publishStatus").style.color="#b40000";$("publishStatus").textContent="✕ "+(editingPostId?"Update":"Publish")+" ಆಗಲಿಲ್ಲ: "+e.message}
+  }catch(e){
+    status.style.color="#b40000";
+    const m=String(e?.message||e);
+    if(m.startsWith("PHOTO_UPLOAD:")) status.textContent="✕ Photo upload ಹಂತದಲ್ಲಿ ಸಮಸ್ಯೆ: "+m.replace("PHOTO_UPLOAD: ","");
+    else if(m.startsWith("PHOTO_PERMISSION:")) status.textContent="✕ Photo permission ಹಂತದಲ್ಲಿ ಸಮಸ್ಯೆ: "+m.replace("PHOTO_PERMISSION: ","");
+    else if(m.startsWith("BLOGGER_PUBLISH:")) status.textContent="✕ Blogger Publish ಹಂತದಲ್ಲಿ ಸಮಸ್ಯೆ: "+m.replace("BLOGGER_PUBLISH: ","");
+    else status.textContent="✕ Publish process: "+m;
+  }
 };
 function autoOpenPersonalWhatsApp(url){
  if(!url)return;
