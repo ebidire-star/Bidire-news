@@ -37,7 +37,7 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 .toggle-row input{width:auto}
 .points-editor{display:flex;flex-direction:column;gap:7px}
 .point-row{display:flex;gap:6px;align-items:center}
-.point-row input{flex:1}
+.point-row input{flex:1}.photo-caption-editor{padding:7px 8px 2px}.photo-caption-editor textarea{width:100%;min-height:62px;font-size:11px;resize:vertical}.photo-caption-actions{display:flex;gap:5px;margin-top:6px}.photo-caption-actions button{flex:1;min-width:0;font-size:10px;padding:6px 5px}.photo-ai-note{font-size:9px;color:#777;margin-top:4px}.normal-parse-note{font-size:10px;color:#555;margin-top:6px;padding:6px 8px;background:#f7f7f7;border-radius:6px}
 .all-posts-list{display:flex;flex-direction:column;gap:8px}
 .post-card{border:1px solid #ddd;border-radius:7px;padding:10px;background:#fff}
 .post-card-title{font-weight:700;line-height:1.4}
@@ -370,22 +370,23 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
     <strong>💬 Chat</strong>
   </div>
   <div class="raw-chat-body">
-    <textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea>
+    <textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea><div class="normal-parse-note">✍️ Normal News Parsing = AI-free. ಇದು raw information ಅನ್ನು ಮಾತ್ರ ವಿಭಾಗಿಸುತ್ತದೆ; ಹೊಸ facts ಸೇರಿಸುವುದಿಲ್ಲ.</div>
     <div id="rawChatLog" class="chat-log"></div>
     <textarea id="rawChatInput" class="chat-input" placeholder="AIಗೆ ಕೇಳಿ..."></textarea>
     <div class="raw-chat-actions">
       <button type="button" id="rawChatSend" class="chat-send-btn">➤ Chat</button>
       <button type="button" id="rawChatClear" class="chat-clear-btn">Clear</button>
-      <button type="button" id="rawAiWrite" class="ai-write-btn grow">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
+      <button type="button" id="normalParse" class="light">✍️ Normal News Parsing</button>
+      <button type="button" id="rawAiWrite" class="ai-write-btn grow">✨ AI ಮೂಲಕ ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
     </div>
     <div id="rawChatStatus" class="raw-chat-status"></div>
   </div>
 </div>
 <div class="photo-box">
-<strong style="font-size:13px">📷 Photo + Automatic Caption</strong>
+<strong style="font-size:13px">📷 Photo Management</strong>
 <label>📷 Photos / ಫೋಟೋಗಳು</label>
 <input id="photoInput" type="file" accept="image/*" multiple>
-<div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಸಿದ್ಧವಾದ ಸುದ್ದಿಯ ಆಧಾರದ ಮೇಲೆ caption automatic ಆಗಿ ತಯಾರಾಗುತ್ತದೆ.</div>
+<div class="small">ಪ್ರತಿ photoಗೆ Manual Caption / Save Caption / ✨ AI Caption ಪ್ರತ್ಯೇಕವಾಗಿ ಇದೆ. Photo upload ಮಾಡಿದಾಗ AI caption automatic ಆಗಿ run ಆಗುವುದಿಲ್ಲ.</div>
 <div id="photoGrid" class="photo-grid"></div><div id="photoStatus" class="small"></div>
 </div>
 <div class="subtool audio">
@@ -681,7 +682,9 @@ function draftObject(){
     name:p.name||"",
     dataUrl:"",
     driveUrl:p.driveUrl||"",
-    caption:p.caption||""
+    caption:p.caption||"",
+    captionDraft:Object.prototype.hasOwnProperty.call(p,"captionDraft")?p.captionDraft:(p.caption||""),
+    aiCaption:p.aiCaption||""
   }));
   return {
     headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,category:$("category")?.value||"",
@@ -706,11 +709,21 @@ $("englishSummaryEdit").addEventListener("input",()=>{englishSummary=$("englishS
 $("keyPointsEnabled").onchange=()=>{render();scheduleAutosave();scheduleHistory()};
 $("englishEnabled").onchange=()=>{render();scheduleAutosave();scheduleHistory()};
 $("addPoint").onclick=()=>{keyPoints.push("");renderKeyPointsEditor();render();scheduleAutosave();pushUndoSnapshot()};
-$("aiPoints").onclick=async()=>{let p=promptFor("Generate 3-5 concise factual Kannada key points. Return only JSON with keyPoints.");if(p)await geminiExtra(p,"keyPoints")};
+$("aiPoints").onclick=async()=>{
+  const raw=$("raw").value.trim();
+  if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return}
+  const p=`Using ONLY the RAW NEWS below, return JSON with keyPoints. Each point must be directly supported by the raw information. If there is not enough information, return an empty array or only the points that are explicitly supported. NEVER invent, infer or add facts. RAW NEWS:\n${raw}`;
+  await geminiExtra(p,"keyPoints");
+};
 $("category")?.addEventListener("change",()=>{scheduleAutosave();scheduleHistory()});
 $("addAutoLabel")?.addEventListener("click",addAutoLabel);
 $("resetAutoLabels")?.addEventListener("click",resetAutoLabels);
-$("aiEnglish").onclick=async()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}let p=`Create a concise factual English summary. Use only supplied facts. Return ONLY JSON with key englishSummary. NEWS:\n${b}`;await geminiExtra(p,"englishSummary")};
+$("aiEnglish").onclick=async()=>{
+  const raw=$("raw").value.trim()||$("bodyOut").value.trim();
+  if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return}
+  const p=`Using ONLY the supplied RAW NEWS, return JSON with key englishSummary. If the information is insufficient for a factual summary, return an empty string. NEVER invent, infer or add facts. RAW NEWS:\n${raw}`;
+  await geminiExtra(p,"englishSummary");
+};
 $("loadPosts").onclick=loadAllPosts;
 $("allPostsBtn").onclick=()=>{let p=$("allPostsPanel");p.classList.toggle("hide");if(!p.classList.contains("hide"))loadAllPosts()};
 $("themeBtn").onclick=()=>{let d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";safeSet("bn_theme",d?"light":"dark");$("themeBtn").textContent=d?"🌙 Dark":"☀️ Light"};
@@ -894,8 +907,8 @@ Write professional, simple, natural Kannada newspaper style. Main headline must 
 Do not use honorifics such as ಶ್ರೀ/ಶ್ರೀಮತಿ/ಕುಮಾರಿ/ಕು. and avoid unnecessary "ಅವರು". Avoid unnecessary repetition and social-media style.
 Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences.
 Return ONLY valid JSON with keys: headline, subheadline, body, keyPoints, englishSummary, autoLabels.
-keyPoints: 3-5 concise factual Kannada points, based only on supplied news.
-englishSummary: concise factual English summary, based only on supplied news.
+keyPoints: Return only factual Kannada points explicitly supported by the RAW NEWS. If the raw news does not contain enough distinct information for a key point, return fewer points or an empty array. NEVER invent or infer facts.
+englishSummary: Return a concise factual English summary only when the RAW NEWS contains enough information to summarize. If not enough information is present, return an empty string. NEVER invent or infer facts.
 autoLabels: 1-2 English labels only; prefer the main institution/brand, otherwise the main place; never invent a label not supported by the supplied news.
 RAW NEWS:
 ${raw}`;
@@ -932,24 +945,78 @@ $("shorten").onclick=()=>{let p=promptFor("Shorten the news while retaining all 
 $("grammar").onclick=()=>{let p=promptFor("Correct grammar and improve newspaper readability without adding facts.");if(p)gemini(p)};
 $("translate").onclick=()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}let p=`Translate the following Kannada news into natural English. Preserve all names, places, dates and factual meaning. Return JSON with keys headline,subheadline,body,keyPoints,englishSummary. In body, separate each newspaper paragraph with a blank line (two newline characters). English Summary should be concise. NEWS:\n${b}`;gemini(p)};
 function fileData(f){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
-async function caption(data){
- const key=safeGet("bn_key","");if(!key)return"";
+async function generateAICaption(index){
+ const p=photos[index];
+ if(!p)return;
+ const key=safeGet("bn_key","");
+ if(!key){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
+ if(!p.dataUrl){
+   msg("ಈ photoಗೆ AI Caption ಮಾಡಲು image data ಲಭ್ಯವಿಲ್ಲ. ಹೊಸದಾಗಿ photo upload ಮಾಡಿ ಅಥವಾ manual caption ಬಳಸಿ.");
+   return;
+ }
  try{
-  const base64=data.split(",")[1],mime=(data.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
-  const prompt=`Write ONE short factual Kannada newspaper photo caption using only the supplied news context and visible image. Do not invent identities or facts. News headline: ${$("headline").value}. News: ${$("bodyOut").value}`;
-  const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});
-  return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"")
- }catch(e){return""}
+   const base64=p.dataUrl.split(",")[1];
+   const mime=(p.dataUrl.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
+   const prompt=`Write ONE short factual Kannada newspaper photo caption using ONLY the supplied raw news and the visible image. Do not invent identities, names, roles, places, dates, numbers or events. If the image/context does not provide enough information for a factual caption, return an empty string. RAW NEWS: ${$("raw").value.trim()||$("bodyOut").value.trim()}`;
+   const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});
+   const ai=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"");
+   p.aiCaption=ai;
+   p.captionDraft=ai;
+   renderPhotos();
+   scheduleAutosave();
+   msg(ai?"AI caption ready. Edit it and press Save Caption.":"AI caption could not be generated from the available information.");
+   setTimeout(()=>msg(""),1800);
+ }catch(e){msg("AI caption error: "+e.message)}
 }
 function renderPhotos(){
- $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl||p.driveUrl||""}"><div class="pcap">${esc(p.caption||"Caption")}</div><div class="pname">${esc(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
- document.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();render()});
+ $("photoGrid").innerHTML=photos.map((p,i)=>{
+   const draft=Object.prototype.hasOwnProperty.call(p,"captionDraft")?p.captionDraft:(p.caption||"");
+   const saved=p.caption||"";
+   const ai=p.aiCaption||"";
+   const savedNote=saved?'<div class="photo-ai-note">✓ Saved Caption: '+esc(saved)+'</div>':'<div class="photo-ai-note">Saved Caption: ಇಲ್ಲ</div>';
+   const aiNote=ai?'<div class="photo-ai-note">✨ AI Caption: '+esc(ai)+'</div>':'';
+   return `<div class="photo-item">
+     <img src="${p.dataUrl||p.driveUrl||""}" alt="">
+     <div class="photo-caption-editor">
+       <label style="font-size:10px;font-weight:700">Manual / Edit Caption</label>
+       <textarea data-caption-input="${i}" placeholder="Caption ಇಲ್ಲದಿದ್ದರೆ ಖಾಲಿ ಬಿಡಿ...">${esc(draft)}</textarea>
+       ${savedNote}
+       ${aiNote}
+       <div class="photo-caption-actions">
+         <button type="button" class="primary photo-save-caption" data-i="${i}">💾 Save Caption</button>
+         <button type="button" class="light photo-ai-caption" data-i="${i}">✨ AI Caption</button>
+       </div>
+     </div>
+     <div class="pname">${esc(p.name)}</div>
+     <button type="button" class="light photo-remove" data-i="${i}">Remove</button>
+   </div>`;
+ }).join("");
+ document.querySelectorAll("[data-caption-input]").forEach(inp=>inp.oninput=()=>{
+   const i=+inp.dataset.captionInput;
+   if(photos[i])photos[i].captionDraft=inp.value;
+   scheduleAutosave();
+ });
+ document.querySelectorAll(".photo-save-caption").forEach(b=>b.onclick=()=>{
+   const i=+b.dataset.i,p=photos[i];if(!p)return;
+   const inp=document.querySelector(`[data-caption-input="${i}"]`);
+   p.caption=String(inp?.value??p.captionDraft??"").trim();
+   p.captionDraft=p.caption;
+   renderPhotos();render();scheduleAutosave();pushUndoSnapshot();
+   msg(p.caption?"✓ Caption saved. Blogger publish/updateಗೆ ಇದೇ caption ಬಳಸಲಾಗುತ್ತದೆ.":"✓ Caption cleared. Blogger publish/updateನಲ್ಲಿ caption ಖಾಲಿಯಾಗಿರುತ್ತದೆ.");
+   setTimeout(()=>msg(""),1800);
+ });
+ document.querySelectorAll(".photo-ai-caption").forEach(b=>b.onclick=()=>generateAICaption(+b.dataset.i));
+ document.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{
+   photos.splice(+b.dataset.i,1);renderPhotos();render();scheduleAutosave();pushUndoSnapshot();
+ });
 }
 $("photoInput").onchange=async e=>{
  for(const f of [...e.target.files||[]]){
-  if(!f.type.startsWith("image/"))continue;
-  const dataUrl=await fileData(f),p={name:f.name,dataUrl,caption:"",driveUrl:""};photos.push(p);renderPhotos();
-  p.caption=await caption(dataUrl)||($("headline").value||"ಸುದ್ದಿ")+" — Bidire News";renderPhotos();render();
+   if(!f.type.startsWith("image/"))continue;
+   const dataUrl=await fileData(f);
+   const p={name:f.name,dataUrl,caption:"",captionDraft:"",aiCaption:"",driveUrl:""};
+   photos.push(p);
+   renderPhotos();render();scheduleAutosave();
  }
  e.target.value="";
 };
@@ -990,6 +1057,8 @@ function splitNewsParagraphs(text){
 }
 function htmlContent(ph){
  const sub=$("sub").value.trim(),b=$("bodyOut").value.trim(),paras=splitNewsParagraphs(b);
+ // Only saved/current caption is publishable. captionDraft and aiCaption are never published directly.
+ ph.forEach(p=>{p.caption=String(p.caption||"").trim()});
  let out=sub?`<p style="font-size:15px;font-weight:600;line-height:1.55;color:#555;padding:7px 10px;border-left:3px solid #aaa;background:#f7f7f7;">${esc(sub)}</p>`:"";
  if(paras.length)out+="<p>"+esc(paras[0]).replace(/\n/g,"<br>")+"</p>";
  ph.forEach(p=>out+=`<figure style="margin:16px 0 18px;text-align:center;"><img src="${p.driveUrl}" alt="${esc(p.caption)}" style="max-width:100%;height:auto;display:block;margin:0 auto;"><figcaption style="font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4;">${esc(p.caption)}</figcaption></figure>`);
@@ -1095,7 +1164,9 @@ async function loadPostForEdit(id){
         name:"existing-photo-"+(i+1),
         dataUrl:"",
         driveUrl:driveId?"https://drive.google.com/thumbnail?id="+encodeURIComponent(driveId)+"&sz=w2000":src,
-        caption:img.parentElement?.querySelector("figcaption")?.textContent?.trim()||img.getAttribute("alt")||""
+        caption:img.parentElement?.querySelector("figcaption")?.textContent?.trim()||img.getAttribute("alt")||"",
+        captionDraft:img.parentElement?.querySelector("figcaption")?.textContent?.trim()||img.getAttribute("alt")||"",
+        aiCaption:""
       };
     });
     [...tmp.querySelectorAll("figure")].forEach(f=>f.remove());
@@ -1122,7 +1193,7 @@ $("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕ
 let d=safeJsonGet("bn_draft",null);
 if(d){
   $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
-  keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||""; autoLabels=Array.isArray(d.autoLabels)?d.autoLabels:[];photos=d.photos||[];
+  keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||""; autoLabels=Array.isArray(d.autoLabels)?d.autoLabels:[];photos=Array.isArray(d.photos)?d.photos.map(p=>({...p,caption:p.caption||"",captionDraft:Object.prototype.hasOwnProperty.call(p,"captionDraft")?p.captionDraft:(p.caption||""),aiCaption:p.aiCaption||""})):[];
   $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;$("englishEnabled").checked=d.englishEnabled!==false;
   setEditingPost(d.editingPostId||null,d.editingPostUrl||"");syncEditors();renderPhotos();render();
 }else{syncEditors();renderAutoLabelsEditor();render();}
@@ -1144,10 +1215,10 @@ function adWebsiteMeta(ad){
   };
 }
 async function publishAdToWebsite(ad){
-  if(!ad || !ad.imageData) throw Error("Websiteಗೆ publish ಮಾಡಲು Advertisement Image upload ಮಾಡಿ.");
+  if(!ad || (!ad.imageData && !ad.imageUrl)) throw Error("Websiteಗೆ publish ಮಾಡಲು Advertisement Image upload ಮಾಡಿ.");
   if(!token) await access();
-  const p={dataUrl:ad.imageData,name:(ad.id||"bidire-ad")+".jpg"};
-  const imageUrl=ad.imageUrl||await uploadDrive(p);
+  const uploadPayload=ad.imageData?{dataUrl:ad.imageData,name:(ad.id||"bidire-ad")+".jpg"}:null;
+  const imageUrl=ad.imageUrl||(uploadPayload?await uploadDrive(uploadPayload):"");
   const meta=adWebsiteMeta(ad);
   const metaEsc=esc(JSON.stringify(meta)).replace(/&quot;/g,'"');
   const safeLink=meta.link && /^https?:\/\//i.test(meta.link)?meta.link:"";
@@ -1345,7 +1416,7 @@ function restoreSafeDraft(){
     if($("category")) $("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
     keyPoints=Array.isArray(d.keyPoints)?d.keyPoints:[];
     englishSummary=d.englishSummary||"";
-    photos=Array.isArray(d.photos)?d.photos:[];
+    photos=Array.isArray(d.photos)?d.photos.map(p=>({...p,caption:p.caption||"",captionDraft:Object.prototype.hasOwnProperty.call(p,"captionDraft")?p.captionDraft:(p.caption||""),aiCaption:p.aiCaption||""})):[];
     $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;
     $("englishEnabled").checked=d.englishEnabled!==false;
     setEditingPost(d.editingPostId||null,d.editingPostUrl||"");
@@ -1500,6 +1571,51 @@ try{
     t.title="Dark / Light mode";
     t.setAttribute("aria-label","Dark / Light mode");
   }
+})();
+/* ===== Normal News Parsing — AI FREE ===== */
+(function(){
+ const raw=$("raw"),btn=$("normalParse");
+ if(!raw||!btn)return;
+ function cleanLine(v){return String(v||"").trim().replace(/\s+/g," ")}
+ function extractLabeled(text,labelPattern){
+   const re=new RegExp("^\\s*(?:"+labelPattern+")\\s*[:：-]\\s*(.*)$","i");
+   return text.split(/\r?\n/).map(cleanLine).filter(Boolean).map(x=>x.match(re)).filter(Boolean).map(m=>m[1].trim());
+ }
+ function parseNormalNews(text){
+   const lines=String(text||"").replace(/\r/g,"").split("\n").map(cleanLine).filter(Boolean);
+   if(!lines.length)return {headline:"",sub:"",body:"",keyPoints:[],englishSummary:""};
+   const headline=extractLabeled(text,"ಶೀರ್ಷಿಕೆ|headline")[0]||"";
+   const sub=extractLabeled(text,"ಉಪಶೀರ್ಷಿಕೆ|subheadline|sub-headline")[0]||"";
+   const bodyLabeled=extractLabeled(text,"ಸುದ್ದಿ|news body|news")[0]||"";
+   const kp=[];
+   const kpMatch=text.match(/(?:ಪ್ರಮುಖ ಅಂಶಗಳು|key points?)\s*[:：]?\s*([\s\S]*?)(?=\n\s*(?:English Summary|ಇಂಗ್ಲಿಷ್ ಸಾರಾಂಶ|$))/i);
+   if(kpMatch)kpMatch[1].split(/\n|•|-\s+|\d+[.)]/).map(cleanLine).filter(Boolean).forEach(x=>kp.push(x));
+   const en=extractLabeled(text,"English Summary|ಇಂಗ್ಲಿಷ್ ಸಾರಾಂಶ")[0]||"";
+   let remaining=lines.slice();
+   if(headline)remaining=remaining.filter(x=>x!==headline);
+   if(sub)remaining=remaining.filter(x=>x!==sub);
+   if(bodyLabeled)remaining=remaining.filter(x=>x!==bodyLabeled);
+   if(kp.length)remaining=remaining.filter(x=>!kp.includes(x));
+   if(en)remaining=remaining.filter(x=>x!==en);
+   let h=headline,sh=sub,body=bodyLabeled;
+   if(!h)h=remaining.shift()||"";
+   if(!sh && remaining.length>1)sh=remaining.shift()||"";
+   if(!body)body=remaining.join("\n\n");
+   return {headline:h,sub:sh,body,keyPoints:kp,englishSummary:en};
+ }
+ btn.onclick=()=>{
+   const text=raw.value.trim();
+   if(!text){msg("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
+   const o=parseNormalNews(text);
+   $("headline").value=o.headline;$("sub").value=o.sub;$("bodyOut").value=o.body;
+   keyPoints=o.keyPoints;englishSummary=o.englishSummary;
+   setAutoLabels(deterministicLabels(text));
+   renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;
+   render();scheduleAutosave();scheduleHistory();pushUndoSnapshot();
+   const st=$("status");
+   if(st){st.textContent="✓ Normal News Parsing — AI ಬಳಸಲಾಗಿಲ್ಲ.";st.style.display="block";}
+   const edit=$("editSection");if(edit)edit.scrollIntoView({behavior:"smooth",block:"start"});
+ };
 })();
 /* ===== V5 Clean Raw News Chat ===== */
 (function(){
