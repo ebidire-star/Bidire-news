@@ -1195,6 +1195,34 @@ setTimeout(async()=>{
  }
 },300);
 function blob(data){let a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
+async function bloggerFetchWithBackoff(url, options={}, maxAttempts=5){
+  // Blogger can return HTTP 429 / rateLimitExceeded for short bursts.
+  // Retry only those rate-limit responses using truncated exponential backoff.
+  for(let attempt=0; attempt<maxAttempts; attempt++){
+    const r=await googleFetch(url, options);
+    if(r.status!==429) return r;
+    let reason="", message="";
+    try{
+      const clone=r.clone();
+      const j=await clone.json();
+      const e=j?.error||{};
+      message=e.message||"";
+      reason=Array.isArray(e.errors)?(e.errors.find(x=>x?.reason)?.reason||""):"";
+    }catch(_){}
+    if(reason && reason!=="rateLimitExceeded") return r;
+    if(attempt===maxAttempts-1) return r;
+    const retryAfter=Number(r.headers?.get("Retry-After")||0);
+    const base=Math.min(16000,1000*Math.pow(2,attempt));
+    const jitter=Math.floor(Math.random()*1000);
+    const waitMs=retryAfter>0?Math.min(30000,retryAfter*1000):base+jitter;
+    statusMessage(`⏳ Blogger rate limit ಬಂದಿದೆ. ${Math.ceil(waitMs/1000)} ಸೆಕೆಂಡ್ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸುತ್ತಿದೆ...`);
+    await new Promise(resolve=>setTimeout(resolve,waitMs));
+  }
+}
+function statusMessage(msg){
+  const el=document.getElementById("publishStatus");
+  if(el) el.textContent=msg;
+}
 async function googleFetch(url, options={}, retry=true){
   // Use the current Google OAuth token. If it is expired/revoked, silently
   // restore the session first; only fall back to an interactive sign-in once.
@@ -1290,11 +1318,11 @@ $("publish").onclick=async()=>{
     status.textContent=editingPostId?"⏳ Step 4/4: Blogger post update...":"⏳ Step 4/4: Blogger publish...";
     let r,j;
     if(editingPostId){
-      r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
+      r=await bloggerFetchWithBackoff(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
         method:"PUT",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
       });
     }else{
-      r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
+      r=await bloggerFetchWithBackoff(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
         method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
       });
     }
