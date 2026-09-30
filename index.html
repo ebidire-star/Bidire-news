@@ -175,6 +175,10 @@ header{min-height:58px;padding:9px 14px}
 .audio-actions button{min-width:105px;padding:7px 9px;font-size:12px}
 .audio-file{padding:7px;font-size:12px}
 #transcribeAudio,#clearAudio{min-width:105px}
+.image-text .subtool-body{padding:10px 12px}
+.image-text-file{padding:7px;font-size:12px;width:100%;box-sizing:border-box}
+.image-text-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.image-text-preview img{width:62px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #ddd}
 .row + .actions{margin-top:8px}
 .actions{gap:6px}
 .actions button{min-width:92px;padding:7px 9px;font-size:12px}
@@ -398,14 +402,27 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
     <button type="button" class="primary" id="recordAudio">🎙️ Start Recording</button>
     <button type="button" class="light" id="stopAudio" disabled>⏹ Stop</button>
   </div>
-  <input class="audio-file" id="audioInput" type="file" accept="audio/*">
-  <div id="audioStatus" class="small"></div>
+  <input class="audio-file" id="audioInput" type="file" accept="audio/*" multiple>
+  <div id="audioStatus" class="small"></div><div id="audioFileList" class="small"></div>
   <audio id="audioPreview" class="hide" controls style="width:100%;margin-top:8px"></audio>
   <div class="audio-actions">
     <button type="button" class="black" id="transcribeAudio">✨ Audio → Text</button>
     <button type="button" class="light" id="clearAudio">Clear Audio</button>
   </div>
 </div></div>
+<div class="subtool image-text">
+  <button type="button" class="subtool-toggle">🖼️ Images to Text <span class="chev">▼</span></button>
+  <div class="subtool-body">
+    <div class="small">ಚಿತ್ರದಲ್ಲಿರುವ ಬರಹವನ್ನು OCR ಮೂಲಕ ಓದಿ ನೇರವಾಗಿ ಕಚ್ಚಾ ಸುದ್ದಿಗೆ ಸೇರಿಸಲಾಗುತ್ತದೆ. ಒಂದು ಅಥವಾ ಹಲವು images ಆಯ್ಕೆ ಮಾಡಬಹುದು.</div>
+    <input class="image-text-file" id="imageTextInput" type="file" accept="image/*" multiple>
+    <div id="imageTextPreview" class="image-text-preview"></div>
+    <div class="audio-actions">
+      <button type="button" class="black" id="extractImageText">✨ Image → Text</button>
+      <button type="button" class="light" id="clearImageText">Clear Images</button>
+    </div>
+    <div id="imageTextStatus" class="small"></div>
+  </div>
+</div>
 <div class="row">
 <div><label>ಪದಗಳ ಮಿತಿ</label><select id="limit"><option value="0">Original</option><option>100</option><option>150</option><option>170</option><option>200</option></select></div>
 <div><label>ಶೈಲಿ</label><select id="style"><option value="normal">Bidire News</option><option value="vijayavani">ವಿಜಯವಾಣಿ ಶೈಲಿ</option></select></div>
@@ -937,6 +954,13 @@ async function gemini(text){
   englishSummary=String(o.englishSummary||"").trim();
   setAutoLabels(Array.isArray(o.autoLabels)?o.autoLabels:deterministicLabels(($("raw").value||"")+"\n"+($("headline").value||"")+"\n"+($("bodyOut").value||"")));
   renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;render();scheduleAutosave();
+  // When AI writes the news, generate photo captions automatically as well.
+  if(photos.length){
+    for(let i=0;i<photos.length;i++){
+      if(!String(photos[i].caption||"").trim()) await generateAICaption(i,true);
+    }
+    render();scheduleAutosave();
+  }
   msg("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>msg(""),1200);
  }catch(e){msg("AI error: "+e.message)}
 }
@@ -957,28 +981,42 @@ $("shorten").onclick=()=>{let p=promptFor("Shorten the news while retaining all 
 $("grammar").onclick=()=>{let p=promptFor("Correct grammar and improve newspaper readability without adding facts.");if(p)gemini(p)};
 $("translate").onclick=()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}let p=`Translate the following Kannada news into natural English. Preserve all names, places, dates and factual meaning. Return JSON with keys headline,subheadline,body,keyPoints,englishSummary. In body, separate each newspaper paragraph with a blank line (two newline characters). English Summary should be concise. NEWS:\n${b}`;gemini(p)};
 function fileData(f){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
-async function generateAICaption(index){
+async function generateAICaption(index,autoSaveCaption=false){
  const p=photos[index];
- if(!p)return;
+ if(!p)return "";
  const key=safeGet("bn_key","");
- if(!key){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
+ if(!key){if(!autoSaveCaption)msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return ""}
  if(!p.dataUrl){
-   msg("ಈ photoಗೆ AI Caption ಮಾಡಲು image data ಲಭ್ಯವಿಲ್ಲ. ಹೊಸದಾಗಿ photo upload ಮಾಡಿ ಅಥವಾ manual caption ಬಳಸಿ.");
-   return;
+   if(!autoSaveCaption)msg("ಈ photoಗೆ AI Caption ಮಾಡಲು image data ಲಭ್ಯವಿಲ್ಲ. ಹೊಸದಾಗಿ photo upload ಮಾಡಿ ಅಥವಾ manual caption ಬಳಸಿ.");
+   return "";
  }
  try{
    const base64=p.dataUrl.split(",")[1];
    const mime=(p.dataUrl.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
-   const prompt=`Write ONE short factual Kannada newspaper photo caption using ONLY the supplied raw news and the visible image. Do not invent identities, names, roles, places, dates, numbers or events. If the image/context does not provide enough information for a factual caption, return an empty string. RAW NEWS: ${$("raw").value.trim()||$("bodyOut").value.trim()}`;
+   const newsContext=`Headline: ${$("headline").value.trim()}\nSubheadline: ${$("sub").value.trim()}\nNews Body: ${$("bodyOut").value.trim()}\nRaw News: ${$("raw").value.trim()}`;
+   const prompt=`Write ONE short factual Kannada newspaper photo caption using ONLY the supplied news text and the visible image. Do not invent identities, names, roles, places, dates, numbers or events. If the image/context does not provide enough information for a factual caption, return an empty string. NEWS: ${newsContext}`;
    const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});
    const ai=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"");
    p.aiCaption=ai;
-   p.captionDraft=ai;
+   if(ai && autoSaveCaption){
+     // Automatic AI caption is used as the current caption only when the
+     // user has not already saved a manual caption.
+     if(!String(p.caption||"").trim())p.caption=ai;
+     p.captionDraft=p.caption||ai;
+   }else{
+     p.captionDraft=ai;
+   }
    renderPhotos();
    scheduleAutosave();
-   msg(ai?"AI caption ready. Edit it and press Save Caption.":"AI caption could not be generated from the available information.");
-   setTimeout(()=>msg(""),1800);
- }catch(e){msg("AI caption error: "+e.message)}
+   if(!autoSaveCaption){
+     msg(ai?"AI caption ready. Edit it and press Save Caption.":"AI caption could not be generated from the available information.");
+     setTimeout(()=>msg(""),1800);
+   }
+   return ai;
+ }catch(e){
+   if(!autoSaveCaption)msg("AI caption error: "+e.message);
+   return "";
+ }
 }
 function renderPhotos(){
  $("photoGrid").innerHTML=photos.map((p,i)=>{
@@ -1065,12 +1103,16 @@ async function access(){
     callback:r=>{
      if(r.error){pending=null;const err=Error(r.error_description||r.error);if(status){status.style.color="#b40000";status.textContent="✕ Google connection failed: "+err.message;}reject(err);return;}
      token=r.access_token;
+     safeSet("bn_oauth_granted","1");
      if(status){status.style.color="#16803c";status.textContent="✓ Google / Blogger connected successfully.";}
      pending=null;resolve(token);
     }
    });
    pending={resolve,reject};
-   tokenClient.requestAccessToken({prompt:"consent"});
+   // First authorization may need consent; after that, request silently so
+   // publishing another news item does not show Google verification every time.
+   const needsConsent=safeGet("bn_oauth_granted","")!=="1";
+   tokenClient.requestAccessToken({prompt:needsConsent?"consent":"none"});
   }catch(e){pending=null;if(status){status.style.color="#b40000";status.textContent="✕ "+e.message;}reject(e);}
  });
 }
@@ -1256,7 +1298,7 @@ $("saveSettings").onclick=()=>{
   const st=$("settingsStatus");
   if(st){st.style.color="#16803c";st.textContent="✓ Settings saved successfully.";st.style.display="block";}
   const bs=$("bloggerStatus");
-  if(bs)bs.textContent=values.client?"OAuth Client ID saved. ಈಗ Connect Google / Blogger ಒತ್ತಿ.":"OAuth Client ID ಹಾಕಿ, ನಂತರ Connect Google / Blogger ಒತ್ತಿ.";
+  if(bs)bs.textContent=values.client?"OAuth Client ID saved. ಮೊದಲ ಬಾರಿ ಮಾತ್ರ Google / Blogger authorize ಮಾಡಿ.":"OAuth Client ID ಹಾಕಿ, ನಂತರ Connect Google / Blogger ಒತ್ತಿ.";
  }catch(e){
   const st=$("settingsStatus");if(st){st.style.color="#b40000";st.textContent="✕ Settings save ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block";}
  }
@@ -1467,7 +1509,7 @@ $("saveAd").onclick=async()=>{
  }
 };
 /* ================= Bidire V6: Audio + Chat + Safe Draft ================= */
-let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
+let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", audioFiles=[], chatHistory=[];
 function updateSafeDraftMeta(){
   const meta=$("safeDraftMeta");
   if(!meta)return;
@@ -1544,17 +1586,28 @@ $("stopAudio").onclick=()=>{
   if(mediaRecorder?.state!=="inactive")mediaRecorder.stop();
   $("recordAudio").disabled=false;$("stopAudio").disabled=true;$("recordAudio").classList.remove("recording");$("recordAudio").textContent="🎙️ Start Recording";
 };
+function renderAudioFileList(){
+  const el=$("audioFileList");
+  if(!el)return;
+  el.innerHTML=audioFiles.length?audioFiles.map((f,i)=>`${i+1}. ${esc(f.name)}`).join("<br>"):"";
+}
 $("audioInput").onchange=e=>{
-  const f=e.target.files?.[0];if(!f)return;
-  audioBlob=f;
+  audioFiles=[...(e.target.files||[])].filter(f=>f.type.startsWith("audio/"));
+  audioBlob=audioFiles[0]||null;
   if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);
-  audioObjectUrl=URL.createObjectURL(f);
-  $("audioPreview").src=audioObjectUrl;$("audioPreview").classList.remove("hide");
-  $("audioStatus").textContent=`✓ ${f.name} selected.`;
+  audioObjectUrl="";
+  if(audioBlob){
+    audioObjectUrl=URL.createObjectURL(audioBlob);
+    $("audioPreview").src=audioObjectUrl;$("audioPreview").classList.remove("hide");
+  }else{
+    $("audioPreview").removeAttribute("src");$("audioPreview").classList.add("hide");
+  }
+  renderAudioFileList();
+  $("audioStatus").textContent=audioFiles.length?`✓ ${audioFiles.length} audio${audioFiles.length>1?" files":" file"} selected.`:"";
 };
 $("clearAudio").onclick=()=>{
-  audioBlob=null;if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);audioObjectUrl="";
-  $("audioPreview").removeAttribute("src");$("audioPreview").classList.add("hide");$("audioInput").value="";$("audioStatus").textContent="";
+  audioBlob=null;audioFiles=[];if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);audioObjectUrl="";
+  $("audioPreview").removeAttribute("src");$("audioPreview").classList.add("hide");$("audioInput").value="";$("audioFileList").innerHTML="";$("audioStatus").textContent="";
 };
 /* Audio → Text using Gemini multimodal input */
 function blobToBase64(blob){
@@ -1563,42 +1616,97 @@ function blobToBase64(blob){
   });
 }
 $("transcribeAudio").onclick=async()=>{
-  if(!audioBlob){$("audioStatus").textContent="ಮೊದಲು audio record ಅಥವಾ upload ಮಾಡಿ.";return}
+  const files=audioFiles.length?audioFiles:(audioBlob?[audioBlob]:[]);
+  if(!files.length){$("audioStatus").textContent="ಮೊದಲು audio record ಅಥವಾ ಒಂದು/ಹಲವು audio files upload ಮಾಡಿ.";return}
   const apiKey=safeGet("bn_key","");
   if(!apiKey){$("audioStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
   try{
-    $("audioStatus").textContent="🎧 Audio transcription ನಡೆಯುತ್ತಿದೆ...";
+    $("audioStatus").textContent=`🎧 ${files.length} audio${files.length>1?" files":" file"} transcription ನಡೆಯುತ್ತಿದೆ...`;
     saveEmergencyDraft();
-    const b64=await blobToBase64(audioBlob);
-    const mime=audioBlob.type||"audio/webm";
     const prompt=`Transcribe this audio accurately into Kannada if the spoken content is Kannada, otherwise preserve the spoken language. Do not summarize. Do not invent missing words. Return ONLY the transcription text.`;
-    const models=aiModelList();
-    let result=null,last="",attemptIndex=0;
+    let added=0;
+    for(let fi=0;fi<files.length;fi++){
+      const file=files[fi];
+      const b64=await blobToBase64(file);
+      const mime=file.type||"audio/webm";
+      const models=aiModelList();let result=null,last="",attemptIndex=0;
+      for(const model of models){
+        try{
+          const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{
+            method:"POST",headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}]})
+          });
+          const j=await r.json().catch(()=>({}));
+          if(r.ok){result=j;if(attemptIndex>0){safeSet("bn_model",model);setAIModelStatus(model,"Audio fallback");}break}
+          last=j.error?.message||`API error (${r.status})`;
+          if(!isQuotaError(r.status,last))break;
+        }catch(e){last=e?.message||String(e)}
+        attemptIndex++;
+      }
+      if(!result)throw Error(`${file.name}: ${last||"Audio transcription failed"}`);
+      const text=(result.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").trim();
+      if(!text)throw Error(`${file.name}: Audioನಲ್ಲಿ transcription text ಸಿಗಲಿಲ್ಲ.`);
+      $("raw").value=($("raw").value.trim()?$("raw").value.trim()+"\n\n":"")+text;
+      added++;
+      $("audioStatus").textContent=`🎧 ${added}/${files.length} audio transcribed...`;
+    }
+    render();scheduleAutosave();saveEmergencyDraft();
+    $("audioStatus").textContent=`✓ ${added} audio text Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.`;
+  }catch(e){$("audioStatus").textContent="✕ Audio transcription error: "+e.message}
+};
+/* Images → Text using Gemini multimodal OCR */
+let imageTextFiles=[];
+function imageFileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(String(r.result).split(",")[1]);
+    r.onerror=reject;
+    r.readAsDataURL(file);
+  });
+}
+$("imageTextInput").onchange=e=>{
+  imageTextFiles=[...(e.target.files||[])].filter(f=>f.type.startsWith("image/"));
+  $("imageTextPreview").innerHTML=imageTextFiles.map(f=>`<img src="${URL.createObjectURL(f)}" alt="">`).join("");
+  $("imageTextStatus").textContent=imageTextFiles.length?`✓ ${imageTextFiles.length} image${imageTextFiles.length>1?"s":""} selected.`:"";
+};
+$("clearImageText").onclick=()=>{
+  imageTextFiles=[];
+  $("imageTextInput").value="";
+  $("imageTextPreview").innerHTML="";
+  $("imageTextStatus").textContent="";
+};
+$("extractImageText").onclick=async()=>{
+  if(!imageTextFiles.length){$("imageTextStatus").textContent="ಮೊದಲು image ಆಯ್ಕೆ ಮಾಡಿ.";return}
+  const apiKey=safeGet("bn_key","");
+  if(!apiKey){$("imageTextStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
+  try{
+    $("imageTextStatus").textContent="🖼️ Image text extraction ನಡೆಯುತ್ತಿದೆ...";
+    saveEmergencyDraft();
+    const parts=[{text:`Extract all clearly visible text from these image(s) exactly as written. Preserve Kannada, English, numbers, names, dates, phone numbers and punctuation. Do not summarize, translate, correct, interpret or invent. If multiple images are supplied, return the text in image order, separating each image's text with a blank line. Return ONLY the extracted text. If an image contains no readable text, omit it.`}];
+    for(const file of imageTextFiles){
+      const data=await imageFileToBase64(file);
+      parts.push({inline_data:{mime_type:file.type||"image/jpeg",data}});
+    }
+    const models=aiModelList();let result=null,last="",attemptIndex=0;
     for(const model of models){
       try{
-        const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{
-          method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}]})
-        });
+        const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts}]})});
         const j=await r.json().catch(()=>({}));
-        if(r.ok){
-          result=j;
-          if(attemptIndex>0){safeSet("bn_model",model);setAIModelStatus(model,"Audio fallback");}
-          break;
-        }
+        if(r.ok){result=j;if(attemptIndex>0){safeSet("bn_model",model);setAIModelStatus(model,"Image OCR fallback");}break}
         last=j.error?.message||`API error (${r.status})`;
         if(!isQuotaError(r.status,last))break;
       }catch(e){last=e?.message||String(e)}
       attemptIndex++;
     }
-    if(!result)throw Error(last||"Audio transcription failed");
+    if(!result)throw Error(last||"Image text extraction failed");
     const text=(result.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").trim();
-    if(!text)throw Error("Audioನಲ್ಲಿ transcription text ಸಿಗಲಿಲ್ಲ.");
+    if(!text)throw Error("Imageನಲ್ಲಿ ಓದಲು ಸಾಧ್ಯವಾದ text ಸಿಗಲಿಲ್ಲ.");
     $("raw").value=($("raw").value.trim()?$("raw").value.trim()+"\n\n":"")+text;
     render();scheduleAutosave();saveEmergencyDraft();
-    $("audioStatus").textContent="✓ Audio text Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.";
-  }catch(e){$("audioStatus").textContent="✕ Audio transcription error: "+e.message}
+    $("imageTextStatus").textContent="✓ Image text ಕಚ್ಚಾ ಸುದ್ದಿಗೆ ಸೇರಿಸಲಾಗಿದೆ.";
+  }catch(e){$("imageTextStatus").textContent="✕ Image text error: "+e.message}
 };
+
 /* Stronger autosave hooks */
 ["raw","headline","sub","bodyOut","englishSummaryEdit"].forEach(id=>{
   $(id)?.addEventListener("input",()=>{clearTimeout(draftTimer);draftTimer=setTimeout(saveEmergencyDraft,350)});
