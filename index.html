@@ -1,12 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="kn">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0d1117">
-<link rel="manifest" href="manifest.webmanifest">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<title>Bidire News AI Editor — Advertisement Sync V9 Final</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="#0d1117" name="theme-color"/>
+<link href="manifest.webmanifest" rel="manifest"/>
+<script async="" defer="" src="https://accounts.google.com/gsi/client"></script>
+<title>Bidire News AI Editor — Advertisement Sync</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
 header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;z-index:5}
@@ -369,213 +370,190 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 
 </style>
 <style id="bidire-ad-v7-css">
-.ad-dashboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.ad-stat{background:#f7f7f7;border:1px solid #ddd;border-radius:10px;padding:11px;text-align:center}.ad-stat span{display:block;font-size:12px;color:#666}.ad-stat b{display:block;font-size:20px;margin-top:3px}.ad-three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ad-creative{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fff}.ad-creative h3{margin:0 0 8px;font-size:16px}.ad-size-note{font-size:11px;color:#777;margin-bottom:7px}.ad-creative img{display:block;width:100%;max-height:150px;object-fit:contain;background:#f5f5f5;border-radius:6px;margin-top:8px}.ad-bill-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ad-card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0;background:#fff}.ad-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.ad-card-title{font-size:17px;font-weight:800}.ad-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800;background:#eee}.ad-badge.active{background:#dff6e5;color:#176b2c}.ad-badge.scheduled{background:#fff1c7;color:#8a5a00}.ad-badge.expired{background:#f8dddd;color:#9a1c1c}.ad-badge.paid{background:#dff6e5;color:#176b2c}.ad-badge.partial{background:#fff1c7;color:#8a5a00}.ad-badge.pending{background:#f8dddd;color:#9a1c1c}.bill-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:4px;padding:28px;max-width:850px;margin:15px auto;font-family:Arial,sans-serif}.bill-top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:14px}.bill-brand{font-size:31px;font-weight:900;letter-spacing:.4px}.bill-logo-mark{display:inline-block;font-size:14px;font-weight:900;letter-spacing:2px;border:2px solid #111;border-radius:5px;padding:2px 7px;margin-bottom:6px}.bill-title{font-size:30px;font-weight:900;text-align:right}.bill-small{font-size:12px;color:#555}.bill-table{width:100%;border-collapse:collapse;margin-top:18px}.bill-table th,.bill-table td{border:1px solid #ccc;padding:8px;font-size:13px}.bill-table th{background:#f5f5f5}.bill-total{margin-left:auto;width:330px;margin-top:15px}.bill-total div{display:flex;justify-content:space-between;padding:5px 0}.bill-grand{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:5px;padding-top:8px}.bill-notes{margin-top:20px;font-size:12px;line-height:1.55}.bill-footer{border-top:1px solid #ccc;margin-top:22px;padding-top:12px;font-size:11px;text-align:center;color:#444}.ad-filter-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.ad-summary-table{width:100%;border-collapse:collapse}.ad-summary-table th,.ad-summary-table td{border:1px solid #ddd;padding:7px;font-size:12px;text-align:left}.ad-summary-table th{background:#f5f5f5}@media(max-width:800px){.ad-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.ad-three-grid{grid-template-columns:1fr}.ad-filter-row{grid-template-columns:1fr}.bill-paper{padding:16px}.bill-top{flex-direction:column}.bill-title{text-align:left}.bill-total{width:100%}}
+.ad-dashboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.ad-stat{background:#f7f7f7;border:1px solid #ddd;border-radius:10px;padding:11px;text-align:center}.ad-stat span{display:block;font-size:12px;color:#666}.ad-stat b{display:block;font-size:20px;margin-top:3px}.ad-three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ad-creative{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fff}.ad-creative h3{margin:0 0 8px;font-size:16px}.ad-size-note{font-size:11px;color:#777;margin-bottom:7px}.ad-creative img{display:block;width:100%;max-height:150px;object-fit:contain;background:#f5f5f5;border-radius:6px;margin-top:8px}.ad-bill-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ad-card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0;background:#fff}.ad-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.ad-card-title{font-size:17px;font-weight:800}.ad-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800;background:#eee}.ad-badge.active{background:#dff6e5;color:#176b2c}.ad-badge.scheduled{background:#fff1c7;color:#8a5a00}.ad-badge.expired{background:#f8dddd;color:#9a1c1c}.ad-badge.paid{background:#dff6e5;color:#176b2c}.ad-badge.partial{background:#fff1c7;color:#8a5a00}.ad-badge.pending{background:#f8dddd;color:#9a1c1c}.bill-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:4px;padding:28px;max-width:850px;margin:15px auto;font-family:Arial,sans-serif}.bill-top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:14px}.bill-brand{font-size:28px;font-weight:900}.bill-title{font-size:30px;font-weight:900;text-align:right}.bill-small{font-size:12px;color:#555}.bill-table{width:100%;border-collapse:collapse;margin-top:18px}.bill-table th,.bill-table td{border:1px solid #ccc;padding:8px;font-size:13px}.bill-table th{background:#f5f5f5}.bill-total{margin-left:auto;width:330px;margin-top:15px}.bill-total div{display:flex;justify-content:space-between;padding:5px 0}.bill-grand{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:5px;padding-top:8px}.bill-notes{margin-top:20px;font-size:12px;line-height:1.55}.bill-footer{border-top:1px solid #ccc;margin-top:22px;padding-top:12px;font-size:11px;text-align:center;color:#444}.ad-filter-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.ad-summary-table{width:100%;border-collapse:collapse}.ad-summary-table th,.ad-summary-table td{border:1px solid #ddd;padding:7px;font-size:12px;text-align:left}.ad-summary-table th{background:#f5f5f5}@media(max-width:800px){.ad-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.ad-three-grid{grid-template-columns:1fr}.ad-filter-row{grid-template-columns:1fr}.bill-paper{padding:16px}.bill-top{flex-direction:column}.bill-title{text-align:left}.bill-total{width:100%}}
 </style></head>
 <body>
 <header>
-  <div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div>
-  <div class="top-actions">
-    <button type="button" id="themeBtn" class="icon-btn" title="Dark / Light mode">☾</button>
-    <button type="button" id="settingsBtn" class="icon-btn" title="Settings">⚙</button>
-  </div>
-  <div class="legacy-controls" aria-hidden="true">
-    <button type="button" id="newBtn"></button>
-    <button type="button" id="allPostsBtn"></button>
-    <button type="button" id="adsBtn"></button>
-  </div>
+<div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div>
+<div class="top-actions">
+<button class="icon-btn" id="themeBtn" title="Dark / Light mode" type="button">☾</button>
+<button class="icon-btn" id="settingsBtn" title="Settings" type="button">⚙</button>
+</div>
+<div aria-hidden="true" class="legacy-controls">
+<button id="newBtn" type="button"></button>
+<button id="allPostsBtn" type="button"></button>
+<button id="adsBtn" type="button"></button>
+</div>
 </header>
-
 <main class="wrap">
-
-<nav class="section-nav" id="sectionNav" aria-label="Bidire News sections">
-  <button data-target="newSection">📰 ಹೊಸ ಸುದ್ದಿ</button>
-  <button data-target="editSection">✍️ ಸಂಪಾದನೆ</button>
-  <button data-target="safeSection">🛡️ Draft</button>
-  <button data-target="previewSection">👁️ Preview</button>
-  <button data-target="adsPanel">📢 Ads</button>
-  <button data-target="allPostsPanel">📰 All Posts</button>
+<nav aria-label="Bidire News sections" class="section-nav" id="sectionNav">
+<button data-target="newSection" type="button">📰 ಹೊಸ ಸುದ್ದಿ</button>
+<button data-target="editSection" type="button">✍️ ಸಂಪಾದನೆ</button>
+<button data-target="safeSection" type="button">🛡️ Draft</button>
+<button data-target="previewSection" type="button">👁️ Preview</button>
+<button data-target="adsPanel" type="button">📢 Ads</button>
+<button data-target="allPostsPanel" type="button">📰 All Posts</button>
 </nav>
-
 <section class="panel" id="newSection"><div class="bar">📰 ಹೊಸ ಸುದ್ದಿ</div><div class="body">
 <div class="raw-chat" id="rawNewsChat">
-  <div class="raw-chat-head">
-    <strong>💬 Chat</strong>
-  </div>
-  <div class="raw-chat-body">
-    <textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea>
-    <div id="rawChatLog" class="chat-log"></div>
-    <textarea id="rawChatInput" class="chat-input" placeholder="AIಗೆ ಕೇಳಿ..."></textarea>
-    <div class="raw-chat-actions">
-      <button type="button" id="rawChatSend" class="chat-send-btn">➤ Chat</button>
-      <button type="button" id="rawChatClear" class="chat-clear-btn">Clear</button>
-      <button type="button" id="rawAiWrite" class="ai-write-btn grow">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
-    </div>
-    <div id="rawChatStatus" class="raw-chat-status"></div>
-  </div>
+<div class="raw-chat-head">
+<strong>💬 Chat</strong>
 </div>
-
+<div class="raw-chat-body">
+<textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea>
+<div class="chat-log" id="rawChatLog"></div>
+<textarea class="chat-input" id="rawChatInput" placeholder="AIಗೆ ಕೇಳಿ..."></textarea>
+<div class="raw-chat-actions">
+<button class="chat-send-btn" id="rawChatSend" type="button">➤ Chat</button>
+<button class="chat-clear-btn" id="rawChatClear" type="button">Clear</button>
+<button class="ai-write-btn grow" id="rawAiWrite" type="button">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
+</div>
+<div class="raw-chat-status" id="rawChatStatus"></div>
+</div>
+</div>
 <div class="photo-box">
 <strong style="font-size:13px">📷 Photo + Automatic Caption</strong>
 <label>📷 Photos / ಫೋಟೋಗಳು</label>
-<input id="photoInput" type="file" accept="image/*" multiple>
+<input accept="image/*" id="photoInput" multiple="" type="file"/>
 <div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಸಿದ್ಧವಾದ ಸುದ್ದಿಯ ಆಧಾರದ ಮೇಲೆ caption automatic ಆಗಿ ತಯಾರಾಗುತ್ತದೆ.</div>
-<div id="photoGrid" class="photo-grid"></div><div id="photoStatus" class="small"></div>
+<div class="photo-grid" id="photoGrid"></div><div class="small" id="photoStatus"></div>
 </div>
-
-
 <div class="subtool audio">
-  <button type="button" class="subtool-toggle">🎙️ Audio to Text <span class="chev">▼</span></button><div class="subtool-body">
-  <div class="small">ನೇರವಾಗಿ audio record ಮಾಡಬಹುದು ಅಥವಾ ನಿಮ್ಮ deviceನಲ್ಲಿ ಇರುವ audio file upload ಮಾಡಬಹುದು.</div>
-  <div class="audio-actions">
-    <button type="button" class="primary" id="recordAudio">🎙️ Start Recording</button>
-    <button type="button" class="light" id="stopAudio" disabled>⏹ Stop</button>
-  </div>
-  <input class="audio-file" id="audioInput" type="file" accept="audio/*">
-  <div id="audioStatus" class="small"></div>
-  <audio id="audioPreview" class="hide" controls style="width:100%;margin-top:8px"></audio>
-  <div class="audio-actions">
-    <button type="button" class="black" id="transcribeAudio">✨ Audio → Text</button>
-    <button type="button" class="light" id="clearAudio">Clear Audio</button>
-  </div>
+<button class="subtool-toggle" type="button">🎙️ Audio to Text <span class="chev">▼</span></button><div class="subtool-body">
+<div class="small">ನೇರವಾಗಿ audio record ಮಾಡಬಹುದು ಅಥವಾ ನಿಮ್ಮ deviceನಲ್ಲಿ ಇರುವ audio file upload ಮಾಡಬಹುದು.</div>
+<div class="audio-actions">
+<button class="primary" id="recordAudio" type="button">🎙️ Start Recording</button>
+<button class="light" disabled="" id="stopAudio" type="button">⏹ Stop</button>
+</div>
+<input accept="audio/*" class="audio-file" id="audioInput" type="file"/>
+<div class="small" id="audioStatus"></div>
+<audio class="hide" controls="" id="audioPreview" style="width:100%;margin-top:8px"></audio>
+<div class="audio-actions">
+<button class="black" id="transcribeAudio" type="button">✨ Audio → Text</button>
+<button class="light" id="clearAudio" type="button">Clear Audio</button>
+</div>
 </div></div>
-
 <div class="row">
 <div><label>ಪದಗಳ ಮಿತಿ</label><select id="limit"><option value="0">Original</option><option>100</option><option>150</option><option>170</option><option>200</option></select></div>
 <div><label>ಶೈಲಿ</label><select id="style"><option value="normal">Bidire News</option><option value="vijayavani">ವಿಜಯವಾಣಿ ಶೈಲಿ</option></select></div>
 </div>
-<div class="legacy-new-actions" aria-hidden="true">
-<button type="button" id="generate"></button><button type="button" id="shorten"></button><button type="button" id="grammar"></button><button type="button" id="translate"></button>
+<div aria-hidden="true" class="legacy-new-actions">
+<button id="generate" type="button"></button><button id="shorten" type="button"></button><button id="grammar" type="button"></button><button id="translate" type="button"></button>
 </div>
-<div id="status" class="status"></div>
+<div class="status" id="status"></div>
 </div></section>
-
-<section class="panel edit-panel-modern" id="editSection"><div class="bar edit-main-bar"><div><span class="edit-bar-icon">✍️</span><div><strong>ಸುದ್ದಿ ಸಂಪಾದನೆ</strong><small>Edit &amp; Finalize News</small></div></div><div class="edit-head-actions"><button type="button" class="edit-copy-mini" id="undoEdit">↶ Undo</button><button type="button" class="edit-copy-mini" id="redoEdit">↷ Redo</button><button type="button" class="edit-copy-mini" id="copyAllEdit">📋 Copy All</button><button type="button" class="edit-draft-mini" id="editDraftJump">↩ Draft</button></div></div><div class="body">
-<div class="edit-field"><label>Headline</label><input id="headline"></div>
-<div class="edit-field"><label>Subheadline / ಉಪಶೀರ್ಷಿಕೆ</label><input id="sub"></div>
+<section class="panel edit-panel-modern" id="editSection"><div class="bar edit-main-bar"><div><span class="edit-bar-icon">✍️</span><div><strong>ಸುದ್ದಿ ಸಂಪಾದನೆ</strong><small>Edit &amp; Finalize News</small></div></div><div class="edit-head-actions"><button class="edit-copy-mini" id="undoEdit" type="button">↶ Undo</button><button class="edit-copy-mini" id="redoEdit" type="button">↷ Redo</button><button class="edit-copy-mini" id="copyAllEdit" type="button">📋 Copy All</button><button class="edit-draft-mini" id="editDraftJump" type="button">↩ Draft</button></div></div><div class="body">
+<div class="edit-field"><label>Headline</label><input id="headline"/></div>
+<div class="edit-field"><label>Subheadline / ಉಪಶೀರ್ಷಿಕೆ</label><input id="sub"/></div>
 <div class="edit-field"><label>News Body</label><textarea id="bodyOut" style="min-height:250px"></textarea></div>
-
 <div class="edit-ai-chat" id="editAiChat">
-  <div class="edit-ai-chat-head">
-    <div><strong>💬 AI Edit Chat</strong></div>
-    <button type="button" id="editChatClear" class="edit-chat-clear">Clear</button>
-  </div>
-  <div id="editChatLog" class="edit-chat-log"></div>
-  <textarea id="editChatInput" placeholder=""></textarea>
-  <div class="edit-chat-actions">
-    <button type="button" id="editChatSend" class="edit-chat-send">➤ AIಗೆ ಕೇಳಿ</button>
-    <button type="button" id="editChatApply" class="edit-chat-apply" disabled>✓ Apply Change</button>
-  </div>
-  <div id="editChatStatus" class="edit-chat-status"></div>
+<div class="edit-ai-chat-head">
+<div><strong>💬 AI Edit Chat</strong></div>
+<button class="edit-chat-clear" id="editChatClear" type="button">Clear</button>
 </div>
-
-<div class="edit-category-row"><label for="category">Category</label><select id="category"><option value="ಮೂಡುಬಿದಿರೆ" selected>ಮೂಡುಬಿದಿರೆ</option><option value="ಕ್ರೈಂ">ಕ್ರೈಂ</option><option value="ತಂತ್ರಜ್ಞಾನ">ತಂತ್ರಜ್ಞಾನ</option><option value="ವಿಶೇಷ">ವಿಶೇಷ</option></select></div>
+<div class="edit-chat-log" id="editChatLog"></div>
+<textarea id="editChatInput" placeholder=""></textarea>
+<div class="edit-chat-actions">
+<button class="edit-chat-send" id="editChatSend" type="button">➤ AIಗೆ ಕೇಳಿ</button>
+<button class="edit-chat-apply" disabled="" id="editChatApply" type="button">✓ Apply Change</button>
+</div>
+<div class="edit-chat-status" id="editChatStatus"></div>
+</div>
+<div class="edit-category-row"><label for="category">Category</label><select id="category"><option selected="" value="ಮೂಡುಬಿದಿರೆ">ಮೂಡುಬಿದಿರೆ</option><option value="ಕ್ರೈಂ">ಕ್ರೈಂ</option><option value="ತಂತ್ರಜ್ಞಾನ">ತಂತ್ರಜ್ಞಾನ</option><option value="ವಿಶೇಷ">ವಿಶೇಷ</option></select></div>
 <div class="auto-label-row">
-  <div class="auto-label-head"><span>🏷️ Automatic English Labels</span><small>AI automatic · ಬೇಕಾದರೆ edit ಮಾಡಿ</small></div>
-  <div id="autoLabelsEditor" class="auto-label-editor"></div>
-  <div class="auto-label-actions"><button type="button" class="light" id="addAutoLabel">＋ Add</button><button type="button" class="light" id="resetAutoLabels">↻ Auto</button></div>
+<div class="auto-label-head"><span>🏷️ Automatic English Labels</span><small>AI automatic · ಬೇಕಾದರೆ edit ಮಾಡಿ</small></div>
+<div class="auto-label-editor" id="autoLabelsEditor"></div>
+<div class="auto-label-actions"><button class="light" id="addAutoLabel" type="button">＋ Add</button><button class="light" id="resetAutoLabels" type="button">↻ Auto</button></div>
 </div>
-
 <div class="edit-accordion edit-box" id="keyPointsBox">
-  <button type="button" class="edit-accordion-head" id="keyPointsToggle"><span>⭐ ಪ್ರಮುಖ ಅಂಶಗಳು</span><span class="accordion-right"><label class="mini-enable"><input id="keyPointsEnabled" type="checkbox" checked> Enable</label><b>⌄</b></span></button>
-  <div class="edit-accordion-body" id="keyPointsBody">
-    <div id="pointsEditor" class="points-editor"></div>
-    <div class="tool-row"><button type="button" class="light" id="addPoint">＋ Add Point</button><button type="button" class="light" id="aiPoints">✨ AI Generate</button></div>
-  </div>
+<button class="edit-accordion-head" id="keyPointsToggle" type="button"><span>⭐ ಪ್ರಮುಖ ಅಂಶಗಳು</span><span class="accordion-right"><label class="mini-enable"><input checked="" id="keyPointsEnabled" type="checkbox"/> Enable</label><b>⌄</b></span></button>
+<div class="edit-accordion-body" id="keyPointsBody">
+<div class="points-editor" id="pointsEditor"></div>
+<div class="tool-row"><button class="light" id="addPoint" type="button">＋ Add Point</button><button class="light" id="aiPoints" type="button">✨ AI Generate</button></div>
 </div>
-
+</div>
 <div class="edit-accordion edit-box" id="englishBox">
-  <button type="button" class="edit-accordion-head" id="englishToggle"><span>🌐 English Summary</span><span class="accordion-right"><label class="mini-enable"><input id="englishEnabled" type="checkbox" checked> Enable</label><b>⌄</b></span></button>
-  <div class="edit-accordion-body" id="englishBody">
-    <textarea id="englishSummaryEdit" style="min-height:100px" placeholder="English summary..."></textarea>
-    <div class="tool-row"><button type="button" class="light" id="aiEnglish">✨ AI Generate</button></div>
-  </div>
+<button class="edit-accordion-head" id="englishToggle" type="button"><span>🌐 English Summary</span><span class="accordion-right"><label class="mini-enable"><input checked="" id="englishEnabled" type="checkbox"/> Enable</label><b>⌄</b></span></button>
+<div class="edit-accordion-body" id="englishBody">
+<textarea id="englishSummaryEdit" placeholder="English summary..." style="min-height:100px"></textarea>
+<div class="tool-row"><button class="light" id="aiEnglish" type="button">✨ AI Generate</button></div>
 </div>
-
+</div>
 <div class="autosave" id="autosaveStatus"></div>
-<div class="compact-publish-actions"><button type="button" class="primary" id="publish">🚀 Publish</button><button type="button" class="black" id="copy">📋 Copy</button><button type="button" class="light" id="save">💾 Save</button></div>
-<div id="publishStatus" class="status"></div>
-
+<div class="compact-publish-actions"><button class="primary" id="publish" type="button">🚀 Publish</button><button class="black" id="copy" type="button">📋 Copy</button><button class="light" id="save" type="button">💾 Save</button></div>
+<div class="status" id="publishStatus"></div>
 </div></section>
-
-</section>
 
 <section class="safe-inline-panel" id="safeSection">
-  <div class="safe-inline">
-    <span class="safe-inline-text" id="safeDraftMeta">✓ ಇಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ</span>
-    <button type="button" class="safe-mini-btn" id="restoreSafeDraft">Draft ನೋಡಿ</button>
-    <button type="button" id="deleteSafeDraft" class="hide" aria-hidden="true" tabindex="-1">Delete</button>
-  </div>
+<div class="safe-inline">
+<span class="safe-inline-text" id="safeDraftMeta">✓ ಇಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ</span>
+<button class="safe-mini-btn" id="restoreSafeDraft" type="button">Draft ನೋಡಿ</button>
+<button aria-hidden="true" class="hide" id="deleteSafeDraft" tabindex="-1" type="button">Delete</button>
+</div>
 </section>
-
-
 <section class="panel" id="previewSection"><div class="bar">👁️ News Post Preview</div><div class="body">
 <div class="post-preview" id="preview">
-<h1 id="ph">ಶೀರ್ಷಿಕೆ</h1><div id="ps" class="post-sub">ಸಬ್‌ಹೆಡ್ಲೈನ್ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
-<div id="pbody" class="post-body">ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
+<h1 id="ph">ಶೀರ್ಷಿಕೆ</h1><div class="post-sub" id="ps">ಸಬ್‌ಹೆಡ್ಲೈನ್ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
+<div class="post-body" id="pbody">ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
 </div>
 </div></section>
-
 <section class="social-share-box" id="socialShareBox">
-  <div class="social-share-title">📲 WhatsApp / Social Share</div>
-  <div id="socialShareHint" style="font-size:11px;color:#777;margin:-3px 0 9px">ಮೊದಲು Publish ಮಾಡಿ; ನಂತರ WhatsAppಗೆ ನೇರವಾಗಿ share ಮಾಡಬಹುದು.</div>
-  <div id="bidireFixedSocialLinks" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px">
-    <a href="https://chat.whatsapp.com/HaSXuXonS5b5iklUgth1Nq?s=sh&p=a&mlu=4" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#16803c;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800">🟢 WhatsApp Group</a>
-    <a href="https://www.facebook.com/share/1HeeJXHzaE/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#1877f2;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800">🔵 Facebook</a>
-    <a href="https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#111;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800">📷 Instagram</a>
-  </div>
-  <div class="social-share-actions">
-    <a id="waShare" href="#" target="_blank" rel="noopener">🟢 WhatsApp Share</a>
-    <a id="fbShare" href="#" target="_blank" rel="noopener">Facebook</a>
-    <a id="igShare" href="#" target="_blank" rel="noopener">Instagram</a><a id="personalWaUpdate" href="#" target="_blank" rel="noopener" style="background:#0b6b32">📲 9731410761 Update</a>
-  </div>
+<div class="social-share-title">📲 WhatsApp / Social Share</div>
+<div id="socialShareHint" style="font-size:11px;color:#777;margin:-3px 0 9px">ಮೊದಲು Publish ಮಾಡಿ; ನಂತರ WhatsAppಗೆ ನೇರವಾಗಿ share ಮಾಡಬಹುದು.</div>
+<div id="bidireFixedSocialLinks" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px">
+<a href="https://chat.whatsapp.com/HaSXuXonS5b5iklUgth1Nq?s=sh&amp;p=a&amp;mlu=4" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#16803c;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800" target="_blank">🟢 WhatsApp Group</a>
+<a href="https://www.facebook.com/share/1HeeJXHzaE/" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#1877f2;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800" target="_blank">🔵 Facebook</a>
+<a href="https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#111;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800" target="_blank">📷 Instagram</a>
+</div>
+<div class="social-share-actions">
+<a href="#" id="waShare" rel="noopener" target="_blank">🟢 WhatsApp Share</a>
+<a href="#" id="fbShare" rel="noopener" target="_blank">Facebook</a>
+<a href="#" id="igShare" rel="noopener" target="_blank">Instagram</a><a href="#" id="personalWaUpdate" rel="noopener" style="background:#0b6b32" target="_blank">📲 9731410761 Update</a>
+</div>
 </section>
-
 <section class="panel hide" id="adsPanel">
 <div class="bar">📢 Bidire Advertisement Manager</div><div class="body">
 <div class="ad-dashboard"><div class="ad-stat"><span>Total Advertisements</span><b id="adDashTotal">0</b></div><div class="ad-stat"><span>Active Ads</span><b id="adDashActive">0</b></div><div class="ad-stat"><span>Scheduled Ads</span><b id="adDashScheduled">0</b></div><div class="ad-stat"><span>Expired Ads</span><b id="adDashExpired">0</b></div><div class="ad-stat"><span>Total Billing</span><b id="adDashBilling">₹0</b></div><div class="ad-stat"><span>Paid</span><b id="adDashPaid">₹0</b></div><div class="ad-stat"><span>Pending</span><b id="adDashPending">₹0</b></div><div class="ad-stat"><span>Partial</span><b id="adDashPartial">0</b></div></div>
-<div class="ad-tabs"><button type="button" class="ad-tab active" id="adCreateTab">➕ New Advertisement</button><button type="button" class="ad-tab" id="adManageTab">📋 All Advertisements</button><button type="button" class="ad-tab" id="adHistoryTab">🧾 History</button><button type="button" class="ad-tab" id="adSummaryTab">📊 Date-wise Summary</button></div>
-<div id="adCreatePanel" class="ad-panel"><div class="small">ಒಬ್ಬ client → ಒಂದು Advertisement ID + ಒಂದು Bill. ಅದೇ recordನಲ್ಲಿ ಮೂರು positionsಗೆ ಮೂರು ಪ್ರತ್ಯೇಕ creatives ಮತ್ತು links.</div>
-<div class="row"><div><label>Advertiser Name</label><input id="adBusiness" placeholder="Advertiser / ಸಂಸ್ಥೆ ಹೆಸರು"></div><div><label>Address / Contact</label><input id="adContact" placeholder="Address / Contact"></div></div>
-<label>Advertisement Title</label><input id="adTitle" placeholder="ಉದಾ: ಆಳ್ವಾಸ್ ಕ್ರೀಡೋತ್ಸವ 2026"><label>Short Description / Advertisement Note</label><textarea id="adText" style="min-height:90px" placeholder="ಜಾಹೀರಾತಿನ ಮುಖ್ಯ ಮಾಹಿತಿ..."></textarea>
-<div class="row"><div><label>Mobile / WhatsApp</label><input id="adPhone" inputmode="tel"></div><div><label>Default Advertisement Link</label><input id="adDefaultLink" type="url" placeholder="https://..."></div></div>
-<div class="row"><div><label>Start Date</label><input id="adStart" type="date"></div><div><label>End / Expiry Date</label><input id="adExpiry" type="date"></div></div>
+<div class="ad-tabs"><button class="ad-tab active" id="adCreateTab" type="button">➕ New Advertisement</button><button class="ad-tab" id="adManageTab" type="button">📋 All Advertisements</button><button class="ad-tab" id="adHistoryTab" type="button">🧾 History</button><button class="ad-tab" id="adSummaryTab" type="button">📊 Date-wise Summary</button></div>
+<div class="ad-panel" id="adCreatePanel"><div class="small">ಒಬ್ಬ client → ಒಂದು Advertisement ID + ಒಂದು Bill. ಅದೇ recordನಲ್ಲಿ ಮೂರು positionsಗೆ ಮೂರು ಪ್ರತ್ಯೇಕ creatives ಮತ್ತು links.</div>
+<div class="row"><div><label>Advertiser Name</label><input id="adBusiness" placeholder="Advertiser / ಸಂಸ್ಥೆ ಹೆಸರು"/></div><div><label>Address / Contact</label><input id="adContact" placeholder="Address / Contact"/></div></div>
+<label>Advertisement Title</label><input id="adTitle" placeholder="ಉದಾ: ಆಳ್ವಾಸ್ ಕ್ರೀಡೋತ್ಸವ 2026"/><label>Short Description / Advertisement Note</label><textarea id="adText" placeholder="ಜಾಹೀರಾತಿನ ಮುಖ್ಯ ಮಾಹಿತಿ..." style="min-height:90px"></textarea>
+<div class="row"><div><label>Mobile / WhatsApp</label><input id="adPhone" inputmode="tel"/></div><div><label>Default Advertisement Link</label><input id="adDefaultLink" placeholder="https://..." type="url"/></div></div>
+<div class="row"><div><label>Start Date</label><input id="adStart" type="date"/></div><div><label>End / Expiry Date</label><input id="adExpiry" type="date"/></div></div>
 <div class="ad-three-grid">
-<div class="ad-creative"><h3>🟥 News Top</h3><div class="ad-size-note">1536 × 512</div><label>Image</label><input id="adTopImage" type="file" accept="image/*"><label>Advertisement Link</label><input id="adTopLink" type="url" placeholder="https://..."><img id="adTopPreview" class="hide" alt=""></div>
-<div class="ad-creative"><h3>🟦 News Middle</h3><div class="ad-size-note">728 × 120</div><label>Image</label><input id="adMiddleImage" type="file" accept="image/*"><label>Advertisement Link</label><input id="adMiddleLink" type="url" placeholder="https://..."><img id="adMiddlePreview" class="hide" alt=""></div>
-<div class="ad-creative"><h3>🟩 Sidebar</h3><div class="ad-size-note">300 × 250</div><label>Image</label><input id="adSidebarImage" type="file" accept="image/*"><label>Advertisement Link</label><input id="adSidebarLink" type="url" placeholder="https://..."><img id="adSidebarPreview" class="hide" alt=""></div></div>
-<div class="row"><div><label>Rate (₹)</label><input id="adRate" type="number" min="0" step="0.01" value="0"></div><div><label>Discount (₹)</label><input id="adDiscount" type="number" min="0" step="0.01" value="0"></div></div>
-<div class="row"><div><label>Total (Rate − Discount)</label><input id="adTotal" readonly value="₹0.00"></div><div><label>Payment Status</label><select id="adPaymentStatus"><option>Pending</option><option>Partial</option><option>Paid</option></select></div></div>
-<div class="row"><div><label>Paid Amount (₹)</label><input id="adPaidAmount" type="number" min="0" step="0.01" value="0"></div><div><label>Balance (₹)</label><input id="adBalance" readonly value="₹0.00"></div></div>
+<div class="ad-creative"><h3>🟥 News Top</h3><div class="ad-size-note">1536 × 512</div><label>Image</label><input accept="image/*" id="adTopImage" type="file"/><label>Advertisement Link</label><input id="adTopLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adTopPreview"/></div>
+<div class="ad-creative"><h3>🟦 News Middle</h3><div class="ad-size-note">728 × 120</div><label>Image</label><input accept="image/*" id="adMiddleImage" type="file"/><label>Advertisement Link</label><input id="adMiddleLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adMiddlePreview"/></div>
+<div class="ad-creative"><h3>🟩 Sidebar</h3><div class="ad-size-note">300 × 250</div><label>Image</label><input accept="image/*" id="adSidebarImage" type="file"/><label>Advertisement Link</label><input id="adSidebarLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adSidebarPreview"/></div></div>
+<div class="row"><div><label>Rate (₹)</label><input id="adRate" min="0" step="0.01" type="number" value="0"/></div><div><label>Discount (₹)</label><input id="adDiscount" min="0" step="0.01" type="number" value="0"/></div></div>
+<div class="row"><div><label>Total (Rate − Discount)</label><input id="adTotal" readonly="" value="₹0.00"/></div><div><label>Payment Status</label><select id="adPaymentStatus"><option>Pending</option><option>Partial</option><option>Paid</option></select></div></div>
+<div class="row"><div><label>Paid Amount (₹)</label><input id="adPaidAmount" min="0" step="0.01" type="number" value="0"/></div><div><label>Balance (₹)</label><input id="adBalance" readonly="" value="₹0.00"/></div></div>
 <div class="small">GST ಸಂಪೂರ್ಣ ತೆಗೆದುಹಾಕಲಾಗಿದೆ. Total = Rate − Discount. Websiteನಲ್ಲಿ size text ತೋರಿಸಲಾಗುವುದಿಲ್ಲ.</div>
-<div class="actions"><button type="button" class="primary" id="saveAd">💾 Save Advertisement</button><button type="button" class="black" id="publishAdWebsite">🌐 Publish / Sync to Blogger</button><button type="button" class="light" id="previewAdBtn">👁 Preview</button><button type="button" class="light" id="clearAd">Clear</button></div>
-<div class="ad-bill-actions"><button type="button" class="light" id="billPdfBtn">🧾 Bill PDF / Print</button><button type="button" class="light" id="billJpgBtn">🖼 Bill JPG</button><button type="button" class="light" id="billWaBtn">📲 WhatsApp Bill</button></div><div id="adStatus" class="status"></div><div id="adPreview" class="ad-preview hide"></div><div id="billPreview" class="hide"></div></div>
-<div id="adManagePanel" class="ad-panel hide"><div class="small">Active / Scheduled / Expired status Start ಮತ್ತು End Date ಆಧಾರಿತ.</div><div class="actions"><button type="button" class="black" id="refreshAds">↻ Refresh</button><button type="button" class="primary" id="syncAllAds">🌐 Sync All to Blogger</button></div><div id="adList" class="ad-list"></div></div>
-<div id="adHistoryPanel" class="ad-panel hide"><div id="adHistoryList" class="ad-history"></div></div>
-<div id="adSummaryPanel" class="ad-panel hide"><div class="ad-filter-row"><div><label>From</label><input id="adSummaryFrom" type="date"></div><div><label>To</label><input id="adSummaryTo" type="date"></div><button type="button" class="primary" id="adSummaryRun">Generate Summary</button></div><div class="actions"><button type="button" class="light" id="adSummaryPdf">🧾 Summary PDF / Print</button></div><div id="adSummaryList" class="ad-summary"></div></div>
+<div class="actions"><button class="primary" id="saveAd" type="button">💾 Save Advertisement</button><button class="black" id="publishAdWebsite" type="button">🌐 Publish / Sync to Blogger</button><button class="light" id="previewAdBtn" type="button">👁 Preview</button><button class="light" id="clearAd" type="button">Clear</button></div>
+<div class="ad-bill-actions"><button class="light" id="billPdfBtn" type="button">🧾 Bill PDF / Print</button><button class="light" id="billJpgBtn" type="button">🖼 Bill JPG</button><button class="light" id="billWaBtn" type="button">📲 WhatsApp Bill</button></div><div class="status" id="adStatus"></div><div class="ad-preview hide" id="adPreview"></div><div class="hide" id="billPreview"></div></div>
+<div class="ad-panel hide" id="adManagePanel"><div class="small">Active / Scheduled / Expired status Start ಮತ್ತು End Date ಆಧಾರಿತ.</div><div class="actions"><button class="black" id="refreshAds" type="button">↻ Refresh</button><button class="primary" id="syncAllAds" type="button">🌐 Sync All to Blogger</button></div><div class="ad-list" id="adList"></div></div>
+<div class="ad-panel hide" id="adHistoryPanel"><div class="ad-history" id="adHistoryList"></div></div>
+<div class="ad-panel hide" id="adSummaryPanel"><div class="ad-filter-row"><div><label>From</label><input id="adSummaryFrom" type="date"/></div><div><label>To</label><input id="adSummaryTo" type="date"/></div><button class="primary" id="adSummaryRun" type="button">Generate Summary</button></div><div class="actions"><button class="light" id="adSummaryPdf" type="button">🧾 Summary PDF / Print</button></div><div class="ad-summary" id="adSummaryList"></div></div>
 </div></section>
-
 <section class="panel hide" id="settings"><div class="bar">Gemini + Blogger Settings</div><div class="body">
-<label>Gemini API Key</label><input id="apiKey" type="password" placeholder="AIza...">
+<label>Gemini API Key</label><input id="apiKey" placeholder="AIza..." type="password"/>
 <label>Gemini Model</label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash</option><option value="gemini-3.7-flash">Gemini 3.7 Flash</option><option value="gemini-3.6-flash">Gemini 3.6 Flash</option><option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option><option value="gemini-3.5-flash">Gemini 3.5 Flash</option></select>
 <div class="small" id="aiModelStatus">AI Auto Switch: ON — temporary/quota/server error ಬಂದರೆ next supported modelಗೆ automatic switch ಆಗುತ್ತದೆ.</div>
-<label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com">
-<label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619">
-<label>Default Blogger Label</label><input id="blogLabel">
-<div class="actions"><button type="button" class="primary" id="saveSettings">Save Settings</button><button type="button" class="black" id="connect">🔐 Connect Google / Blogger</button><button type="button" class="light" id="disconnect">Disconnect</button></div>
-<div id="settingsStatus" class="small"></div><div id="bloggerStatus" class="small"></div>
+<label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com"/>
+<label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619"/>
+<label>Default Blogger Label</label><input id="blogLabel"/>
+<div class="actions"><button class="primary" id="saveSettings" type="button">Save Settings</button><button class="black" id="connect" type="button">🔐 Connect Google / Blogger</button><button class="light" id="disconnect" type="button">Disconnect</button></div>
+<div class="small" id="settingsStatus"></div><div class="small" id="bloggerStatus"></div>
 </div></section>
-
 <section class="panel hide" id="allPostsPanel">
-  <div class="bar">📰 All Posts</div>
-  <div class="body">
-    <div class="small">Blogger postsನ್ನು load ಮಾಡಿ AI Editorನಲ್ಲಿ edit/update ಮಾಡಬಹುದು.</div>
-    <div class="actions"><button type="button" class="black" id="loadPosts">↻ Load Posts</button></div>
-    <div id="allPostsStatus" class="status"></div>
-    <div id="allPostsList" class="all-posts-list"></div>
-  </div>
+<div class="bar">📰 All Posts</div>
+<div class="body">
+<div class="small">Blogger postsನ್ನು load ಮಾಡಿ AI Editorನಲ್ಲಿ edit/update ಮಾಡಬಹುದು.</div>
+<div class="actions"><button class="black" id="loadPosts" type="button">↻ Load Posts</button></div>
+<div class="status" id="allPostsStatus"></div>
+<div class="all-posts-list" id="allPostsList"></div>
+</div>
 </section>
 </main>
-
 <script>
 
 const $=id=>document.getElementById(id);
@@ -1097,7 +1075,14 @@ $("publish").onclick=async()=>{
 function getShareShortDescription(){
  const body=$("bodyOut")?.value.trim()||"";
  const first=(body.split(/\n\s*\n/)[0]||body).replace(/\s+/g," ").trim();
- return first.length>280?first.slice(0,277)+"...":first;
+ return (()=>{
+  const clean=first.replace(/\s+/g," ").trim();
+  if(clean.length<=60)return clean;
+  const cut=clean.slice(0,60);
+  const lastSpace=cut.lastIndexOf(" ");
+  const out=(lastSpace>=40?cut.slice(0,lastSpace):cut).trim();
+  return out.length>=40?out+"…":clean.slice(0,60)+"…";
+})();
 }
 function getSharePhoto(){
  const p=Array.isArray(photos)?photos.find(x=>x&&x.dataUrl):null;
@@ -1124,7 +1109,7 @@ function setupSocialShares(url){
  if(fb){fb.href="https://www.facebook.com/share/1HeeJXHzaE/";fb.onclick=null;}
  if(ig){ig.href="https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl";ig.onclick=null;}
  if(personal){personal.href="https://wa.me/919731410761?text="+encodeURIComponent(title+"\n\n"+url);personal.onclick=null;}
- if(hint)hint.textContent=photo?"✓ WhatsApp Share: Thumbnail photo ಕಡ್ಡಾಯ · Short Description news bodyಯಿಂದ":"⚠️ WhatsApp Share ಮಾಡಲು Photo thumbnail ಕಡ್ಡಾಯ.";
+ if(hint)hint.textContent=photo?"✓ WhatsApp Share: Thumbnail photo ಕಡ್ಡಾಯ · Short Description news bodyಯಿಂದ 40–60 characters":"⚠️ WhatsApp Share ಮಾಡಲು Photo thumbnail ಕಡ್ಡಾಯ.";
 }
 async function loadAllPosts(){
   const box=$("allPostsList"),st=$("allPostsStatus");box.innerHTML="";st.style.display="block";st.textContent="Loading posts...";
@@ -1217,18 +1202,20 @@ function renderAds(){updateAdDashboard();const box=$("adList");if(!ads.length){b
 function updateAdDashboard(){let active=0,scheduled=0,expired=0,billing=0,paid=0,pending=0,partial=0;ads.forEach(a=>{a=normalizeAd(a);const st=adStatus(a);if(st==="ACTIVE")active++;else if(st==="SCHEDULED")scheduled++;else if(st==="EXPIRED")expired++;billing+=a.total;paid+=Math.min(a.total,a.paidAmount);if(a.paymentStatus==="Partial")partial++;if(a.paymentStatus!=="Paid")pending+=Math.max(0,a.total-a.paidAmount)});$("adDashTotal").textContent=ads.length;$("adDashActive").textContent=active;$("adDashScheduled").textContent=scheduled;$("adDashExpired").textContent=expired;$("adDashBilling").textContent=money(billing);$("adDashPaid").textContent=money(paid);$("adDashPending").textContent=money(pending);$("adDashPartial").textContent=partial}
 function clearAdForm(){editingAdId=null;["adBusiness","adContact","adTitle","adText","adPhone","adDefaultLink","adStart","adExpiry","adTopLink","adMiddleLink","adSidebarLink","adRate","adDiscount","adPaidAmount"].forEach(id=>{if($(id))$(id).value=""});["adTopImage","adMiddleImage","adSidebarImage"].forEach(id=>$(id).value="");["adTopPreview","adMiddlePreview","adSidebarPreview"].forEach(id=>$(id).classList.add("hide"));$("adPaymentStatus").value="Pending";calcAdMoney();$("saveAd").textContent="💾 Save Advertisement";$("billPreview").innerHTML="";$("billPreview").classList.add("hide")}
 function editAd(id){const a=ads.find(x=>x.id===id);if(!a)return;editingAdId=id;a=normalizeAd(a);$("adBusiness").value=a.business||"";$("adContact").value=a.contact||"";$("adTitle").value=a.title||"";$("adText").value=a.text||"";$("adPhone").value=a.phone||"";$("adDefaultLink").value=a.defaultLink||"";$("adStart").value=a.start||"";$("adExpiry").value=a.expiry||"";$("adTopLink").value=a.top.link||"";$("adMiddleLink").value=a.middle.link||"";$("adSidebarLink").value=a.sidebar.link||"";$("adRate").value=a.rate||0;$("adDiscount").value=a.discount||0;$("adPaidAmount").value=a.paidAmount||0;$("adPaymentStatus").value=a.paymentStatus||"Pending";$("saveAd").textContent="🔄 Update Advertisement";calcAdMoney();["top","middle","sidebar"].forEach(p=>{const c=a[p];const im=$("ad"+p.charAt(0).toUpperCase()+p.slice(1)+"Preview");if(c.imageData||c.imageUrl){im.src=c.imageData||c.imageUrl;im.classList.remove("hide")}});$("adCreateTab").click();window.scrollTo({top:$("adsPanel").offsetTop-60,behavior:"smooth"})}
-function buildBill(a){a=normalizeAd(a);return `<div class="bill-paper" id="printBill"><div class="bill-top"><div><div class="bill-logo-mark">BIDIRE NEWS</div><div class="bill-brand">BIDIRE ADVERTISERS</div><div class="bill-small">PAN No: ANRPB1538L</div><div class="bill-small">advertisment Bill</div></div><div class="bill-title">BILL</div></div><div style="margin-top:14px;font-size:13px;line-height:1.7"><b>Bill No:</b> ${adEsc(a.billNo||a.id)}<br><b>Advertisement ID:</b> ${adEsc(a.id)}<br><b>Advertiser:</b> ${adEsc(a.business)}<br><b>Address / Contact:</b> ${adEsc(a.contact)}${a.phone?' / '+adEsc(a.phone):''}<br><b>Status:</b> ${adEsc(a.paymentStatus)}<br><b>Advertisement Period:</b> ${adEsc(a.start)} to ${adEsc(a.expiry)}</div><table class="bill-table"><tr><th>Position</th><th>Creative</th><th>Advertisement Link</th></tr><tr><td>News Top</td><td>1536 × 512</td><td>${adEsc(a.top.link||a.defaultLink||'')}</td></tr><tr><td>News Middle</td><td>728 × 120</td><td>${adEsc(a.middle.link||a.defaultLink||'')}</td></tr><tr><td>Sidebar</td><td>300 × 250</td><td>${adEsc(a.sidebar.link||a.defaultLink||'')}</td></tr></table><div class="bill-total"><div><span>Rate</span><b>${money(a.rate)}</b></div><div><span>Discount</span><b>− ${money(a.discount)}</b></div><div class="bill-grand"><span>Total</span><b>${money(a.total)}</b></div><div><span>Paid</span><b>${money(a.paidAmount)}</b></div><div><span>Balance</span><b>${money(Math.max(0,a.total-a.paidAmount))}</b></div></div><div class="bill-notes"><b>Notes:</b><br><b>Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS</b><br><b>YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482</b></div><div class="bill-footer"><b>Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.</b><br>Contact: 9731410761<br>Email: bidirevv@mail.com</div></div>`}
+function buildBill(a){a=normalizeAd(a);return `<div class="bill-paper" id="printBill"><div class="bill-top"><div><div class="bill-brand">BIDIRE ADVERTISERS</div><div class="bill-small">PAN No: ANRPB1538L</div><div class="bill-small">advertisment Bill</div></div><div class="bill-title">BILL</div></div><div style="margin-top:14px;font-size:13px;line-height:1.6"><b>Bill No / Advertisement ID:</b> ${adEsc(a.billNo||a.id)}<br><b>Advertiser:</b> ${adEsc(a.business)}<br><b>Address / Contact:</b> ${adEsc(a.contact)} ${a.phone?' / '+adEsc(a.phone):''}<br><b>Status:</b> ${adEsc(a.paymentStatus)}<br><b>Advertisement Period:</b> ${adEsc(a.start)} to ${adEsc(a.expiry)}</div><table class="bill-table"><tr><th>Position</th><th>Creative</th><th>Link</th></tr><tr><td>News Top</td><td>1536 × 512</td><td>${adEsc(a.top.link)}</td></tr><tr><td>News Middle</td><td>728 × 120</td><td>${adEsc(a.middle.link)}</td></tr><tr><td>Sidebar</td><td>300 × 250</td><td>${adEsc(a.sidebar.link)}</td></tr></table><div class="bill-total"><div><span>Rate</span><b>${money(a.rate)}</b></div><div><span>Discount</span><b>− ${money(a.discount)}</b></div><div class="bill-grand"><span>Total</span><b>${money(a.total)}</b></div><div><span>Paid</span><b>${money(a.paidAmount)}</b></div><div><span>Balance</span><b>${money(Math.max(0,a.total-a.paidAmount))}</b></div></div><div class="bill-notes"><b>Notes:</b><br><b>Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS</b><br><b>YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482</b></div><div class="bill-footer"><b>Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.</b><br>Contact: 9731410761<br>Email: bidirevv@mail.com</div></div>`}
 function showBill(a){$("billPreview").innerHTML=buildBill(a);$("billPreview").classList.remove("hide");$("billPreview").scrollIntoView({behavior:"smooth",block:"start"})}
 function currentBillAd(){return editingAdId?ads.find(x=>x.id===editingAdId):null}
 function printHtml(html,title){const w=window.open("","_blank");if(!w)return;w.document.write('<html><head><title>'+title+'</title><style>body{margin:20px;background:#fff}'+document.getElementById('bidire-ad-v7-css').textContent+'</style></head><body>'+html+'</body></html>');w.document.close();setTimeout(()=>{w.print()},400)}
-function billJpg(a){a=normalizeAd(a);const c=document.createElement("canvas"),ctx=c.getContext("2d");c.width=1600;c.height=1900;ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#111";ctx.textAlign="left";ctx.font="bold 24px Arial";ctx.fillText("BIDIRE NEWS",70,70);ctx.font="bold 52px Arial";ctx.fillText("BIDIRE ADVERTISERS",70,135);ctx.font="22px Arial";ctx.fillText("PAN No: ANRPB1538L",70,175);ctx.font="bold 32px Arial";ctx.fillText("advertisment Bill",70,225);ctx.strokeStyle="#111";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(70,250);ctx.lineTo(1530,250);ctx.stroke();ctx.font="24px Arial";let y=305;const lines=[`Bill No: ${a.billNo||a.id}`,`Advertisement ID: ${a.id}`,`Advertiser: ${a.business||""}`,`Address / Contact: ${a.contact||""}${a.phone?' / '+a.phone:''}`,`Status: ${a.paymentStatus||"Pending"}`,`Advertisement Period: ${a.start||""} to ${a.expiry||""}`,`News Top: 1536 × 512`, `News Middle: 728 × 120`, `Sidebar: 300 × 250`, `Rate: ${money(a.rate)}`,`Discount: − ${money(a.discount)}`,`Total: ${money(a.total)}`,`Paid: ${money(a.paidAmount)}`,`Balance: ${money(Math.max(0,a.total-a.paidAmount))}`];lines.forEach(x=>{ctx.fillText(x,70,y);y+=58});ctx.font="bold 21px Arial";ctx.fillText("Notes",70,y+20);ctx.font="bold 19px Arial";ctx.fillText("Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS",70,y+62);ctx.fillText("YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482",70,y+100);ctx.font="18px Arial";ctx.fillText("Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.",70,y+145);ctx.fillText("Contact: 9731410761 | Email: bidirevv@mail.com",70,y+178);const aEl=document.createElement("a");aEl.href=c.toDataURL("image/jpeg",.95);aEl.download=(a.billNo||a.id)+".jpg";document.body.appendChild(aEl);aEl.click();aEl.remove()}
+function billJpg(a){const c=document.createElement("canvas"),ctx=c.getContext("2d");c.width=1600;c.height=1800;ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#111";ctx.font="bold 52px Arial";ctx.fillText("BIDIRE ADVERTISERS",70,90);ctx.font="22px Arial";ctx.fillText("PAN No: ANRPB1538L",70,135);ctx.font="bold 38px Arial";ctx.fillText("advertisment Bill",70,190);ctx.font="24px Arial";let y=250;const lines=[`Bill No / Advertisement ID: ${a.billNo||a.id}`,`Advertiser: ${a.business||""}`,`Address / Contact: ${a.contact||""} ${a.phone?'/ '+a.phone:''}`,`Status: ${a.paymentStatus||"Pending"}`,`Period: ${a.start||""} to ${a.expiry||""}`,`News Top: 1536 × 512`,`News Middle: 728 × 120`,`Sidebar: 300 × 250`,`Rate: ${money(a.rate)}`,`Discount: - ${money(a.discount)}`,`Total: ${money(a.total)}`,`Paid: ${money(a.paidAmount)}`,`Balance: ${money(Math.max(0,a.total-a.paidAmount))}`];lines.forEach(x=>{ctx.fillText(x,70,y);y+=55});ctx.font="bold 20px Arial";ctx.fillText("Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS",70,y+35);ctx.fillText("YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482",70,y+75);ctx.font="18px Arial";ctx.fillText("Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.",70,y+125);ctx.fillText("Contact: 9731410761 | Email: bidirevv@mail.com",70,y+155);const aEl=document.createElement("a");aEl.href=c.toDataURL("image/jpeg",.95);aEl.download=(a.billNo||a.id)+".jpg";aEl.click()}
 function renderHistory(){const box=$("adHistoryList"),h=safeJsonGet("bn_ad_history",[]);box.innerHTML=h.length?h.slice().reverse().map(x=>`<div class="ad-card"><b>${adEsc(x.billNo)}</b> — ${adEsc(x.action)}<div class="small">${new Date(x.at).toLocaleString()}</div></div>`).join(""):'<div class="small">History ಇಲ್ಲ.</div>'}
 function addAdHistory(a,action){const h=safeJsonGet("bn_ad_history",[]);h.push({billNo:a.billNo||a.id,action,at:new Date().toISOString()});safeSet("bn_ad_history",JSON.stringify(h.slice(-200)))}
 function renderSummary(){const from=$("adSummaryFrom").value,to=$("adSummaryTo").value;let list=ads.filter(a=>{const d=(a.createdAt||"").slice(0,10);return (!from||d>=from)&&(!to||d<=to)});const by={};list.forEach(a=>{const d=(a.createdAt||adToday()).slice(0,10);if(!by[d])by[d]={count:0,total:0,paid:0,pending:0};by[d].count++;by[d].total+=a.total;by[d].paid+=Math.min(a.total,a.paidAmount);by[d].pending+=Math.max(0,a.total-a.paidAmount)});$("adSummaryList").innerHTML=Object.keys(by).sort().reverse().map(d=>`<table class="ad-summary-table"><tr><th>Date</th><th>Ads</th><th>Total</th><th>Paid</th><th>Pending</th></tr><tr><td>${d}</td><td>${by[d].count}</td><td>${money(by[d].total)}</td><td>${money(by[d].paid)}</td><td>${money(by[d].pending)}</td></tr></table>`).join("")||'<div class="small">Selected date rangeನಲ್ಲಿ data ಇಲ್ಲ.</div>'}
 ["adCreateTab","adManageTab","adHistoryTab","adSummaryTab"].forEach(id=>$(id).onclick=()=>{const map={adCreateTab:"adCreatePanel",adManageTab:"adManagePanel",adHistoryTab:"adHistoryPanel",adSummaryTab:"adSummaryPanel"};Object.keys(map).forEach(k=>$(k).classList.toggle("active",k===id));Object.values(map).forEach(x=>$(x).classList.add("hide"));$(map[id]).classList.remove("hide");if(id==="adManageTab")renderAds();if(id==="adHistoryTab")renderHistory();if(id==="adSummaryTab")renderSummary()});
 $("adsBtn").onclick=()=>{$("adsPanel").classList.toggle("hide");if(!$('adsPanel').classList.contains('hide'))renderAds()};$("refreshAds").onclick=renderAds;$("adSummaryRun").onclick=renderSummary;$("adSummaryPdf").onclick=()=>printHtml($("adSummaryList").innerHTML,"Bidire Advertisement Summary");$("clearAd").onclick=clearAdForm;$("previewAdBtn").onclick=()=>{const a=currentBillAd();if(a)showBill(a);else{$("adPreview").classList.remove("hide");$("adPreview").innerHTML='<div class="small">ಮೊದಲು Save ಮಾಡಿ; ನಂತರ Bill/Preview ನೋಡಬಹುದು.</div>'}};
-$("saveAd").onclick=async()=>{try{const title=$("adTitle").value.trim(),business=$("adBusiness").value.trim(),startDate=$("adStart").value,expiryDate=$("adExpiry").value;if(!title||!business){$("adStatus").textContent="Advertiser Name ಮತ್ತು Advertisement Title ಕಡ್ಡಾಯ.";$("adStatus").style.display="block";return}if(!startDate||!expiryDate){$("adStatus").textContent="Start Date ಮತ್ತು End Date ಕಡ್ಡಾಯ.";$("adStatus").style.display="block";return}if(expiryDate<startDate){$("adStatus").textContent="End Date, Start Dateಗಿಂತ ಹಿಂದಿನದಾಗಿರಬಾರದು.";$("adStatus").style.display="block";return}const existing=editingAdId?ads.find(x=>x.id===editingAdId):null;const wasEditing=!!existing;const topFile=$("adTopImage").files?.[0],midFile=$("adMiddleImage").files?.[0],sideFile=$("adSidebarImage").files?.[0];const ad=normalizeAd(existing||{id:nextAdNumber(),billNo:null,createdAt:new Date().toISOString()});if(!ad.billNo)ad.billNo=ad.id;ad.business=business;ad.contact=$("adContact").value.trim();ad.title=title;ad.text=$("adText").value.trim();ad.phone=$("adPhone").value.trim();ad.defaultLink=$("adDefaultLink").value.trim();ad.start=startDate;ad.expiry=expiryDate;ad.rate=Math.max(0,Number($("adRate").value)||0);ad.discount=Math.min(ad.rate,Math.max(0,Number($("adDiscount").value)||0));ad.total=adTotalValue(ad);ad.paidAmount=Math.min(ad.total,Math.max(0,Number($("adPaidAmount").value)||0));ad.paymentStatus=$("adPaymentStatus").value;if(ad.paymentStatus==="Paid")ad.paidAmount=ad.total;ad.top.link=$("adTopLink").value.trim()||ad.defaultLink;ad.middle.link=$("adMiddleLink").value.trim()||ad.defaultLink;ad.sidebar.link=$("adSidebarLink").value.trim()||ad.defaultLink;if(topFile)ad.top.imageData=await readAdImage(topFile);if(midFile)ad.middle.imageData=await readAdImage(midFile);if(sideFile)ad.sidebar.imageData=await readAdImage(sideFile);if((!ad.top.imageData&&!ad.top.imageUrl)||(!ad.middle.imageData&&!ad.middle.imageUrl)||(!ad.sidebar.imageData&&!ad.sidebar.imageUrl)){$("adStatus").textContent="ಮೂರು positionsಗೂ ಪ್ರತ್ಯೇಕ images upload ಮಾಡಬೇಕು.";$("adStatus").style.display="block";return}const idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);editingAdId=ad.id;saveAds();addAdHistory(ad,wasEditing?"Advertisement Updated":"Advertisement Created");renderAds();$("adStatus").style.color="#16803c";$("adStatus").textContent=wasEditing?"✓ Advertisement updated. Bill Number ಉಳಿಸಲಾಗಿದೆ.":"✓ Advertisement saved. ID / Bill: "+ad.billNo;$("adStatus").style.display="block";showBill(ad)}catch(e){$("adStatus").textContent="✕ Advertisement save failed: "+(e?.message||e);$("adStatus").style.display="block"}};
-$("billPdfBtn").onclick=()=>{const a=currentBillAd();if(a)printHtml(buildBill(a),a.billNo||"Bidire Bill")};$("billJpgBtn").onclick=()=>{const a=currentBillAd();if(a)billJpg(a)};$("billWaBtn").onclick=()=>{const a=currentBillAd();if(!a)return;const text=`BIDIRE ADVERTISERS\nBill No: ${a.billNo}\nAdvertisement ID: ${a.id}\nAdvertiser: ${a.business}\nAddress / Contact: ${a.contact}${a.phone?' / '+a.phone:''}\nAdvertisement Period: ${a.start} to ${a.expiry}\nNews Top: 1536 × 512\nNews Middle: 728 × 120\nSidebar: 300 × 250\nRate: ${money(a.rate)}\nDiscount: − ${money(a.discount)}\nTotal: ${money(a.total)}\nPaid: ${money(a.paidAmount)}\nBalance: ${money(Math.max(0,a.total-a.paidAmount))}`;window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank")};
+$("saveAd").onclick=async()=>{const title=$("adTitle").value.trim(),business=$("adBusiness").value.trim();if(!title||!business){$("adStatus").textContent="Advertiser Name ಮತ್ತು Advertisement Title ಕಡ್ಡಾಯ.";$("adStatus").style.display="block";return}const existing=editingAdId?ads.find(x=>x.id===editingAdId):null;const wasEditing=!!existing;const topFile=$("adTopImage").files?.[0],midFile=$("adMiddleImage").files?.[0],sideFile=$("adSidebarImage").files?.[0];const ad=normalizeAd(existing||{id:nextAdNumber(),billNo:null,createdAt:new Date().toISOString()});if(!ad.billNo){ad.billNo=ad.id}ad.business=business;ad.contact=$("adContact").value.trim();ad.title=title;ad.text=$("adText").value.trim();ad.phone=$("adPhone").value.trim();ad.defaultLink=$("adDefaultLink").value.trim();ad.start=$("adStart").value;ad.expiry=$("adExpiry").value;ad.rate=Number($("adRate").value)||0;ad.discount=Number($("adDiscount").value)||0;ad.total=adTotalValue(ad);ad.paidAmount=Math.min(ad.total,Math.max(0,Number($("adPaidAmount").value)||0));ad.paymentStatus=$("adPaymentStatus").value;ad.top.link=$("adTopLink").value.trim()||ad.defaultLink;ad.middle.link=$("adMiddleLink").value.trim()||ad.defaultLink;ad.sidebar.link=$("adSidebarLink").value.trim()||ad.defaultLink;if(topFile)ad.top.imageData=await readAdImage(topFile);if(midFile)ad.middle.imageData=await readAdImage(midFile);if(sideFile)ad.sidebar.imageData=await readAdImage(sideFile);if(!ad.top.imageData&&!ad.top.imageUrl||!ad.middle.imageData&&!ad.middle.imageUrl||!ad.sidebar.imageData&&!ad.sidebar.imageUrl){$("adStatus").textContent="ಮೂರು positionsಗೂ ಪ್ರತ್ಯೇಕ images upload ಮಾಡಬೇಕು.";$("adStatus").style.display="block";return}const idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);editingAdId=ad.id;saveAds();addAdHistory(ad,wasEditing?"Advertisement Updated":"Advertisement Created");renderAds();$("adStatus").style.color="#16803c";$("adStatus").textContent=wasEditing?"✓ Advertisement updated. Bill Number ಉಳಿಸಲಾಗಿದೆ.":"✓ Advertisement saved. ID / Bill: "+ad.billNo;$("adStatus").style.display="block";showBill(ad)};
+$("publishAdWebsite").onclick=async()=>{const a=currentBillAd();if(!a){$("adStatus").textContent="ಮೊದಲು Advertisement Save ಮಾಡಿ.";$("adStatus").style.display="block";return}try{$("adStatus").textContent="⏳ ಮೂರು advertisement creatives Bloggerಗೆ sync ಆಗುತ್ತಿದೆ...";$("adStatus").style.display="block";await publishAdToWebsite(a);addAdHistory(a,"Blogger Sync");$("adStatus").style.color="#16803c";$("adStatus").textContent="✓ News Top + News Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.";renderAds()}catch(e){$("adStatus").style.color="#b40000";$("adStatus").textContent="✕ Blogger sync ಆಗಲಿಲ್ಲ: "+e.message}};
+$("syncAllAds").onclick=async()=>{if(!ads.length)return;try{if(!token)await access();let ok=0;for(const a of ads){try{await publishAdToWebsite(a);ok++}catch(_){}}renderAds();$("adStatus").textContent=`✓ ${ok}/${ads.length} advertisements sync ಆಯಿತು.`;$("adStatus").style.display="block"}catch(e){$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}};
+$("billPdfBtn").onclick=()=>{const a=currentBillAd();if(a)printHtml(buildBill(a),a.billNo||"Bidire Bill")};$("billJpgBtn").onclick=()=>{const a=currentBillAd();if(a)billJpg(a)};$("billWaBtn").onclick=()=>{const a=currentBillAd();if(!a)return;const text=`BIDIRE ADVERTISERS\nBill No / Advertisement ID: ${a.billNo}\nAdvertiser: ${a.business}\nAddress / Contact: ${a.contact}${a.phone?' / '+a.phone:''}\nTotal: ${money(a.total)}\nPaid: ${money(a.paidAmount)}\nBalance: ${money(Math.max(0,a.total-a.paidAmount))}`;window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank")};
 renderAds();calcAdMoney();
 /* ================= Bidire V6: Audio + Chat + Safe Draft ================= */
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
