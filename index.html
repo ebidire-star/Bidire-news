@@ -470,7 +470,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 </div>
 <div class="autosave" id="autosaveStatus"></div>
 <div class="compact-publish-actions"><button type="button" class="primary" id="publish">🚀 Publish</button><button type="button" class="black" id="copy">📋 Copy</button><button type="button" class="light" id="save">💾 Save</button></div>
-<div style="margin-top:7px"><button type="button" class="light" id="bloggerApiTest" style="width:100%;font-size:12px">🔎 Test Blogger API (Publish ಮಾಡಲ್ಲ)</button></div>
+<div style="margin-top:7px"><button type="button" class="light" id="bloggerApiTest" style="width:100%;font-size:12px">🔎 Test Blogger API Write (Draft)</button></div>
 <div id="publishStatus" class="status"></div>
 </div></section>
 </section>
@@ -1300,32 +1300,33 @@ function htmlContent(ph){
 async function testBloggerApi(){
   const status=$("publishStatus"), blogId=$("blogId").value.trim()||blogDefault;
   status.style.display="block"; status.style.color="#333";
+  if(bloggerWriteInFlight){status.textContent="⏳ Blogger write request ಈಗಾಗಲೇ ನಡೆಯುತ್ತಿದೆ...";return}
   try{
-    status.textContent="⏳ Blogger API test: Google authorization ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...";
+    status.textContent="⏳ Blogger API write test: Google authorization ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...";
     if(!token){
-      status.textContent="⏳ Google sign-in ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ... ಅಗತ್ಯವಿದ್ದರೆ Google sign-in window ತೆರೆಯುತ್ತದೆ.";
       const authPromise=getGoogleToken(true);
-      await Promise.race([
-        authPromise,
-        new Promise((_,reject)=>setTimeout(()=>reject(Error("Google authorization response ಬರಲಿಲ್ಲ. Sign in window/popup block ಆಗಿದೆಯೇ ಪರಿಶೀಲಿಸಿ.")),20000))
-      ]);
+      await Promise.race([authPromise,new Promise((_,reject)=>setTimeout(()=>reject(Error("Google authorization response ಬರಲಿಲ್ಲ. Sign in window/popup block ಆಗಿದೆಯೇ ಪರಿಶೀಲಿಸಿ.")),20000))]);
     }
-    status.textContent="⏳ Blogger API test: Blog ಮಾಹಿತಿ ಕೇಳಲಾಗುತ್ತಿದೆ...";
-    const r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}`,{headers:{Authorization:"Bearer "+token}});
+    status.textContent="⏳ Blogger API write test: ಒಂದು ಸಣ್ಣ Draft ರಚಿಸಲಾಗುತ್ತಿದೆ...";
+    const testPayload={kind:"blogger#post",blog:{id:blogId},title:"[BIDIRE API TEST - DELETE ME]",content:"Blogger API write test only.",labels:[]};
+    const r=await bloggerWriteOnce(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts?isDraft=true`,{
+      method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(testPayload)
+    });
     const j=await r.json().catch(()=>({}));
     if(!r.ok){
       const e=j?.error||{};
-      const reason=Array.isArray(e.errors)?(e.errors.find(x=>x?.reason)?.reason||""):"";
-      const detail=[`HTTP ${r.status}`,e.status?`status=${e.status}`:"",e.code?`code=${e.code}`:"",e.message?`message=${e.message}`:"",reason?`reason=${reason}`:""].filter(Boolean).join(" — ");
+      const reasons=Array.isArray(e.errors)?e.errors.map(x=>[x?.reason?`reason=${x.reason}`:"",x?.domain?`domain=${x.domain}`:"",x?.message?`detail=${x.message}`:""].filter(Boolean).join(" | ")).filter(Boolean).join(" || "):"";
+      const detail=[`HTTP ${r.status}`,e.status?`status=${e.status}`:"",e.code?`code=${e.code}`:"",e.message?`message=${e.message}`:"",reasons].filter(Boolean).join(" — ");
       status.style.color="#b40000";
-      status.textContent="✕ Blogger API Test: "+(detail||"API request failed");
+      status.textContent="✕ Blogger API WRITE TEST: "+(detail||"API write request failed");
       return;
     }
     status.style.color="#16803c";
-    status.textContent=`✓ Blogger API ಸಂಪರ್ಕ ಸರಿಯಾಗಿದೆ — Blog: ${j.name||"OK"}. Publish ಮಾಡಲಾಗಿಲ್ಲ.`;
+    status.textContent=`✓ Blogger API WRITE ಯಶಸ್ವಿ — Draft ರಚಿಸಲಾಗಿದೆ (ID: ${j.id||"unknown"}). Bloggerನಲ್ಲಿ ಈ test draft ಅನ್ನು manually delete ಮಾಡಿ.`;
   }catch(e){
     status.style.color="#b40000";
-    status.textContent="✕ Blogger API Test: "+(e?.message||e);
+    const m=String(e?.message||e);
+    status.textContent="✕ Blogger API WRITE TEST: "+m.replace("BLOGGER_RATE_LIMIT: ","");
   }
 }
 $("bloggerApiTest").onclick=testBloggerApi;
