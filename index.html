@@ -470,6 +470,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 </div>
 <div class="autosave" id="autosaveStatus"></div>
 <div class="compact-publish-actions"><button type="button" class="primary" id="publish">🚀 Publish</button><button type="button" class="black" id="copy">📋 Copy</button><button type="button" class="light" id="save">💾 Save</button></div>
+<div style="margin-top:7px"><button type="button" class="light" id="bloggerApiTest" style="width:100%;font-size:12px">🔎 Test Blogger API (Publish ಮಾಡಲ್ಲ)</button></div>
 <div id="publishStatus" class="status"></div>
 </div></section>
 </section>
@@ -1293,6 +1294,31 @@ function htmlContent(ph){
  if($("englishEnabled").checked && englishSummary)out+=`<div style="margin:22px 0;padding:14px 16px;background:#f7f7f7;border-left:4px solid #555;border-radius:4px;"><div style="font-size:20px;font-weight:700;margin-bottom:8px;">English Summary</div><div style="font-size:15px;line-height:1.65;color:#444;">${esc(englishSummary)}</div></div>`;
  return out;
 }
+async function testBloggerApi(){
+  const status=$("publishStatus"), blogId=$("blogId").value.trim()||blogDefault;
+  status.style.display="block"; status.style.color="#333";
+  try{
+    status.textContent="⏳ Blogger API test: Google authorization ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...";
+    if(!token) await access();
+    status.textContent="⏳ Blogger API test: Blog ಮಾಹಿತಿ ಕೇಳಲಾಗುತ್ತಿದೆ...";
+    const r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}`,{headers:{Authorization:"Bearer "+token}});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){
+      const e=j?.error||{};
+      const reason=Array.isArray(e.errors)?(e.errors.find(x=>x?.reason)?.reason||""):"";
+      const detail=[`HTTP ${r.status}`,e.status?`status=${e.status}`:"",e.code?`code=${e.code}`:"",e.message?`message=${e.message}`:"",reason?`reason=${reason}`:""].filter(Boolean).join(" — ");
+      status.style.color="#b40000";
+      status.textContent="✕ Blogger API Test: "+(detail||"API request failed");
+      return;
+    }
+    status.style.color="#16803c";
+    status.textContent=`✓ Blogger API ಸಂಪರ್ಕ ಸರಿಯಾಗಿದೆ — Blog: ${j.name||"OK"}. Publish ಮಾಡಲಾಗಿಲ್ಲ.`;
+  }catch(e){
+    status.style.color="#b40000";
+    status.textContent="✕ Blogger API Test: "+(e?.message||e);
+  }
+}
+$("bloggerApiTest").onclick=testBloggerApi;
 $("publish").onclick=async()=>{
   const title=$("headline").value.trim(),body=$("bodyOut").value.trim(),blogId=$("blogId").value.trim()||blogDefault;
   if(!title||!body){$("publishStatus").textContent="Headline ಮತ್ತು News Body ಸಿದ್ಧಪಡಿಸಿ.";return}
