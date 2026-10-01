@@ -1196,28 +1196,31 @@ setTimeout(async()=>{
  }
 },300);
 function blob(data){let a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
-async function bloggerFetchWithBackoff(url, options={}, maxAttempts=5){
-  // Blogger can return HTTP 429 / rateLimitExceeded for short bursts.
-  // Retry only those rate-limit responses using truncated exponential backoff.
-  for(let attempt=0; attempt<maxAttempts; attempt++){
+let bloggerWriteInFlight=false;
+let bloggerRateLimitedUntil=0;
+
+async function bloggerWriteOnce(url, options={}){
+  // A Blogger POST/PUT is a write operation. Do not fire duplicate/concurrent
+  // writes and do not automatically repeat a 429 write request. A 429 can be
+  // a write-rate limit; repeated writes only create more pressure.
+  if(bloggerWriteInFlight) throw Error("BLOGGER_WRITE_BUSY: ಈಗಾಗಲೇ Blogger write request ನಡೆಯುತ್ತಿದೆ. ಕೆಲವು ಕ್ಷಣ ಕಾಯಿರಿ.");
+  if(Date.now()<bloggerRateLimitedUntil){
+    const sec=Math.ceil((bloggerRateLimitedUntil-Date.now())/1000);
+    throw Error(`BLOGGER_RATE_LIMIT: Blogger write rate limit ಇತ್ತೀಚೆಗೆ ಬಂದಿದೆ. ${sec} ಸೆಕೆಂಡ್ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.`);
+  }
+  bloggerWriteInFlight=true;
+  try{
     const r=await googleFetch(url, options);
-    if(r.status!==429) return r;
-    let reason="", message="";
-    try{
-      const clone=r.clone();
-      const j=await clone.json();
-      const e=j?.error||{};
-      message=e.message||"";
-      reason=Array.isArray(e.errors)?(e.errors.find(x=>x?.reason)?.reason||""):"";
-    }catch(_){}
-    if(reason && reason!=="rateLimitExceeded") return r;
-    if(attempt===maxAttempts-1) return r;
-    const retryAfter=Number(r.headers?.get("Retry-After")||0);
-    const base=Math.min(16000,1000*Math.pow(2,attempt));
-    const jitter=Math.floor(Math.random()*1000);
-    const waitMs=retryAfter>0?Math.min(30000,retryAfter*1000):base+jitter;
-    statusMessage(`⏳ Blogger rate limit ಬಂದಿದೆ. ${Math.ceil(waitMs/1000)} ಸೆಕೆಂಡ್ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸುತ್ತಿದೆ...`);
-    await new Promise(resolve=>setTimeout(resolve,waitMs));
+    if(r.status===429){
+      let retryAfter=Number(r.headers?.get("Retry-After")||0);
+      // Blogger may omit Retry-After. Keep a short client-side cooldown to
+      // prevent accidental repeat taps; this does not claim the server quota
+      // will reset in exactly this period.
+      bloggerRateLimitedUntil=Date.now()+Math.max(15000,Math.min(60000,retryAfter*1000||30000));
+    }
+    return r;
+  }finally{
+    bloggerWriteInFlight=false;
   }
 }
 function statusMessage(msg){
@@ -1329,8 +1332,10 @@ $("bloggerApiTest").onclick=testBloggerApi;
 $("publish").onclick=async()=>{
   const title=$("headline").value.trim(),body=$("bodyOut").value.trim(),blogId=$("blogId").value.trim()||blogDefault;
   if(!title||!body){$("publishStatus").textContent="Headline ಮತ್ತು News Body ಸಿದ್ಧಪಡಿಸಿ.";return}
-  const status=$("publishStatus");
+  const status=$("publishStatus"), publishBtn=$("publish");
   status.style.display="block"; status.style.color="#333";
+  if(bloggerWriteInFlight){status.textContent="⏳ Blogger publish request ಈಗಾಗಲೇ ನಡೆಯುತ್ತಿದೆ...";return}
+  publishBtn.disabled=true; publishBtn.dataset.originalText=publishBtn.textContent; publishBtn.textContent="⏳ Blogger Publish...";
   try{
     status.textContent="⏳ Step 1/4: Google authorization ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...";
     if(!token)await access();
@@ -1351,11 +1356,11 @@ $("publish").onclick=async()=>{
     status.textContent=editingPostId?"⏳ Step 4/4: Blogger post update...":"⏳ Step 4/4: Blogger publish...";
     let r,j;
     if(editingPostId){
-      r=await bloggerFetchWithBackoff(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
+      r=await bloggerWriteOnce(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
         method:"PUT",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
       });
     }else{
-      r=await bloggerFetchWithBackoff(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
+      r=await bloggerWriteOnce(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
         method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
       });
     }
@@ -1389,8 +1394,13 @@ $("publish").onclick=async()=>{
     const m=String(e?.message||e);
     if(m.startsWith("PHOTO_UPLOAD:")) status.textContent="✕ Photo upload ಹಂತದಲ್ಲಿ ಸಮಸ್ಯೆ: "+m.replace("PHOTO_UPLOAD: ","");
     else if(m.startsWith("PHOTO_PERMISSION:")) status.textContent="✕ Photo permission ಹಂತದಲ್ಲಿ ಸಮಸ್ಯೆ: "+m.replace("PHOTO_PERMISSION: ","");
+    else if(m.startsWith("BLOGGER_RATE_LIMIT:")) status.textContent="⏳ Blogger write rate limit: "+m.replace("BLOGGER_RATE_LIMIT: ","");
+    else if(m.startsWith("BLOGGER_WRITE_BUSY:")) status.textContent="⏳ Blogger publish request ಈಗಾಗಲೇ ನಡೆಯುತ್ತಿದೆ. "+m.replace("BLOGGER_WRITE_BUSY: ","");
     else if(m.startsWith("BLOGGER_PUBLISH:")) status.textContent="✕ Blogger Publish ಹಂತದಲ್ಲಿ ಸಮಸ್ಯೆ: "+m.replace("BLOGGER_PUBLISH: ","");
     else status.textContent="✕ Publish process: "+m;
+  }finally{
+    publishBtn.disabled=false;
+    publishBtn.textContent=publishBtn.dataset.originalText||"🚀 Publish to Blogger";
   }
 };
 function autoOpenPersonalWhatsApp(url){
