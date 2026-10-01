@@ -1299,7 +1299,14 @@ async function testBloggerApi(){
   status.style.display="block"; status.style.color="#333";
   try{
     status.textContent="⏳ Blogger API test: Google authorization ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...";
-    if(!token) await access();
+    if(!token){
+      status.textContent="⏳ Google sign-in ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ... ಅಗತ್ಯವಿದ್ದರೆ Google sign-in window ತೆರೆಯುತ್ತದೆ.";
+      const authPromise=getGoogleToken(true);
+      await Promise.race([
+        authPromise,
+        new Promise((_,reject)=>setTimeout(()=>reject(Error("Google authorization response ಬರಲಿಲ್ಲ. Sign in window/popup block ಆಗಿದೆಯೇ ಪರಿಶೀಲಿಸಿ.")),20000))
+      ]);
+    }
     status.textContent="⏳ Blogger API test: Blog ಮಾಹಿತಿ ಕೇಳಲಾಗುತ್ತಿದೆ...";
     const r=await googleFetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}`,{headers:{Authorization:"Bearer "+token}});
     const j=await r.json().catch(()=>({}));
