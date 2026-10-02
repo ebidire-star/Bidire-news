@@ -463,6 +463,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <div class="edit-chat-status" id="editChatStatus"></div>
 </div>
 <div class="edit-category-row"><label for="category">Category</label><select id="category"><option selected="" value="ಮೂಡುಬಿದಿರೆ">ಮೂಡುಬಿದಿರೆ</option><option value="ಕ್ರೈಂ">ಕ್ರೈಂ</option><option value="ತಂತ್ರಜ್ಞಾನ">ತಂತ್ರಜ್ಞಾನ</option><option value="ವಿಶೇಷ">ವಿಶೇಷ</option></select></div>
+<div class="auto-label-display small" id="autoLabelsDisplay" aria-hidden="true"></div>
 <div class="auto-label-row">
 <div class="auto-label-head"><span>🏷️ Automatic English Labels</span><small>AI automatic · ಬೇಕಾದರೆ edit ಮಾಡಿ</small></div>
 <div class="auto-label-editor" id="autoLabelsEditor"></div>
@@ -1201,7 +1202,7 @@ function calcAdMoney(){const total=Math.max(0,(Number($("adRate").value)||0)-(Nu
 function previewCreative(id,file){if(!file)return;const r=new FileReader();r.onload=()=>{const x=$(id);x.src=r.result;x.classList.remove("hide")};r.readAsDataURL(file)}
 ["Top","Middle","Sidebar"].forEach(p=>$("ad"+p+"Image").addEventListener("change",e=>previewCreative("ad"+p+"Preview",e.target.files?.[0])));
 ["adRate","adDiscount","adPaidAmount","adPaymentStatus"].forEach(id=>$(id).addEventListener("input",calcAdMoney));$("adPaymentStatus").addEventListener("change",calcAdMoney);
-function renderAds(){updateAdDashboard();const box=$("adList");if(!ads.length){box.innerHTML='<div class="small">ಯಾವುದೇ ಜಾಹೀರಾತು ಇಲ್ಲ.</div>';return}box.innerHTML=ads.slice().sort((a,b)=>String(b.createdAt||b.billNo).localeCompare(String(a.createdAt||a.billNo))).map(a=>{a=normalizeAd(a);const st=adStatus(a),pay=(a.paymentStatus||"Pending").toLowerCase();return `<div class="ad-card"><div class="ad-card-head"><div><div class="ad-card-title">${adEsc(a.business||a.title)} — ${adEsc(a.billNo)}</div><div class="small">Advertisement ID: ${adEsc(a.id)} · ${adEsc(a.start||"")} → ${adEsc(a.expiry||"")}</div></div><div><span class="ad-badge ${st.toLowerCase()}">${st}</span> <span class="ad-badge ${pay}">${adEsc(a.paymentStatus)}</span></div></div><div class="small" style="margin-top:6px">Rate ${money(a.rate)} − Discount ${money(a.discount)} = <b>${money(a.total)}</b> · Balance ${money(a.total-(a.paidAmount||0))}</div><div class="small">Top ✓ Middle ✓ Sidebar ✓ ${a.websitePostIds?.top&&a.websitePostIds?.middle&&a.websitePostIds?.sidebar?'· Blogger synced':''}</div><div class="ad-actions"><button type="button" class="primary" data-ad-edit="${adEsc(a.id)}">✏ Edit</button><button type="button" class="black" data-ad-sync="${adEsc(a.id)}">🌐 Sync</button><button type="button" class="light" data-ad-bill="${adEsc(a.id)}">🧾 Bill</button><button type="button" class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?'Enable':'Disable'}</button><button type="button" class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button></div></div>`}).join("");box.querySelectorAll("[data-ad-edit]").forEach(b=>b.onclick=()=>editAd(b.dataset.adEdit));box.querySelectorAll("[data-ad-sync]").forEach(b=>b.onclick=async()=>{const a=ads.find(x=>x.id===b.dataset.adSync);try{await publishAdToWebsite(a);$("adStatus").textContent="✓ ಮೂರು advertisements Bloggerಗೆ sync ಆಯಿತು.";$("adStatus").style.display="block"}catch(e){$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}});box.querySelectorAll("[data-ad-bill]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adBill);showBill(a)});box.querySelectorAll("[data-ad-toggle]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adToggle);a.enabled=a.enabled===false;saveAds();renderAds()});box.querySelectorAll("[data-ad-delete]").forEach(b=>b.onclick=()=>{if(confirm("ಈ Advertisement delete ಮಾಡಬೇಕೇ?")){ads=ads.filter(x=>x.id!==b.dataset.adDelete);saveAds();renderAds()}})}
+function renderAds(){updateAdDashboard();const box=$("adList");if(!ads.length){box.innerHTML='<div class="small">ಯಾವುದೇ ಜಾಹೀರಾತು ಇಲ್ಲ.</div>';return}box.innerHTML=ads.slice().sort((a,b)=>String(b.createdAt||b.billNo).localeCompare(String(a.createdAt||a.billNo))).map(a=>{a=normalizeAd(a);const st=adStatus(a),pay=(a.paymentStatus||"Pending").toLowerCase();return `<div class="ad-card"><div class="ad-card-head"><div><div class="ad-card-title">${adEsc(a.business||a.title)} — ${adEsc(a.billNo)}</div><div class="small">Advertisement ID: ${adEsc(a.id)} · ${adEsc(a.start||"")} → ${adEsc(a.expiry||"")}</div></div><div><span class="ad-badge ${st.toLowerCase()}">${st}</span> <span class="ad-badge ${pay}">${adEsc(a.paymentStatus)}</span></div></div><div class="small" style="margin-top:6px">Rate ${money(a.rate)} − Discount ${money(a.discount)} = <b>${money(a.total)}</b> · Balance ${money(a.total-(a.paidAmount||0))}</div><div class="small">Top ✓ Middle ✓ Sidebar ✓ ${a.websitePostIds?.top&&a.websitePostIds?.middle&&a.websitePostIds?.sidebar?'· Blogger synced':''}</div><div class="ad-actions"><button type="button" class="primary" data-ad-edit="${adEsc(a.id)}">✏ Edit</button><button type="button" class="black" data-ad-sync="${adEsc(a.id)}">🌐 Sync</button><button type="button" class="light" data-ad-bill="${adEsc(a.id)}">🧾 Bill</button><button type="button" class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?'Enable':'Disable'}</button><button type="button" class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button></div></div>`}).join("");box.querySelectorAll("[data-ad-edit]").forEach(b=>b.onclick=()=>editAd(b.dataset.adEdit));box.querySelectorAll("[data-ad-sync]").forEach(b=>b.onclick=async()=>{const a=ads.find(x=>x.id===b.dataset.adSync);try{await publishAdToWebsite(a);if(typeof window.addAdHistory==="function")window.addAdHistory(a,"Blogger Sync");$("adStatus").textContent="✓ ಮೂರು advertisements Bloggerಗೆ sync ಆಯಿತು.";$("adStatus").style.display="block"}catch(e){$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}});box.querySelectorAll("[data-ad-bill]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adBill);showBill(a)});box.querySelectorAll("[data-ad-toggle]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adToggle);a.enabled=a.enabled===false;saveAds();renderAds()});box.querySelectorAll("[data-ad-delete]").forEach(b=>b.onclick=()=>{if(confirm("ಈ Advertisement delete ಮಾಡಬೇಕೇ?")){ads=ads.filter(x=>x.id!==b.dataset.adDelete);saveAds();renderAds()}})}
 function updateAdDashboard(){let active=0,scheduled=0,expired=0,billing=0,paid=0,pending=0,partial=0;ads.forEach(a=>{a=normalizeAd(a);const st=adStatus(a);if(st==="ACTIVE")active++;else if(st==="SCHEDULED")scheduled++;else if(st==="EXPIRED")expired++;billing+=a.total;paid+=Math.min(a.total,a.paidAmount);if(a.paymentStatus==="Partial")partial++;if(a.paymentStatus!=="Paid")pending+=Math.max(0,a.total-a.paidAmount)});$("adDashTotal").textContent=ads.length;$("adDashActive").textContent=active;$("adDashScheduled").textContent=scheduled;$("adDashExpired").textContent=expired;$("adDashBilling").textContent=money(billing);$("adDashPaid").textContent=money(paid);$("adDashPending").textContent=money(pending);$("adDashPartial").textContent=partial}
 function clearAdForm(){editingAdId=null;["adBusiness","adContact","adTitle","adText","adPhone","adDefaultLink","adStart","adExpiry","adTopLink","adMiddleLink","adSidebarLink","adRate","adDiscount","adPaidAmount"].forEach(id=>{if($(id))$(id).value=""});["adTopImage","adMiddleImage","adSidebarImage"].forEach(id=>$(id).value="");["adTopPreview","adMiddlePreview","adSidebarPreview"].forEach(id=>$(id).classList.add("hide"));$("adPaymentStatus").value="Pending";calcAdMoney();$("saveAd").textContent="💾 Save Advertisement";$("billPreview").innerHTML="";$("billPreview").classList.add("hide")}
 function editAd(id){const a=ads.find(x=>x.id===id);if(!a)return;editingAdId=id;a=normalizeAd(a);$("adBusiness").value=a.business||"";$("adContact").value=a.contact||"";$("adTitle").value=a.title||"";$("adText").value=a.text||"";$("adPhone").value=a.phone||"";$("adDefaultLink").value=a.defaultLink||"";$("adStart").value=a.start||"";$("adExpiry").value=a.expiry||"";$("adTopLink").value=a.top.link||"";$("adMiddleLink").value=a.middle.link||"";$("adSidebarLink").value=a.sidebar.link||"";$("adRate").value=a.rate||0;$("adDiscount").value=a.discount||0;$("adPaidAmount").value=a.paidAmount||0;$("adPaymentStatus").value=a.paymentStatus||"Pending";$("saveAd").textContent="🔄 Update Advertisement";calcAdMoney();["top","middle","sidebar"].forEach(p=>{const c=a[p];const im=$("ad"+p.charAt(0).toUpperCase()+p.slice(1)+"Preview");if(c.imageData||c.imageUrl){im.src=c.imageData||c.imageUrl;im.classList.remove("hide")}});$("adCreateTab").click();window.scrollTo({top:$("adsPanel").offsetTop-60,behavior:"smooth"})}
@@ -1268,9 +1269,11 @@ async function saveAdvertisementForm(){
       if(!ad[p].imageData&&!ad[p].imageUrl)throw Error("ಮೂರು positionsಗೂ images ಕಡ್ಡಾಯ.");
     }
     const idx=ads.findIndex(x=>x.id===ad.id);
+    const action=idx>=0?"Advertisement Updated":"Advertisement Created";
     if(idx>=0)ads[idx]=ad;else ads.push(ad);
     editingAdId=ad.id;
     saveAds();renderAds();
+    if(typeof window.addAdHistory==="function")window.addAdHistory(ad,action);
     st.textContent="✓ Advertisement saved. Bill No: "+ad.billNo;st.style.display="block";
     $("saveAd").textContent="🔄 Update Advertisement";
     return ad;
@@ -1285,6 +1288,7 @@ $("publishAdWebsite").onclick=async()=>{
     const ad=await saveAdvertisementForm();
     st.textContent="Google/Blogger authorization ಮತ್ತು sync ನಡೆಯುತ್ತಿದೆ...";st.style.display="block";
     await publishAdToWebsite(ad);
+    if(typeof window.addAdHistory==="function")window.addAdHistory(ad,"Blogger Sync");
     saveAds();renderAds();
     st.textContent="✓ News Top + News Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.";st.style.display="block";
   }catch(e){st.textContent="✕ Publish / Sync ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
@@ -1497,44 +1501,6 @@ try{
   const el=$("status");
   if(el){el.textContent="⚠️ Editor startup error: "+(e&&e.message?e.message:String(e));el.style.display="block";}
 }
-
-
-/* ===== Modern UI V2 navigation ===== */
-(function(){
-  const nav=document.getElementById("sectionNav");
-  if(!nav)return;
-  const buttons=[...nav.querySelectorAll("[data-target]")];
-  function go(id){
-    const el=document.getElementById(id);
-    if(!el)return;
-    // Treat the top navigation as real sections/tabs. Hide the other main
-    // sections first so the old/previous editor panels do not remain below.
-    const targets=new Set(buttons.map(b=>b.dataset.target));
-    targets.forEach(targetId=>{
-      const section=document.getElementById(targetId);
-      if(section) section.classList.toggle("hide",targetId!==id);
-    });
-    el.classList.remove("hide");
-    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===id));
-    window.scrollTo({top:Math.max(0,el.offsetTop-92),behavior:"smooth"});
-  }
-  buttons.forEach(b=>b.addEventListener("click",()=>go(b.dataset.target)));
-  document.querySelectorAll(".subtool-toggle").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      const box=btn.closest(".subtool");
-      box.classList.toggle("open");
-    });
-  });
-  const ids=buttons.map(b=>b.dataset.target);
-  const obs=new IntersectionObserver(entries=>{
-    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-    if(!visible)return;
-    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===visible.target.id));
-  },{rootMargin:"-95px 0px -55% 0px",threshold:[.1,.3,.6]});
-  ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
-  // Start with only the first editor section visible.
-  go("newSection");
-})();
 
 
 /* V6 compact edit accordions */
@@ -1783,12 +1749,165 @@ ${JSON.stringify(data)}`;
 </script>
 
 
-<script id="bidire-runtime-diagnostic-v11">
+<script id="bidire-ad-history-summary-sync">
+(function(){
+  function historyRead(){
+    try{
+      const v=localStorage.getItem("bn_ad_history");
+      const a=v?JSON.parse(v):[];
+      return Array.isArray(a)?a:[];
+    }catch(e){return []}
+  }
+  function historyWrite(a){
+    try{localStorage.setItem("bn_ad_history",JSON.stringify(a.slice(-200)));return true}
+    catch(e){return false}
+  }
+  window.addAdHistory=function(ad,action){
+    try{
+      if(!ad)return;
+      const item={
+        id:String(ad.id||ad.billNo||""),
+        billNo:String(ad.billNo||ad.id||""),
+        business:String(ad.business||""),
+        title:String(ad.title||""),
+        action:String(action||"Updated"),
+        amount:Number(ad.total)||0,
+        status:String(ad.paymentStatus||"Pending"),
+        timestamp:new Date().toISOString()
+      };
+      const a=historyRead();
+      a.push(item);
+      historyWrite(a);
+      if(typeof window.renderHistory==="function")window.renderHistory();
+      return item;
+    }catch(e){console.error("Bidire ad history error",e)}
+  };
+
+  function fmtDate(v){
+    try{return new Date(v).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})}
+    catch(e){return String(v||"")}
+  }
+  window.renderHistory=function(){
+    const box=document.getElementById("adHistoryList");
+    if(!box)return;
+    const a=historyRead().slice().reverse();
+    if(!a.length){
+      box.innerHTML='<div class="small">ಯಾವುದೇ Advertisement History ಇಲ್ಲ.</div>';
+      return;
+    }
+    box.innerHTML=a.map(x=>`<div class="ad-card">
+      <div class="ad-card-head"><div>
+        <div class="ad-card-title">${typeof adEsc==="function"?adEsc(x.business||x.title):String(x.business||x.title||"Advertisement")}</div>
+        <div class="small">Bill: ${typeof adEsc==="function"?adEsc(x.billNo):String(x.billNo||"")} · ${typeof adEsc==="function"?adEsc(x.action):String(x.action||"")}</div>
+      </div><div><span class="ad-badge">${typeof adEsc==="function"?adEsc(x.status):String(x.status||"")}</span></div></div>
+      <div class="small" style="margin-top:6px">${fmtDate(x.timestamp)} · ${typeof money==="function"?money(x.amount):"₹"+(Number(x.amount)||0).toFixed(2)}</div>
+    </div>`).join("");
+  };
+
+  window.renderSummary=function(){
+    const box=document.getElementById("adSummaryList");
+    if(!box)return;
+    const from=(document.getElementById("adSummaryFrom")||{}).value||"";
+    const to=(document.getElementById("adSummaryTo")||{}).value||"";
+    const source=Array.isArray(window.ads)?window.ads:(typeof ads!=="undefined"?ads:[]);
+    const list=source.filter(a=>{
+      const d=String(a.createdAt||"").slice(0,10);
+      return (!from||d>=from)&&(!to||d<=to);
+    });
+    let total=0,paid=0,pending=0,partial=0;
+    list.forEach(a=>{
+      const t=typeof adTotalValue==="function"?adTotalValue(a):Math.max(0,(Number(a.rate)||0)-(Number(a.discount)||0));
+      total+=t;
+      paid+=Math.min(t,Number(a.paidAmount)||0);
+      if(a.paymentStatus==="Partial")partial++;
+      if(a.paymentStatus!=="Paid")pending+=Math.max(0,t-(Number(a.paidAmount)||0));
+    });
+    if(!list.length){
+      box.innerHTML='<div class="small">ಆಯ್ಕೆ ಮಾಡಿದ ಅವಧಿಗೆ Advertisement records ಇಲ್ಲ.</div>';
+      return;
+    }
+    const rows=list.slice().sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))).map(a=>{
+      const t=typeof adTotalValue==="function"?adTotalValue(a):Math.max(0,(Number(a.rate)||0)-(Number(a.discount)||0));
+      return `<tr><td>${typeof adEsc==="function"?adEsc(a.billNo||a.id):String(a.billNo||a.id||"")}</td>
+      <td>${typeof adEsc==="function"?adEsc(a.business):String(a.business||"")}</td>
+      <td>${typeof adEsc==="function"?adEsc(a.createdAt?String(a.createdAt).slice(0,10):""):String(a.createdAt||"")}</td>
+      <td>${typeof money==="function"?money(t):"₹"+t.toFixed(2)}</td>
+      <td>${typeof adEsc==="function"?adEsc(a.paymentStatus||"Pending"):String(a.paymentStatus||"Pending")}</td></tr>`;
+    }).join("");
+    box.innerHTML=`<div class="ad-dashboard">
+      <div class="ad-stat"><span>Advertisements</span><b>${list.length}</b></div>
+      <div class="ad-stat"><span>Total</span><b>${typeof money==="function"?money(total):"₹"+total.toFixed(2)}</b></div>
+      <div class="ad-stat"><span>Paid</span><b>${typeof money==="function"?money(paid):"₹"+paid.toFixed(2)}</b></div>
+      <div class="ad-stat"><span>Balance</span><b>${typeof money==="function"?money(pending):"₹"+pending.toFixed(2)}</b></div>
+    </div>
+    <div style="overflow:auto"><table class="ad-summary-table"><thead><tr><th>Bill</th><th>Advertiser</th><th>Date</th><th>Total</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  };
+
+  window.syncAllAdvertisements=async function(){
+    const source=Array.isArray(window.ads)?window.ads:(typeof ads!=="undefined"?ads:[]);
+    const st=document.getElementById("adStatus");
+    if(!source.length){
+      if(st){st.textContent="ಯಾವುದೇ Advertisement ಇಲ್ಲ.";st.style.display="block";}
+      return;
+    }
+    let done=0;
+    try{
+      if(st){st.textContent="ಎಲ್ಲಾ Advertisements Bloggerಗೆ sync ಆಗುತ್ತಿದೆ...";st.style.display="block";}
+      for(const ad of source){
+        await publishAdToWebsite(ad);
+        done++;
+        if(typeof window.addAdHistory==="function")window.addAdHistory(ad,"Blogger Sync");
+      }
+      if(typeof saveAds==="function")saveAds();
+      if(typeof renderAds==="function")renderAds();
+      if(st){st.textContent=`✓ ${done} Advertisement(s) — Top + Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.`;st.style.display="block";}
+      return done;
+    }catch(e){
+      if(st){st.textContent=`✕ Sync ${done}/${source.length} ಮಾತ್ರ ಆಯಿತು: ${e.message}`;st.style.display="block";}
+      throw e;
+    }
+  };
+
+  function activateAdTab(tabId,panelId){
+    ["adCreateTab","adManageTab","adHistoryTab","adSummaryTab"].forEach(id=>{
+      const b=document.getElementById(id);if(b)b.classList.toggle("active",id===tabId);
+    });
+    ["adCreatePanel","adManagePanel","adHistoryPanel","adSummaryPanel"].forEach(id=>{
+      const p=document.getElementById(id);if(p)p.classList.toggle("hide",id!==panelId);
+    });
+    if(panelId==="adHistoryPanel")window.renderHistory();
+    if(panelId==="adSummaryPanel")window.renderSummary();
+  }
+
+  document.addEventListener("DOMContentLoaded",function(){
+    const bind=(id,fn)=>{const el=document.getElementById(id);if(el)el.addEventListener("click",fn)};
+    bind("adCreateTab",()=>activateAdTab("adCreateTab","adCreatePanel"));
+    bind("adManageTab",()=>{activateAdTab("adManageTab","adManagePanel");if(typeof renderAds==="function")renderAds()});
+    bind("adHistoryTab",()=>activateAdTab("adHistoryTab","adHistoryPanel"));
+    bind("adSummaryTab",()=>activateAdTab("adSummaryTab","adSummaryPanel"));
+    bind("refreshAds",()=>{if(typeof renderAds==="function")renderAds();window.renderHistory();window.renderSummary()});
+    bind("syncAllAds",()=>window.syncAllAdvertisements().catch(()=>{}));
+    bind("adSummaryRun",()=>window.renderSummary());
+    bind("adSummaryPdf",()=>{
+      const html=document.getElementById("adSummaryList")?.innerHTML||"";
+      if(typeof printHtml==="function")printHtml(html,"Bidire Advertisement Date-wise Summary");
+    });
+    window.renderHistory();
+    window.renderSummary();
+  });
+})();
+</script>
+
+<script id="bidire-runtime-diagnostic-v12">
 (function(){
   window.addEventListener("error",function(e){
     if(e && e.message && /\bi is not defined\b/.test(e.message)){
       var el=document.getElementById("status");
-      if(el){el.textContent="⚠️ Cached/old JavaScript detected. Please open this version in Incognito or Hard Refresh.";el.style.display="block";}
+      if(el){
+        el.textContent="⚠️ JavaScript runtime error: i is not defined. Source/script boundary or handler error needs inspection.";
+        el.style.display="block";
+      }
+      console.error("Bidire runtime error:",e.error||e.message);
     }
   });
 })();
@@ -1817,64 +1936,4 @@ ${JSON.stringify(data)}`;
   show("newSection");
 })();
 </script>
-
-<script id="bidire-final-ad-controls">
-(function(){
-  "use strict";
-  function showAdPanel(panelId){
-    const panels=["adCreatePanel","adManagePanel","adHistoryPanel","adSummaryPanel"];
-    panels.forEach(id=>document.getElementById(id)?.classList.add("hide"));
-    const target=document.getElementById(panelId); if(target)target.classList.remove("hide");
-    const map={adCreatePanel:"adCreateTab",adManagePanel:"adManageTab",adHistoryPanel:"adHistoryTab",adSummaryPanel:"adSummaryTab"};
-    Object.values(map).forEach(id=>document.getElementById(id)?.classList.remove("active"));
-    document.getElementById(map[panelId])?.classList.add("active");
-    if(panelId==="adManagePanel" && typeof renderAds==="function")renderAds();
-    if(panelId==="adHistoryPanel" && typeof window.renderHistory==="function")window.renderHistory();
-    if(panelId==="adSummaryPanel" && typeof window.renderSummary==="function")window.renderSummary();
-  }
-
-  window.addAdHistory=function(ad,action){
-    try{
-      const h=typeof safeJsonGet==="function"?safeJsonGet("bn_ad_history",[]):[];
-      h.push({billNo:ad?.billNo||ad?.id||"",action:String(action||""),at:new Date().toISOString()});
-      if(typeof safeSet==="function")safeSet("bn_ad_history",JSON.stringify(h.slice(-200)));
-    }catch(e){console.warn("Ad history",e)}
-  };
-  window.renderHistory=function(){
-    const box=document.getElementById("adHistoryList");if(!box)return;
-    const h=typeof safeJsonGet==="function"?safeJsonGet("bn_ad_history",[]):[];
-    box.innerHTML=h.length?h.slice().reverse().map(x=>`<div class="ad-card"><b>${typeof adEsc==="function"?adEsc(x.billNo):String(x.billNo||"")}</b> — ${typeof adEsc==="function"?adEsc(x.action):String(x.action||"")}<div class="small">${new Date(x.at||Date.now()).toLocaleString()}</div></div>`).join(""):"<div class=\"small\">History ಇಲ್ಲ.</div>";
-  };
-  window.renderSummary=function(){
-    const box=document.getElementById("adSummaryList");if(!box)return;
-    const from=document.getElementById("adSummaryFrom")?.value||"",to=document.getElementById("adSummaryTo")?.value||"";
-    const list=(typeof ads!=="undefined" && Array.isArray(ads)?ads:[]).filter(a=>{const d=String(a.createdAt||"").slice(0,10);return(!from||d>=from)&&(!to||d<=to)});
-    const by={};
-    list.forEach(a=>{a=typeof normalizeAd==="function"?normalizeAd(a):a;const d=String(a.createdAt||"").slice(0,10)||new Date().toISOString().slice(0,10);if(!by[d])by[d]={count:0,total:0,paid:0,pending:0};by[d].count++;by[d].total+=Number(a.total)||0;by[d].paid+=Math.min(Number(a.total)||0,Number(a.paidAmount)||0);by[d].pending+=Math.max(0,(Number(a.total)||0)-(Number(a.paidAmount)||0));});
-    box.innerHTML=Object.keys(by).sort().reverse().map(d=>`<table class="ad-summary-table"><tr><th>Date</th><th>Ads</th><th>Total</th><th>Paid</th><th>Pending</th></tr><tr><td>${d}</td><td>${by[d].count}</td><td>${typeof money==="function"?money(by[d].total):by[d].total}</td><td>${typeof money==="function"?money(by[d].paid):by[d].paid}</td><td>${typeof money==="function"?money(by[d].pending):by[d].pending}</td></tr></table>`).join("")||'<div class="small">Selected date rangeನಲ್ಲಿ data ಇಲ್ಲ.</div>';
-  };
-  window.syncAllAdvertisements=async function(){
-    const st=document.getElementById("adStatus"),list=(typeof ads!=="undefined" && Array.isArray(ads))?ads:[];
-    if(!list.length){if(st){st.textContent="ಯಾವುದೇ advertisement ಇಲ್ಲ.";st.style.display="block"}return;}
-    try{
-      if(typeof token==="undefined" || !token){if(typeof access==="function")await access();}
-      let ok=0,fail=0;
-      for(const item of list){try{await publishAdToWebsite(item);window.addAdHistory(item,"Blogger Sync");ok++;}catch(e){fail++;}}
-      if(typeof saveAds==="function")saveAds();if(typeof renderAds==="function")renderAds();window.renderHistory();
-      if(st){st.textContent=`✓ ${ok}/${list.length} advertisements Bloggerಗೆ sync ಆಯಿತು.${fail?` ${fail} failed.`:""}`;st.style.color=fail?"#b26a00":"#16803c";st.style.display="block";}
-    }catch(e){if(st){st.textContent="✕ Blogger Sync ಆಗಲಿಲ್ಲ: "+e.message;st.style.color="#b40000";st.style.display="block";}}
-  };
-
-  document.getElementById("adCreateTab")?.addEventListener("click",()=>showAdPanel("adCreatePanel"));
-  document.getElementById("adManageTab")?.addEventListener("click",()=>showAdPanel("adManagePanel"));
-  document.getElementById("adHistoryTab")?.addEventListener("click",()=>showAdPanel("adHistoryPanel"));
-  document.getElementById("adSummaryTab")?.addEventListener("click",()=>showAdPanel("adSummaryPanel"));
-  document.getElementById("refreshAds")?.addEventListener("click",()=>{if(typeof renderAds==="function")renderAds();});
-  document.getElementById("syncAllAds")?.addEventListener("click",()=>window.syncAllAdvertisements());
-  document.getElementById("adSummaryRun")?.addEventListener("click",()=>window.renderSummary());
-  document.getElementById("adSummaryPdf")?.addEventListener("click",()=>{const box=document.getElementById("adSummaryList");if(box?.innerHTML&&typeof printHtml==="function")printHtml(box.innerHTML,"Bidire Advertisement Summary");});
-  if(document.getElementById("adCreatePanel"))showAdPanel("adCreatePanel");
-})();
-</script>
-
 </body></html>
