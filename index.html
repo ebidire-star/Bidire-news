@@ -1209,7 +1209,7 @@ function printHtml(html,title){
   const w=window.open("","_blank");
   if(!w)return;
   const css=document.getElementById("bidire-ad-v7-css")?.textContent||"";
-  const doc="<html><head><title>"+esc(title)+"</title><style>body{margin:20px;background:#fff}"+css+"</style></head><body>"+html+"</body>"+"</html>";
+  const doc="<html><head><title>"+esc(title)+"</title><style>body{margin:20px;background:#fff}"+css+"</style></head><body>"+html+"<\/body>"+"</html>";
   w.document.open();
   w.document.write(doc);
   w.document.close();
@@ -1597,6 +1597,30 @@ ${JSON.stringify(data)}`;
       if(el){el.textContent="⚠️ Cached/old JavaScript detected. Please open this version in Incognito or Hard Refresh.";el.style.display="block";}
     }
   });
+})();
+</script>
+
+<script>
+/* BIDIRE FINAL — single-section navigation */
+(function(){
+  const nav=document.getElementById("sectionNav");
+  if(!nav)return;
+  const ids=["newSection","editSection","safeSection","previewSection","adsPanel","allPostsPanel"];
+  const sections=ids.map(id=>document.getElementById(id)).filter(Boolean);
+  function show(id){
+    sections.forEach(el=>el.classList.toggle("hide",el.id!==id));
+    nav.querySelectorAll("[data-target]").forEach(b=>b.classList.toggle("active",b.dataset.target===id));
+    const el=document.getElementById(id);
+    if(el) window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-92),behavior:"smooth"});
+  }
+  nav.addEventListener("click",function(ev){
+    const b=ev.target.closest("[data-target]");
+    if(!b)return;
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    show(b.dataset.target);
+  },true);
+  show("newSection");
 })();
 </script>
 </body></html>
