@@ -174,7 +174,7 @@ $("disconnect").onclick=()=>{token=null;$("connectStatus").textContent="Disconne
 function blob(data){const a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
 async function uploadDrive(data,name){
  const b=blob(data),boundary="bn_"+Date.now()+"_"+Math.random().toString(16).slice(2),meta={name,mimeType:b.type};
- const body=new Blob(["--"+boundary+"\\r\\n","Content-Type: application/json; charset=UTF-8\\r\\n\\r\\n",JSON.stringify(meta),"\\r\\n--"+boundary+"\\r\\n","Content-Type: "+b.type+"\\r\\n\\r\\n",b,"\\r\\n--"+boundary+"--\\r\\n"],{type:"multipart/related; boundary="+boundary});
+ const body=new Blob(["--"+boundary+"\r\n","Content-Type: application/json; charset=UTF-8\r\n\r\n",JSON.stringify(meta),"\r\n--"+boundary+"\r\n","Content-Type: "+b.type+"\r\n\r\n",b,"\r\n--"+boundary+"--\r\n"],{type:"multipart/related; boundary="+boundary});
  let r=await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"multipart/related; boundary="+boundary},body}),j=await r.json();
  if(!r.ok)throw Error(j.error?.message||"Drive upload failed");
  const id=j.id;
