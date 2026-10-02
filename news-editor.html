@@ -6,7 +6,6 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#0d1117" name="theme-color"/>
 <link href="manifest.webmanifest" rel="manifest"/>
-<script async="" defer="" src="https://accounts.google.com/gsi/client"></script>
 <title>Bidire News AI Editor</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
@@ -368,7 +367,6 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <div class="top-actions">
 <button class="icon-btn" id="themeBtn" title="Dark / Light mode" type="button">☾</button>
 <button class="icon-btn" id="settingsBtn" title="Settings" type="button">⚙</button>
-<a class="icon-btn" href="advertise.html" title="Advertisement" aria-label="Advertisement" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none">📢</a>
 </div>
 <div aria-hidden="true" class="legacy-controls">
 <button id="newBtn" type="button"></button>
@@ -573,6 +571,8 @@ function safeSet(key,value){
   catch(e){ return false; }
 }
 window.addEventListener("error",e=>{
+  const source=String(e?.filename||"");
+  if(/accounts\.google\.com/i.test(source))return;
   const m=e?.error?.message||e?.message||"Unknown JavaScript error";
   const el=$("status");
   if(el){el.textContent="⚠️ "+m;el.style.display="block";}
@@ -963,8 +963,23 @@ $("photoInput").onchange=async e=>{
  e.target.value="";
 };
 
+let gsiLoadingPromise=null;
+function loadGoogleIdentityScript(){
+ if(window.google?.accounts?.oauth2)return Promise.resolve();
+ if(gsiLoadingPromise)return gsiLoadingPromise;
+ gsiLoadingPromise=new Promise((resolve,reject)=>{
+   const script=document.createElement("script");
+   script.src="https://accounts.google.com/gsi/client";
+   script.async=true;script.defer=true;
+   script.onload=()=>resolve();
+   script.onerror=()=>{gsiLoadingPromise=null;reject(Error("Google authorization load ಆಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."));};
+   document.head.appendChild(script);
+ });
+ return gsiLoadingPromise;
+}
 async function access(){
- if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಿಲ್ಲ. Page refresh ಮಾಡಿ.");
+ await loadGoogleIdentityScript();
+ if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.");
  const cid=$("clientId").value.trim();if(!cid)throw Error("OAuth Client ID ಹಾಕಿ.");
  tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:r=>{if(r.error){pending?.reject(Error(r.error_description||r.error));return}token=r.access_token;safeSet("bn_client",cid);$("bloggerStatus").textContent="✓ Blogger connected.";pending?.resolve(token);pending=null}});
  return new Promise((resolve,reject)=>{pending={resolve,reject};tokenClient.requestAccessToken({prompt:"consent"})})
@@ -1290,7 +1305,11 @@ ${JSON.stringify(data)}`;
       console.error('Bidire button error',err);
     }catch(_){ }
   }
-  window.addEventListener('error',function(e){ if(e && e.error) showButtonError(e.error); });
+  window.addEventListener('error',function(e){
+    var source=String(e&&e.filename||'');
+    if(/accounts\.google\.com/i.test(source)) return;
+    if(e && e.error) showButtonError(e.error);
+  });
   window.addEventListener('unhandledrejection',function(e){ if(e && e.reason) showButtonError(e.reason); });
   document.addEventListener('click',function(e){
     var b=e.target && e.target.closest ? e.target.closest('button') : null;
@@ -1305,7 +1324,16 @@ ${JSON.stringify(data)}`;
 </script>
 
 
-
+<script id="bidire-runtime-diagnostic-v11">
+(function(){
+  window.addEventListener("error",function(e){
+    if(e && e.message && /\bi is not defined\b/.test(e.message)){
+      var el=document.getElementById("status");
+      if(el){el.textContent="⚠️ Cached/old JavaScript detected. Please open this version in Incognito or Hard Refresh.";el.style.display="block";}
+    }
+  });
+})();
+</script>
 
 <script>
 /* BIDIRE FINAL — single-section navigation */
