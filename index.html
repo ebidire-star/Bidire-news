@@ -1271,6 +1271,7 @@ async function saveAdvertisementForm(){
     if(idx>=0)ads[idx]=ad;else ads.push(ad);
     editingAdId=ad.id;
     saveAds();renderAds();
+    addAdHistory(ad,editingAdId===ad.id?"Advertisement Updated":"Advertisement Created");
     st.textContent="✓ Advertisement saved. Bill No: "+ad.billNo;st.style.display="block";
     $("saveAd").textContent="🔄 Update Advertisement";
     return ad;
@@ -1285,6 +1286,7 @@ $("publishAdWebsite").onclick=async()=>{
     const ad=await saveAdvertisementForm();
     st.textContent="Google/Blogger authorization ಮತ್ತು sync ನಡೆಯುತ್ತಿದೆ...";st.style.display="block";
     await publishAdToWebsite(ad);
+    addAdHistory(ad,"Blogger Sync");
     saveAds();renderAds();
     st.textContent="✓ News Top + News Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.";st.style.display="block";
   }catch(e){st.textContent="✕ Publish / Sync ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
@@ -1817,4 +1819,94 @@ ${JSON.stringify(data)}`;
   show("newSection");
 })();
 </script>
+
+
+/* ===== Advertisement History / Summary / Sync-All completion ===== */
+function renderHistory(){
+  const box=$("adHistoryList"); if(!box)return;
+  const h=safeJsonGet("bn_ad_history",[]);
+  box.innerHTML=h.length?h.slice().reverse().map(x=>`<div class="ad-card"><b>${adEsc(x.billNo)}</b> — ${adEsc(x.action)}<div class="small">${new Date(x.at).toLocaleString()}</div></div>`).join(""):"<div class=\"small\">History ಇಲ್ಲ.</div>";
+}
+function addAdHistory(a,action){
+  const h=safeJsonGet("bn_ad_history",[]);h.push({billNo:a.billNo||a.id,action,at:new Date().toISOString()});safeSet("bn_ad_history",JSON.stringify(h.slice(-200)));
+}
+function renderSummary(){
+  const from=$("adSummaryFrom")?.value||"",to=$("adSummaryTo")?.value||"";let list=ads.filter(a=>{const d=(a.createdAt||"").slice(0,10);return(!from||d>=from)&&(!to||d<=to)});const by={};
+  list.forEach(a=>{a=normalizeAd(a);const d=(a.createdAt||adToday()).slice(0,10);if(!by[d])by[d]={count:0,total:0,paid:0,pending:0};by[d].count++;by[d].total+=a.total;by[d].paid+=Math.min(a.total,a.paidAmount);by[d].pending+=Math.max(0,a.total-a.paidAmount)});
+  const box=$("adSummaryList");if(!box)return;
+  box.innerHTML=Object.keys(by).sort().reverse().map(d=>`<table class="ad-summary-table"><tr><th>Date</th><th>Ads</th><th>Total</th><th>Paid</th><th>Pending</th></tr><tr><td>${d}</td><td>${by[d].count}</td><td>${money(by[d].total)}</td><td>${money(by[d].paid)}</td><td>${money(by[d].pending)}</td></tr></table>`).join("")||'<div class="small">Selected date rangeನಲ್ಲಿ data ಇಲ್ಲ.</div>';
+}
+async function syncAllAdvertisements(){
+  const st=$("adStatus");
+  if(!ads.length){if(st){st.textContent="ಯಾವುದೇ advertisement ಇಲ್ಲ.";st.style.display="block"}return;}
+  try{
+    if(!token)await access();
+    let ok=0,fail=0;
+    for(const item of ads){try{await publishAdToWebsite(item);addAdHistory(item,"Blogger Sync");ok++}catch(e){fail++}}
+    saveAds();renderAds();renderHistory();
+    if(st){st.textContent=`✓ ${ok}/${ads.length} advertisements Bloggerಗೆ sync ಆಯಿತು.${fail?" "+fail+" failed.":""}`;st.style.color=fail?"#b26a00":"#16803c";st.style.display="block"}
+  }catch(e){if(st){st.textContent="✕ Blogger Sync ಆಗಲಿಲ್ಲ: "+e.message;st.style.color="#b40000";st.style.display="block"}}
+}
+
+document.getElementById("syncAllAds")?.addEventListener("click",syncAllAdvertisements);
+document.getElementById("adSummaryPdf")?.addEventListener("click",()=>{
+  const box=$("adSummaryList");if(box&&box.innerHTML)printHtml(box.innerHTML,"Bidire Advertisement Summary");
+});
+
+/* ===== FINAL BUTTON RELIABILITY PATCH ===== */
+(function(){
+  function showAdTab(tabId){
+    const ids=["adCreatePanel","adManagePanel","adHistoryPanel","adSummaryPanel"];
+    ids.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add("hide")});
+    const target=document.getElementById(tabId);
+    if(target)target.classList.remove("hide");
+    ["adCreateTab","adManageTab","adHistoryTab","adSummaryTab"].forEach(id=>{
+      const b=document.getElementById(id);if(b)b.classList.toggle("active",id===({adCreatePanel:"adCreateTab",adManagePanel:"adManageTab",adHistoryPanel:"adHistoryTab",adSummaryPanel:"adSummaryTab"}[tabId]));
+    });
+    if(tabId==="adManagePanel" && typeof renderAds==="function")renderAds();
+    if(tabId==="adHistoryPanel" && typeof renderHistory==="function")renderHistory();
+    if(tabId==="adSummaryPanel" && typeof renderSummary==="function")renderSummary();
+  }
+  document.getElementById("adCreateTab")?.addEventListener("click",()=>showAdTab("adCreatePanel"));
+  document.getElementById("adManageTab")?.addEventListener("click",()=>showAdTab("adManagePanel"));
+  document.getElementById("adHistoryTab")?.addEventListener("click",()=>showAdTab("adHistoryPanel"));
+  document.getElementById("adSummaryTab")?.addEventListener("click",()=>showAdTab("adSummaryPanel"));
+
+  document.getElementById("refreshAds")?.addEventListener("click",()=>{
+    if(typeof renderAds==="function")renderAds();
+    const st=document.getElementById("adStatus");
+    if(st){st.textContent="✓ Advertisement list refreshed.";st.style.display="block";}
+  });
+
+  document.getElementById("adSummaryRun")?.addEventListener("click",()=>{
+    if(typeof renderSummary==="function")renderSummary();
+  });
+
+  /* Make all main navigation buttons deterministic even if an older listener exists. */
+  const nav=document.getElementById("sectionNav");
+  if(nav){
+    nav.addEventListener("click",function(e){
+      const b=e.target.closest("button[data-target]");if(!b)return;
+      const id=b.dataset.target,el=document.getElementById(id);if(!el)return;
+      e.preventDefault();
+      if(id==="newSection"){
+        el.classList.remove("hide");
+        el.scrollIntoView({behavior:"smooth",block:"start"});
+      }else{
+        ["newSection","editSection","safeSection","previewSection","adsPanel","allPostsPanel"].forEach(x=>{
+          const q=document.getElementById(x);if(q)q.classList.add("hide");
+        });
+        el.classList.remove("hide");
+        el.scrollIntoView({behavior:"smooth",block:"start"});
+      }
+      nav.querySelectorAll("button[data-target]").forEach(x=>x.classList.toggle("active",x===b));
+    },true);
+  }
+
+  /* Prevent accidental form submission/reload from any editor button. */
+  document.querySelectorAll("button").forEach(b=>{
+    if(!b.getAttribute("type"))b.setAttribute("type","button");
+  });
+})();
+
 </body></html>
