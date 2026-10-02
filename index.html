@@ -1218,6 +1218,138 @@ function printHtml(html,title){
   w.document.close();
   setTimeout(()=>w.print(),400);
 }
+
+/* ===== Advertisement button handlers — restored ===== */
+async function collectAdFromForm(){
+  const existing=editingAdId ? (ads.find(x=>x.id===editingAdId)||null) : null;
+  const readFile=file=>new Promise((resolve,reject)=>{
+    if(!file)return resolve("");
+    const r=new FileReader(); r.onload=()=>resolve(String(r.result||"")); r.onerror=reject; r.readAsDataURL(file);
+  });
+  const topFile=$("adTopImage")?.files?.[0]||null;
+  const middleFile=$("adMiddleImage")?.files?.[0]||null;
+  const sidebarFile=$("adSidebarImage")?.files?.[0]||null;
+  const topData=await readFile(topFile), middleData=await readFile(middleFile), sidebarData=await readFile(sidebarFile);
+  const billNo=existing?.billNo||nextAdNumber();
+  const defaultLink=$("adDefaultLink").value.trim();
+  const ad=normalizeAd({
+    ...(existing||{}),
+    id:billNo,
+    billNo,
+    business:$("adBusiness").value.trim(),
+    contact:$("adContact").value.trim(),
+    title:$("adTitle").value.trim(),
+    text:$("adText").value.trim(),
+    phone:$("adPhone").value.trim(),
+    defaultLink,
+    start:$("adStart").value,
+    expiry:$("adExpiry").value,
+    rate:Number($("adRate").value)||0,
+    discount:Number($("adDiscount").value)||0,
+    paidAmount:Number($("adPaidAmount").value)||0,
+    paymentStatus:$("adPaymentStatus").value||"Pending",
+    enabled:true,
+    createdAt:existing?.createdAt||new Date().toISOString(),
+    top:{...(existing?.top||{}),imageData:topData||existing?.top?.imageData||"",imageUrl:existing?.top?.imageUrl||"",link:$("adTopLink").value.trim()||defaultLink},
+    middle:{...(existing?.middle||{}),imageData:middleData||existing?.middle?.imageData||"",imageUrl:existing?.middle?.imageUrl||"",link:$("adMiddleLink").value.trim()||defaultLink},
+    sidebar:{...(existing?.sidebar||{}),imageData:sidebarData||existing?.sidebar?.imageData||"",imageUrl:existing?.sidebar?.imageUrl||"",link:$("adSidebarLink").value.trim()||defaultLink}
+  });
+  ad.total=adTotalValue(ad);
+  return ad;
+}
+async function saveAdvertisementForm(){
+  const st=$("adStatus");
+  try{
+    st.textContent="Advertisement save ಮಾಡಲಾಗುತ್ತಿದೆ...";st.style.display="block";
+    const ad=await collectAdFromForm();
+    if(!ad.business){throw Error("Advertiser Name ಹಾಕಿ.");}
+    if(!ad.title){throw Error("Advertisement Title ಹಾಕಿ.");}
+    for(const p of ["top","middle","sidebar"]){
+      if(!ad[p].imageData&&!ad[p].imageUrl)throw Error("ಮೂರು positionsಗೂ images ಕಡ್ಡಾಯ.");
+    }
+    const idx=ads.findIndex(x=>x.id===ad.id);
+    if(idx>=0)ads[idx]=ad;else ads.push(ad);
+    editingAdId=ad.id;
+    saveAds();renderAds();
+    st.textContent="✓ Advertisement saved. Bill No: "+ad.billNo;st.style.display="block";
+    $("saveAd").textContent="🔄 Update Advertisement";
+    return ad;
+  }catch(e){
+    st.textContent="✕ "+e.message;st.style.display="block";throw e;
+  }
+}
+$("saveAd").onclick=()=>{saveAdvertisementForm().catch(()=>{})};
+$("publishAdWebsite").onclick=async()=>{
+  const st=$("adStatus");
+  try{
+    const ad=await saveAdvertisementForm();
+    st.textContent="Google/Blogger authorization ಮತ್ತು sync ನಡೆಯುತ್ತಿದೆ...";st.style.display="block";
+    await publishAdToWebsite(ad);
+    saveAds();renderAds();
+    st.textContent="✓ News Top + News Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.";st.style.display="block";
+  }catch(e){st.textContent="✕ Publish / Sync ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
+};
+$("previewAdBtn").onclick=async()=>{
+  const st=$("adStatus");
+  try{
+    const ad=await collectAdFromForm();
+    const image=p=>p?.imageData||p?.imageUrl||"";
+    $("adPreview").innerHTML=`<div style="padding:12px"><h3 style="margin:0 0 8px">${adEsc(ad.business||"Advertisement")} — ${adEsc(ad.title||"")}</h3>
+      <div style="font-size:12px;margin-bottom:8px">Bill No: ${adEsc(ad.billNo)} · ${adEsc(ad.start)} → ${adEsc(ad.expiry)}</div>
+      <div style="display:grid;gap:10px">
+      <div><b>News Top — 1536 × 512</b><img src="${adEsc(image(ad.top))}" style="display:block;width:100%;max-width:768px;height:auto;margin-top:5px;border-radius:6px"></div>
+      <div><b>News Middle — 728 × 120</b><img src="${adEsc(image(ad.middle))}" style="display:block;width:100%;max-width:728px;height:auto;margin-top:5px;border-radius:6px"></div>
+      <div><b>Sidebar — 300 × 250</b><img src="${adEsc(image(ad.sidebar))}" style="display:block;width:300px;max-width:100%;height:auto;margin-top:5px;border-radius:6px"></div></div></div>`;
+    $("adPreview").classList.remove("hide");
+    $("adPreview").scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){st.textContent="✕ Preview ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
+};
+$("clearAd").onclick=()=>clearAdForm();
+$("billPdfBtn").onclick=async()=>{
+  try{const ad=await collectAdFromForm();showBill(ad);setTimeout(()=>printHtml(buildBill(ad),"Bidire Advertisement Bill"),250)}
+  catch(e){$("adStatus").textContent="✕ Bill ತಯಾರಿಸಲಾಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
+};
+$("billJpgBtn").onclick=async()=>{
+  try{
+    const ad=await collectAdFromForm();
+    const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
+    canvas.width=1400;canvas.height=1900;ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#111";ctx.font="bold 34px Arial";ctx.fillText("BIDIRE ADVERTISERS",60,70);
+    ctx.font="bold 28px Arial";ctx.fillText("ADVERTISEMENT BILL",60,120);
+    ctx.font="22px Arial";
+    const rows=[
+      "Bill No / Advertisement ID: "+(ad.billNo||ad.id),
+      "Advertiser: "+(ad.business||""),
+      "Address / Contact: "+(ad.contact||""),
+      "Phone: "+(ad.phone||""),
+      "Period: "+(ad.start||"")+" to "+(ad.expiry||""),
+      "Status: "+(ad.paymentStatus||"Pending"),
+      "News Top: 1536 x 512",
+      "News Middle: 728 x 120",
+      "Sidebar: 300 x 250",
+      "Rate: "+money(ad.rate),
+      "Discount: - "+money(ad.discount),
+      "Total: "+money(ad.total),
+      "Paid: "+money(ad.paidAmount),
+      "Balance: "+money(Math.max(0,ad.total-ad.paidAmount))
+    ];
+    let y=180;for(const row of rows){ctx.fillText(String(row).slice(0,90),60,y);y+=48}
+    ctx.font="bold 18px Arial";ctx.fillText("Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS",60,y+35);
+    ctx.font="16px Arial";ctx.fillText("YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482",60,y+70);
+    ctx.fillText("Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.",60,y+110);
+    ctx.fillText("Contact: 9731410761   Email: bidirevv@mail.com",60,y+140);
+    const a=document.createElement("a");a.href=canvas.toDataURL("image/jpeg",.92);a.download=(ad.billNo||"Bidire-Bill")+".jpg";a.click();
+  }catch(e){$("adStatus").textContent="✕ Bill JPG ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
+};
+$("billWaBtn").onclick=async()=>{
+  try{
+    const ad=await collectAdFromForm();
+    const msg=`BIDIRE ADVERTISERS\nAdvertisement Bill\nBill No: ${ad.billNo||ad.id}\nAdvertiser: ${ad.business||""}\nPeriod: ${ad.start||""} to ${ad.expiry||""}\nTotal: ${money(ad.total)}\nPaid: ${money(ad.paidAmount)}\nBalance: ${money(Math.max(0,ad.total-ad.paidAmount))}`;
+    const phone=(ad.phone||"").replace(/\D/g,"");
+    const url=phone?`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url,"_blank");
+  }catch(e){$("adStatus").textContent="✕ WhatsApp Bill ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
+};
 renderAds();calcAdMoney();
 /* ================= Bidire V6: Audio + Chat + Safe Draft ================= */
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
