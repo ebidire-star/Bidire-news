@@ -1205,17 +1205,16 @@ function editAd(id){const a=ads.find(x=>x.id===id);if(!a)return;editingAdId=id;a
 function buildBill(a){a=normalizeAd(a);return `<div class="bill-paper" id="printBill"><div class="bill-top"><div><div class="bill-brand">BIDIRE ADVERTISERS</div><div class="bill-small">PAN No: ANRPB1538L</div><div class="bill-small">advertisment Bill</div></div><div class="bill-title">BILL</div></div><div style="margin-top:14px;font-size:13px;line-height:1.6"><b>Bill No / Advertisement ID:</b> ${adEsc(a.billNo||a.id)}<br><b>Advertiser:</b> ${adEsc(a.business)}<br><b>Address / Contact:</b> ${adEsc(a.contact)} ${a.phone?' / '+adEsc(a.phone):''}<br><b>Status:</b> ${adEsc(a.paymentStatus)}<br><b>Advertisement Period:</b> ${adEsc(a.start)} to ${adEsc(a.expiry)}</div><table class="bill-table"><tr><th>Position</th><th>Creative</th><th>Link</th></tr><tr><td>News Top</td><td>1536 × 512</td><td>${adEsc(a.top.link)}</td></tr><tr><td>News Middle</td><td>728 × 120</td><td>${adEsc(a.middle.link)}</td></tr><tr><td>Sidebar</td><td>300 × 250</td><td>${adEsc(a.sidebar.link)}</td></tr></table><div class="bill-total"><div><span>Rate</span><b>${money(a.rate)}</b></div><div><span>Discount</span><b>− ${money(a.discount)}</b></div><div class="bill-grand"><span>Total</span><b>${money(a.total)}</b></div><div><span>Paid</span><b>${money(a.paidAmount)}</b></div><div><span>Balance</span><b>${money(Math.max(0,a.total-a.paidAmount))}</b></div></div><div class="bill-notes"><b>Notes:</b><br><b>Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS</b><br><b>YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482</b></div><div class="bill-footer"><b>Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.</b><br>Contact: 9731410761<br>Email: bidirevv@mail.com</div></div>`}
 function showBill(a){$("billPreview").innerHTML=buildBill(a);$("billPreview").classList.remove("hide");$("billPreview").scrollIntoView({behavior:"smooth",block:"start"})}
 function currentBillAd(){return editingAdId?ads.find(x=>x.id===editingAdId):null}
-function printHtml(html,title){const w=window.open("","_blank");if(!w)return;w.document.write('<html><head><title>'+title+'</title><style>body{margin:20px;background:#fff}'+document.getElementById('bidire-ad-v7-css').textContent+'</style></head><body>'+html+'</body></html>');w.document.close();setTimeout(()=>{w.print()},400)}
-function billJpg(a){const c=document.createElement("canvas"),ctx=c.getContext("2d");c.width=1600;c.height=1800;ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#111";ctx.font="bold 52px Arial";ctx.fillText("BIDIRE ADVERTISERS",70,90);ctx.font="22px Arial";ctx.fillText("PAN No: ANRPB1538L",70,135);ctx.font="bold 38px Arial";ctx.fillText("advertisment Bill",70,190);ctx.font="24px Arial";let y=250;const lines=[`Bill No / Advertisement ID: ${a.billNo||a.id}`,`Advertiser: ${a.business||""}`,`Address / Contact: ${a.contact||""} ${a.phone?'/ '+a.phone:''}`,`Status: ${a.paymentStatus||"Pending"}`,`Period: ${a.start||""} to ${a.expiry||""}`,`News Top: 1536 × 512`,`News Middle: 728 × 120`,`Sidebar: 300 × 250`,`Rate: ${money(a.rate)}`,`Discount: - ${money(a.discount)}`,`Total: ${money(a.total)}`,`Paid: ${money(a.paidAmount)}`,`Balance: ${money(Math.max(0,a.total-a.paidAmount))}`];lines.forEach(x=>{ctx.fillText(x,70,y);y+=55});ctx.font="bold 20px Arial";ctx.fillText("Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS",70,y+35);ctx.fillText("YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482",70,y+75);ctx.font="18px Arial";ctx.fillText("Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.",70,y+125);ctx.fillText("Contact: 9731410761 | Email: bidirevv@mail.com",70,y+155);const aEl=document.createElement("a");aEl.href=c.toDataURL("image/jpeg",.95);aEl.download=(a.billNo||a.id)+".jpg";aEl.click()}
-function renderHistory(){const box=$("adHistoryList"),h=safeJsonGet("bn_ad_history",[]);box.innerHTML=h.length?h.slice().reverse().map(x=>`<div class="ad-card"><b>${adEsc(x.billNo)}</b> — ${adEsc(x.action)}<div class="small">${new Date(x.at).toLocaleString()}</div></div>`).join(""):'<div class="small">History ಇಲ್ಲ.</div>'}
-function addAdHistory(a,action){const h=safeJsonGet("bn_ad_history",[]);h.push({billNo:a.billNo||a.id,action,at:new Date().toISOString()});safeSet("bn_ad_history",JSON.stringify(h.slice(-200)))}
-function renderSummary(){const from=$("adSummaryFrom").value,to=$("adSummaryTo").value;let list=ads.filter(a=>{const d=(a.createdAt||"").slice(0,10);return (!from||d>=from)&&(!to||d<=to)});const by={};list.forEach(a=>{const d=(a.createdAt||adToday()).slice(0,10);if(!by[d])by[d]={count:0,total:0,paid:0,pending:0};by[d].count++;by[d].total+=a.total;by[d].paid+=Math.min(a.total,a.paidAmount);by[d].pending+=Math.max(0,a.total-a.paidAmount)});$("adSummaryList").innerHTML=Object.keys(by).sort().reverse().map(d=>`<table class="ad-summary-table"><tr><th>Date</th><th>Ads</th><th>Total</th><th>Paid</th><th>Pending</th></tr><tr><td>${d}</td><td>${by[d].count}</td><td>${money(by[d].total)}</td><td>${money(by[d].paid)}</td><td>${money(by[d].pending)}</td></tr></table>`).join("")||'<div class="small">Selected date rangeನಲ್ಲಿ data ಇಲ್ಲ.</div>'}
-["adCreateTab","adManageTab","adHistoryTab","adSummaryTab"].forEach(id=>$(id).onclick=()=>{const map={adCreateTab:"adCreatePanel",adManageTab:"adManagePanel",adHistoryTab:"adHistoryPanel",adSummaryTab:"adSummaryPanel"};Object.keys(map).forEach(k=>$(k).classList.toggle("active",k===id));Object.values(map).forEach(x=>$(x).classList.add("hide"));$(map[id]).classList.remove("hide");if(id==="adManageTab")renderAds();if(id==="adHistoryTab")renderHistory();if(id==="adSummaryTab")renderSummary()});
-$("adsBtn").onclick=()=>{$("adsPanel").classList.toggle("hide");if(!$('adsPanel').classList.contains('hide'))renderAds()};$("refreshAds").onclick=renderAds;$("adSummaryRun").onclick=renderSummary;$("adSummaryPdf").onclick=()=>printHtml($("adSummaryList").innerHTML,"Bidire Advertisement Summary");$("clearAd").onclick=clearAdForm;$("previewAdBtn").onclick=()=>{const a=currentBillAd();if(a)showBill(a);else{$("adPreview").classList.remove("hide");$("adPreview").innerHTML='<div class="small">ಮೊದಲು Save ಮಾಡಿ; ನಂತರ Bill/Preview ನೋಡಬಹುದು.</div>'}};
-$("saveAd").onclick=async()=>{const title=$("adTitle").value.trim(),business=$("adBusiness").value.trim();if(!title||!business){$("adStatus").textContent="Advertiser Name ಮತ್ತು Advertisement Title ಕಡ್ಡಾಯ.";$("adStatus").style.display="block";return}const existing=editingAdId?ads.find(x=>x.id===editingAdId):null;const wasEditing=!!existing;const topFile=$("adTopImage").files?.[0],midFile=$("adMiddleImage").files?.[0],sideFile=$("adSidebarImage").files?.[0];const ad=normalizeAd(existing||{id:nextAdNumber(),billNo:null,createdAt:new Date().toISOString()});if(!ad.billNo){ad.billNo=ad.id}ad.business=business;ad.contact=$("adContact").value.trim();ad.title=title;ad.text=$("adText").value.trim();ad.phone=$("adPhone").value.trim();ad.defaultLink=$("adDefaultLink").value.trim();ad.start=$("adStart").value;ad.expiry=$("adExpiry").value;ad.rate=Number($("adRate").value)||0;ad.discount=Number($("adDiscount").value)||0;ad.total=adTotalValue(ad);ad.paidAmount=Math.min(ad.total,Math.max(0,Number($("adPaidAmount").value)||0));ad.paymentStatus=$("adPaymentStatus").value;ad.top.link=$("adTopLink").value.trim()||ad.defaultLink;ad.middle.link=$("adMiddleLink").value.trim()||ad.defaultLink;ad.sidebar.link=$("adSidebarLink").value.trim()||ad.defaultLink;if(topFile)ad.top.imageData=await readAdImage(topFile);if(midFile)ad.middle.imageData=await readAdImage(midFile);if(sideFile)ad.sidebar.imageData=await readAdImage(sideFile);if(!ad.top.imageData&&!ad.top.imageUrl||!ad.middle.imageData&&!ad.middle.imageUrl||!ad.sidebar.imageData&&!ad.sidebar.imageUrl){$("adStatus").textContent="ಮೂರು positionsಗೂ ಪ್ರತ್ಯೇಕ images upload ಮಾಡಬೇಕು.";$("adStatus").style.display="block";return}const idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);editingAdId=ad.id;saveAds();addAdHistory(ad,wasEditing?"Advertisement Updated":"Advertisement Created");renderAds();$("adStatus").style.color="#16803c";$("adStatus").textContent=wasEditing?"✓ Advertisement updated. Bill Number ಉಳಿಸಲಾಗಿದೆ.":"✓ Advertisement saved. ID / Bill: "+ad.billNo;$("adStatus").style.display="block";showBill(ad)};
-$("publishAdWebsite").onclick=async()=>{const a=currentBillAd();if(!a){$("adStatus").textContent="ಮೊದಲು Advertisement Save ಮಾಡಿ.";$("adStatus").style.display="block";return}try{$("adStatus").textContent="⏳ ಮೂರು advertisement creatives Bloggerಗೆ sync ಆಗುತ್ತಿದೆ...";$("adStatus").style.display="block";await publishAdToWebsite(a);addAdHistory(a,"Blogger Sync");$("adStatus").style.color="#16803c";$("adStatus").textContent="✓ News Top + News Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.";renderAds()}catch(e){$("adStatus").style.color="#b40000";$("adStatus").textContent="✕ Blogger sync ಆಗಲಿಲ್ಲ: "+e.message}};
-$("syncAllAds").onclick=async()=>{if(!ads.length)return;try{if(!token)await access();let ok=0;for(const a of ads){try{await publishAdToWebsite(a);ok++}catch(_){}}renderAds();$("adStatus").textContent=`✓ ${ok}/${ads.length} advertisements sync ಆಯಿತು.`;$("adStatus").style.display="block"}catch(e){$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}};
-$("billPdfBtn").onclick=()=>{const a=currentBillAd();if(a)printHtml(buildBill(a),a.billNo||"Bidire Bill")};$("billJpgBtn").onclick=()=>{const a=currentBillAd();if(a)billJpg(a)};$("billWaBtn").onclick=()=>{const a=currentBillAd();if(!a)return;const text=`BIDIRE ADVERTISERS\nBill No / Advertisement ID: ${a.billNo}\nAdvertiser: ${a.business}\nAddress / Contact: ${a.contact}${a.phone?' / '+a.phone:''}\nTotal: ${money(a.total)}\nPaid: ${money(a.paidAmount)}\nBalance: ${money(Math.max(0,a.total-a.paidAmount))}`;window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank")};
+function printHtml(html,title){
+  const w=window.open("","_blank");
+  if(!w)return;
+  const css=document.getElementById("bidire-ad-v7-css")?.textContent||"";
+  const doc="<html><head><title>"+esc(title)+"</title><style>body{margin:20px;background:#fff}"+css+"</style></head><body>"+html+"</body>"+"</html>";
+  w.document.open();
+  w.document.write(doc);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+}
 renderAds();calcAdMoney();
 /* ================= Bidire V6: Audio + Chat + Safe Draft ================= */
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
@@ -1361,7 +1360,7 @@ try{
   $("status").style.display="none";
 }catch(e){
   const el=$("status");
-  if(el){el.textContent="⚠️ Editor startup error: "+e.message;el.style.display="block";}
+  if(el){el.textContent="⚠️ Editor startup error: "+(e&&e.message?e.message:String(e));el.style.display="block";}
 }
 
 
@@ -1373,9 +1372,16 @@ try{
   function go(id){
     const el=document.getElementById(id);
     if(!el)return;
-    if(el.classList.contains("hide")) el.classList.remove("hide");
-    el.scrollIntoView({behavior:"smooth",block:"start"});
+    // Treat the top navigation as real sections/tabs. Hide the other main
+    // sections first so the old/previous editor panels do not remain below.
+    const targets=new Set(buttons.map(b=>b.dataset.target));
+    targets.forEach(targetId=>{
+      const section=document.getElementById(targetId);
+      if(section) section.classList.toggle("hide",targetId!==id);
+    });
+    el.classList.remove("hide");
     buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===id));
+    window.scrollTo({top:Math.max(0,el.offsetTop-92),behavior:"smooth"});
   }
   buttons.forEach(b=>b.addEventListener("click",()=>go(b.dataset.target)));
   document.querySelectorAll(".subtool-toggle").forEach(btn=>{
@@ -1391,6 +1397,8 @@ try{
     buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===visible.target.id));
   },{rootMargin:"-95px 0px -55% 0px",threshold:[.1,.3,.6]});
   ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+  // Start with only the first editor section visible.
+  go("newSection");
 })();
 
 
@@ -1577,6 +1585,18 @@ ${JSON.stringify(data)}`;
     var form=e.target;
     if(form && form.closest && form.closest('main')) e.preventDefault();
   },true);
+})();
+</script>
+
+
+<script id="bidire-runtime-diagnostic-v11">
+(function(){
+  window.addEventListener("error",function(e){
+    if(e && e.message && /\bi is not defined\b/.test(e.message)){
+      var el=document.getElementById("status");
+      if(el){el.textContent="⚠️ Cached/old JavaScript detected. Please open this version in Incognito or Hard Refresh.";el.style.display="block";}
+    }
+  });
 })();
 </script>
 </body></html>
