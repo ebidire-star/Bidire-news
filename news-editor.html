@@ -1307,7 +1307,8 @@ ${JSON.stringify(data)}`;
   }
   window.addEventListener('error',function(e){
     var source=String(e&&e.filename||'');
-    if(/accounts\.google\.com/i.test(source)) return;
+    var page=String(location.href||'');
+    if(source && source!==page && !source.startsWith(location.origin)) return;
     if(e && e.error) showButtonError(e.error);
   });
   window.addEventListener('unhandledrejection',function(e){ if(e && e.reason) showButtonError(e.reason); });
@@ -1323,17 +1324,6 @@ ${JSON.stringify(data)}`;
 })();
 </script>
 
-
-<script id="bidire-runtime-diagnostic-v11">
-(function(){
-  window.addEventListener("error",function(e){
-    if(e && e.message && /\bi is not defined\b/.test(e.message)){
-      var el=document.getElementById("status");
-      if(el){el.textContent="⚠️ Cached/old JavaScript detected. Please open this version in Incognito or Hard Refresh.";el.style.display="block";}
-    }
-  });
-})();
-</script>
 
 <script>
 /* BIDIRE FINAL — single-section navigation */
