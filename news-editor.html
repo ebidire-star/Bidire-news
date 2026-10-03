@@ -570,18 +570,16 @@ function safeSet(key,value){
   try { localStorage.setItem(key,value); return true; }
   catch(e){ return false; }
 }
-window.addEventListener("error",e=>{
+function showOwnRuntimeError(e){
   const source=String(e?.filename||"");
-  if(/accounts\.google\.com/i.test(source))return;
-  const m=e?.error?.message||e?.message||"Unknown JavaScript error";
+  const page=String(location.href||"");
+  if(source && source!==page && !source.startsWith(location.origin))return;
+  if(source && /accounts\.google\.com/i.test(source))return;
+  const msg=e?.error?.message||e?.message||"Unknown JavaScript error";
   const el=$("status");
-  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
-});
-window.addEventListener("unhandledrejection",e=>{
-  const m=e?.reason?.message||String(e?.reason||"Unhandled promise error");
-  const el=$("status");
-  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
-});
+  if(el){el.textContent="⚠️ "+msg;el.style.display="block";}
+}
+window.addEventListener("error",showOwnRuntimeError);
 let photos=[], keyPoints=[], englishSummary="", token=null, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
 let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels=[];
 const blogDefault="2799540703054854619";
@@ -1295,23 +1293,9 @@ ${JSON.stringify(data)}`;
 })();
 </script>
 
-<script id="bidire-button-guard-v10">
+<script id="bidire-button-guard-v11">
 (function(){
   'use strict';
-  function showButtonError(err){
-    try{
-      var el=document.getElementById('status');
-      if(el){el.textContent='⚠️ Button error: '+(err&&err.message?err.message:String(err));el.style.display='block';}
-      console.error('Bidire button error',err);
-    }catch(_){ }
-  }
-  window.addEventListener('error',function(e){
-    var source=String(e&&e.filename||'');
-    var page=String(location.href||'');
-    if(source && source!==page && !source.startsWith(location.origin)) return;
-    if(e && e.error) showButtonError(e.error);
-  });
-  window.addEventListener('unhandledrejection',function(e){ if(e && e.reason) showButtonError(e.reason); });
   document.addEventListener('click',function(e){
     var b=e.target && e.target.closest ? e.target.closest('button') : null;
     if(!b || b.disabled) return;
