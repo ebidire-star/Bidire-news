@@ -573,44 +573,19 @@ function safeSet(key,value){
 function showOwnRuntimeError(e){
   const source=String(e?.filename||"");
   const page=String(location.href||"");
-  const stack=String(e?.error?.stack||"");
-  const fullSource=source+"\n"+stack;
-  if(/accounts\.google\.com|gsi\/client/i.test(fullSource))return;
   if(source && source!==page && !source.startsWith(location.origin))return;
+  if(source && /accounts\.google\.com/i.test(source))return;
   const msg=e?.error?.message||e?.message||"Unknown JavaScript error";
-  const line=e?.lineno||e?.lineNumber||"";
-  const col=e?.colno||e?.columnNumber||"";
   const el=$("status");
-  if(el){
-    el.textContent="⚠️ JS error: "+msg+
-      (source?"\nSource: "+source:"")+
-      (line?"\nLine: "+line+(col?":"+col:""):"")+
-      (stack?"\n"+stack:"");
-    el.style.display="block";
-    el.style.whiteSpace="pre-wrap";
-  }
-  console.error("Bidire JS diagnostic",{message:msg,source,line,column:col,stack});
+  if(el){el.textContent="⚠️ "+msg;el.style.display="block";}
 }
 window.addEventListener("error",showOwnRuntimeError);
-window.addEventListener("unhandledrejection",e=>{
-  const reason=e?.reason;
-  const stack=String(reason?.stack||"");
-  const msg=reason?.message||String(reason||"Unknown Promise rejection");
-  if(/accounts\.google\.com|gsi\/client/i.test(stack))return;
-  const el=$("status");
-  if(el){
-    el.textContent="⚠️ Promise error: "+msg+(stack?"\n"+stack:"");
-    el.style.display="block";
-    el.style.whiteSpace="pre-wrap";
-  }
-  console.error("Bidire Promise diagnostic",{message:msg,stack});
-});
 let photos=[], keyPoints=[], englishSummary="", token=null, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
 let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels=[];
 const blogDefault="2799540703054854619";
 function esc(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function cleanModel(v){
- v=String(v||"").replace(/^models\\//i,"");
+ v=String(v||"").replace(/^models\//i,"");
  if(v.includes("3.8"))return"gemini-3.8-flash";
  if(v.includes("3.7"))return"gemini-3.7-flash";
  if(v.includes("3.6"))return"gemini-3.6-flash";
