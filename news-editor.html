@@ -360,7 +360,205 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 </style>
 <style id="bidire-ad-v7-css">
 .ad-dashboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.ad-stat{background:#f7f7f7;border:1px solid #ddd;border-radius:10px;padding:11px;text-align:center}.ad-stat span{display:block;font-size:12px;color:#666}.ad-stat b{display:block;font-size:20px;margin-top:3px}.ad-three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ad-creative{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fff}.ad-creative h3{margin:0 0 8px;font-size:16px}.ad-size-note{font-size:11px;color:#777;margin-bottom:7px}.ad-creative img{display:block;width:100%;max-height:150px;object-fit:contain;background:#f5f5f5;border-radius:6px;margin-top:8px}.ad-bill-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ad-card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0;background:#fff}.ad-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.ad-card-title{font-size:17px;font-weight:800}.ad-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800;background:#eee}.ad-badge.active{background:#dff6e5;color:#176b2c}.ad-badge.scheduled{background:#fff1c7;color:#8a5a00}.ad-badge.expired{background:#f8dddd;color:#9a1c1c}.ad-badge.paid{background:#dff6e5;color:#176b2c}.ad-badge.partial{background:#fff1c7;color:#8a5a00}.ad-badge.pending{background:#f8dddd;color:#9a1c1c}.bill-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:4px;padding:28px;max-width:850px;margin:15px auto;font-family:Arial,sans-serif}.bill-top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:14px}.bill-brand{font-size:28px;font-weight:900}.bill-title{font-size:30px;font-weight:900;text-align:right}.bill-small{font-size:12px;color:#555}.bill-table{width:100%;border-collapse:collapse;margin-top:18px}.bill-table th,.bill-table td{border:1px solid #ccc;padding:8px;font-size:13px}.bill-table th{background:#f5f5f5}.bill-total{margin-left:auto;width:330px;margin-top:15px}.bill-total div{display:flex;justify-content:space-between;padding:5px 0}.bill-grand{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:5px;padding-top:8px}.bill-notes{margin-top:20px;font-size:12px;line-height:1.55}.bill-footer{border-top:1px solid #ccc;margin-top:22px;padding-top:12px;font-size:11px;text-align:center;color:#444}.ad-filter-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.ad-summary-table{width:100%;border-collapse:collapse}.ad-summary-table th,.ad-summary-table td{border:1px solid #ddd;padding:7px;font-size:12px;text-align:left}.ad-summary-table th{background:#f5f5f5}@media(max-width:800px){.ad-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.ad-three-grid{grid-template-columns:1fr}.ad-filter-row{grid-template-columns:1fr}.bill-paper{padding:16px}.bill-top{flex-direction:column}.bill-title{text-align:left}.bill-total{width:100%}}
-</style></head>
+</style>
+<style id="bidire-modern-mobile-ui-v1">
+/* ===== BIDIRE NEWS — MODERN MOBILE-FIRST UI ===== */
+:root{
+  --bn-primary:#3157d5;
+  --bn-primary-2:#6840df;
+  --bn-red:#d71920;
+  --bn-green:#16a05d;
+  --bn-ink:#172033;
+  --bn-muted:#6b7280;
+  --bn-border:#e4e8ef;
+  --bn-bg:#f5f7fb;
+  --bn-card:#ffffff;
+  --bn-radius:16px;
+  --bn-shadow:0 5px 20px rgba(24,39,75,.08);
+}
+html,body{background:var(--bn-bg)}
+body{color:var(--bn-ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Kannada",sans-serif}
+header{
+  position:sticky!important;top:0;z-index:100;
+  height:68px!important;min-height:68px!important;
+  padding:10px 16px!important;
+  background:linear-gradient(110deg,#243fbe 0%,#4d35c9 48%,#c21b76 100%)!important;
+  color:#fff!important;border:0!important;
+  box-shadow:0 3px 16px rgba(27,37,95,.18)!important;
+}
+header .brand{font-size:21px!important;font-weight:850!important;letter-spacing:-.3px}
+header .sub{font-size:11px!important;opacity:.84!important;margin-top:1px}
+header .icon-btn{
+  width:38px!important;height:38px!important;border-radius:50%!important;
+  border:1px solid rgba(255,255,255,.35)!important;
+  background:rgba(255,255,255,.14)!important;color:#fff!important;
+  box-shadow:none!important
+}
+.wrap{max-width:980px!important;margin:0 auto!important;padding:10px 12px 88px!important}
+.section-nav{
+  display:flex!important;gap:7px!important;overflow:auto!important;
+  padding:4px 1px 10px!important;scrollbar-width:none;
+  position:sticky!important;top:68px!important;z-index:80;
+  background:rgba(245,247,251,.96)!important;backdrop-filter:blur(12px)
+}
+.section-nav::-webkit-scrollbar{display:none}
+.section-nav button{
+  flex:0 0 auto!important;border:1px solid var(--bn-border)!important;
+  background:#fff!important;color:#25304a!important;border-radius:13px!important;
+  padding:9px 13px!important;font-weight:750!important;font-size:12px!important;
+  box-shadow:0 2px 8px rgba(24,39,75,.04)!important
+}
+.section-nav button.active{
+  background:var(--bn-primary)!important;color:#fff!important;border-color:var(--bn-primary)!important
+}
+.panel,.social-share-box{
+  border:1px solid var(--bn-border)!important;border-radius:var(--bn-radius)!important;
+  background:var(--bn-card)!important;box-shadow:var(--bn-shadow)!important;
+  overflow:hidden!important;margin:0 0 12px!important
+}
+.bar{
+  padding:13px 15px!important;font-size:15px!important;font-weight:850!important;
+  background:#fff!important;color:var(--bn-ink)!important;border-bottom:1px solid var(--bn-border)!important
+}
+.panel .body{padding:13px!important}
+.edit-main-bar{
+  background:linear-gradient(110deg,#263fae,#5539d0)!important;color:#fff!important;
+  border:0!important;border-bottom:0!important
+}
+.edit-main-bar strong{font-size:18px!important}
+.edit-main-bar small{font-size:10px!important}
+.edit-head-actions{flex-wrap:wrap!important;justify-content:flex-end!important}
+.edit-copy-mini,.edit-draft-mini{
+  background:rgba(255,255,255,.14)!important;color:#fff!important;
+  border:1px solid rgba(255,255,255,.35)!important
+}
+.raw-chat,.edit-field,.edit-ai-chat,.edit-accordion,.edit-category-row,.auto-label-row{
+  border-radius:14px!important
+}
+textarea,input,select{
+  border-radius:11px!important;border:1px solid #d8dee9!important;
+  box-shadow:none!important
+}
+textarea:focus,input:focus,select:focus{
+  outline:3px solid rgba(49,87,213,.11)!important;border-color:#5574dc!important
+}
+.raw-chat-head{padding:11px 12px!important}
+.raw-chat textarea{min-height:150px!important}
+.normal-parse-note{
+  margin:8px 0!important;border-radius:11px!important;padding:9px 10px!important
+}
+.actions,.tool-row,.compact-publish-actions{gap:7px!important}
+button{
+  min-height:38px!important;border-radius:10px!important;font-weight:750!important
+}
+button.primary{background:var(--bn-red)!important}
+button.black{background:#172033!important}
+button.light{background:#f4f6fa!important;border:1px solid #dde3ed!important}
+.compact-publish-actions button{min-height:40px!important}
+.edit-accordion-head{
+  min-height:48px!important;border-radius:12px!important
+}
+.edit-accordion.open .edit-accordion-head{border-radius:12px 12px 0 0!important}
+.points-editor input{min-height:38px!important}
+.post-preview{
+  border:1px solid var(--bn-border)!important;border-radius:14px!important;
+  padding:16px!important;background:#fff!important
+}
+.post-preview h1{font-size:24px!important;line-height:1.35!important}
+.post-sub{font-size:14px!important;line-height:1.65!important}
+.post-body{font-size:15px!important;line-height:1.85!important}
+.all-posts-list>*{border-radius:12px!important}
+.safe-inline{
+  border-radius:14px!important;background:#fff!important;border:1px solid var(--bn-border)!important
+}
+
+/* Compact mobile editor */
+@media(max-width:700px){
+  header{height:64px!important;min-height:64px!important;padding:9px 12px!important}
+  header .brand{font-size:19px!important}
+  header .sub{font-size:10px!important}
+  .wrap{padding:8px 9px 86px!important}
+  .section-nav{
+    position:fixed!important;left:8px;right:8px;bottom:8px;top:auto!important;
+    height:62px;padding:6px!important;z-index:9999!important;
+    background:rgba(255,255,255,.96)!important;
+    border:1px solid #e2e6ee!important;border-radius:18px!important;
+    box-shadow:0 8px 28px rgba(20,28,55,.16)!important;
+    backdrop-filter:blur(18px)
+  }
+  .section-nav button{
+    flex:1 1 20%!important;min-width:0!important;height:50px!important;
+    min-height:50px!important;padding:5px 2px!important;
+    border:0!important;background:transparent!important;
+    box-shadow:none!important;font-size:9px!important;line-height:1.15!important
+  }
+  .section-nav button.active{
+    color:var(--bn-primary)!important;background:#eef2ff!important
+  }
+  .section-nav button:nth-child(1){font-size:0!important}
+  .section-nav button:nth-child(1)::after{content:"⌂  Home";font-size:9px}
+  .section-nav button:nth-child(2){font-size:0!important}
+  .section-nav button:nth-child(2)::after{content:"✎  Edit";font-size:9px}
+  .section-nav button:nth-child(3){font-size:0!important}
+  .section-nav button:nth-child(3)::after{content:"🛡  Drafts";font-size:9px}
+  .section-nav button:nth-child(4){font-size:0!important}
+  .section-nav button:nth-child(4)::after{content:"◉  Preview";font-size:9px}
+  .section-nav button:nth-child(5){
+    font-size:0!important;background:linear-gradient(135deg,#4b35d4,#7a32e8)!important;
+    color:#fff!important;border-radius:50%!important;width:50px!important;max-width:50px!important;
+    height:50px!important;flex:0 0 50px!important;margin-top:-8px!important;
+    box-shadow:0 7px 18px rgba(87,54,220,.28)!important
+  }
+  .section-nav button:nth-child(5)::after{content:"＋";font-size:25px;font-weight:500}
+  .panel,.social-share-box{margin-bottom:10px!important;border-radius:15px!important}
+  .panel .body{padding:10px!important}
+  .bar{padding:11px 12px!important}
+  .edit-main-bar{padding:12px!important}
+  .edit-main-bar strong{font-size:16px!important}
+  .edit-head-actions{gap:5px!important}
+  .edit-copy-mini,.edit-draft-mini{padding:5px 7px!important;font-size:10px!important;min-height:32px!important}
+  .edit-field{padding:8px!important}
+  .edit-field label{font-size:11px!important}
+  .edit-field input,.edit-field textarea{font-size:14px!important}
+  .edit-field textarea{min-height:180px!important}
+  .raw-chat textarea{min-height:180px!important}
+  .edit-ai-chat{margin-top:8px!important}
+  .edit-chat-input{min-height:52px!important}
+  .edit-category-row{padding:8px!important}
+  .compact-publish-actions{display:grid!important;grid-template-columns:1fr 1fr!important}
+  .compact-publish-actions #publish{grid-column:1/-1!important}
+  .post-preview{padding:13px!important}
+  .post-preview h1{font-size:21px!important}
+  .post-body{font-size:14px!important;line-height:1.8!important}
+  .social-share-box{padding:0!important}
+}
+
+/* Very small phones */
+@media(max-width:390px){
+  header .brand{font-size:17px!important}
+  .wrap{padding-left:7px!important;padding-right:7px!important}
+  .panel .body{padding:8px!important}
+  .edit-head-actions button{font-size:9px!important}
+  .section-nav{left:5px;right:5px;bottom:5px}
+}
+
+/* Dark mode stays readable */
+html[data-theme="dark"] body{background:#0e131b!important;color:#e8edf5!important}
+html[data-theme="dark"] .section-nav{
+  background:rgba(18,24,34,.96)!important;border-color:#2d3746!important
+}
+html[data-theme="dark"] .section-nav button{color:#dbe3ef!important}
+html[data-theme="dark"] .section-nav button.active{color:#fff!important;background:#263a86!important}
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .social-share-box,
+html[data-theme="dark"] .bar,
+html[data-theme="dark"] .post-preview,
+html[data-theme="dark"] .safe-inline{
+  background:#151b24!important;border-color:#2d3746!important;color:#e8edf5!important
+}
+</style>
+
+</head>
 <body>
 <header>
 <div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div>
@@ -375,7 +573,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 </div>
 </header>
 <main class="wrap">
-<nav aria-label="Bidire News sections" class="section-nav" id="sectionNav">
+<nav aria-label="Bidire News sections" class="section-nav" id="sectionNav" role="navigation">
 <button data-target="newSection" type="button">📰 ಹೊಸ ಸುದ್ದಿ</button>
 <button data-target="editSection" type="button">✍️ ಸಂಪಾದನೆ</button>
 <button data-target="safeSection" type="button">🛡️ Draft</button>
@@ -585,7 +783,7 @@ let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels
 const blogDefault="2799540703054854619";
 function esc(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function cleanModel(v){
- v=String(v||"").replace(/^models\//i,"");
+ v=String(v||"").replace(/^models\\//i,"");
  if(v.includes("3.8"))return"gemini-3.8-flash";
  if(v.includes("3.7"))return"gemini-3.7-flash";
  if(v.includes("3.6"))return"gemini-3.6-flash";
@@ -1170,31 +1368,75 @@ if(d){
   const normalWrite=document.getElementById("rawNormalWrite");
   if(!raw||!normalWrite)return;
   function parseNormalNews(text){
-    const lines=String(text||"").replace(/\r/g,"").split("\n"),out={};let current=null;
+    const lines=String(text||"").replace(/\r/g,"").split("\n"),out={};
+    let current=null;
+
+    function cleanLabel(s){
+      return String(s||"")
+        .replace(/^[#>*\-\u2022\u00b7\s]+/,"")
+        .replace(/\*\*/g,"")
+        .trim()
+        .replace(/\s*[:：]\s*$/,"")
+        .trim();
+    }
+
+    function matchLabel(line){
+      const t=cleanLabel(line);
+      const rules=[
+        [/^(ಶೀರ್ಷಿಕೆ|Headline)$/i,"headline"],
+        [/^(ಉಪಶೀರ್ಷಿಕೆ|Subheadline)$/i,"sub"],
+        [/^(ಸುದ್ದಿ|News Body|Body)$/i,"body"],
+        [/^(ಪ್ರಮುಖ ಅಂಶಗಳು|ಪ್ರಮುಖ ಅಂಶ|Key Points|Key Point)$/i,"keyPoints"],
+        [/^(English Summary|English Summery|English Summary\/Summery)$/i,"englishSummary"]
+      ];
+      for(const [re,key] of rules) if(re.test(t)) return key;
+      return null;
+    }
+
     for(const line of lines){
       const t=line.trim();
-      const m=t.match(/^(ಶೀರ್ಷಿಕೆ|Headline)\s*:\s*(.*)$/i)
-        ||t.match(/^(ಉಪಶೀರ್ಷಿಕೆ|Subheadline)\s*:\s*(.*)$/i)
-        ||t.match(/^(ಸುದ್ದಿ|News Body)\s*:\s*(.*)$/i)
-        ||t.match(/^(ಪ್ರಮುಖ ಅಂಶಗಳು|Key Points)\s*:\s*(.*)$/i)
-        ||t.match(/^English Summary\s*:\s*(.*)$/i);
-      if(m){
-        const label=m[1];
-        current=/^(ಶೀರ್ಷಿಕೆ|Headline)$/i.test(label)?"headline"
-          :/^(ಉಪಶೀರ್ಷಿಕೆ|Subheadline)$/i.test(label)?"sub"
-          :/^(ಸುದ್ದಿ|News Body)$/i.test(label)?"body"
-          :/^(ಪ್ರಮುಖ ಅಂಶಗಳು|Key Points)$/i.test(label)?"keyPoints":"englishSummary";
-        out[current]=m[2]||"";
+      if(!t) {
+        if(current==="body" || current==="englishSummary") out[current]=(out[current]?out[current]+"\n":"");
         continue;
       }
-      if(current)out[current]=(out[current]?out[current]+"\n":"")+line;
+
+      // Accept "Headline:", "Headline", "**Headline**", "## Headline", etc.
+      const key=matchLabel(t);
+      if(key){
+        current=key;
+        const rawValue=t
+          .replace(/^[#>*\-\u2022\u00b7\s]+/,"")
+          .replace(/\*\*/g,"")
+          .replace(/^(ಶೀರ್ಷಿಕೆ|Headline|ಉಪಶೀರ್ಷಿಕೆ|Subheadline|ಸುದ್ದಿ|News Body|Body|ಪ್ರಮುಖ ಅಂಶಗಳು|ಪ್ರಮುಖ ಅಂಶ|Key Points|Key Point|English Summary|English Summery|English Summary\/Summery)\s*[:：]?\s*/i,"");
+        if(rawValue) out[current]=rawValue;
+        else if(out[current]===undefined) out[current]="";
+        continue;
+      }
+
+      if(current){
+        out[current]=(out[current]?out[current]+"\n":"")+line;
+      }
     }
-    if(!Object.keys(out).length)return{headline:"",sub:"",body:String(text||"").trim(),keyPoints:[],englishSummary:""};
-    return{
+
+    const hasStructured=Object.keys(out).some(k=>String(out[k]||"").trim());
+    if(!hasStructured){
+      return {
+        headline:"",
+        sub:"",
+        body:String(text||"").trim(),
+        keyPoints:[],
+        englishSummary:""
+      };
+    }
+
+    return {
       headline:String(out.headline||"").trim(),
       sub:String(out.sub||"").trim(),
       body:String(out.body||"").trim(),
-      keyPoints:String(out.keyPoints||"").split(/\n+/).map(x=>x.replace(/^\s*(?:[-*•·]|\d+[.)])\s*/,"").trim()).filter(Boolean),
+      keyPoints:String(out.keyPoints||"")
+        .split(/\n+/)
+        .map(x=>x.replace(/^\s*(?:[-*•·]|\d+[.)])\s*/,"").replace(/\*\*/g,"").trim())
+        .filter(Boolean),
       englishSummary:String(out.englishSummary||"").trim()
     };
   }
@@ -1210,10 +1452,14 @@ if(d){
     if(headline)headline.value=parsed.headline||"";
     if(sub)sub.value=parsed.sub||"";
     if(body)body.value=parsed.body||"";
-    window.keyPoints=parsed.keyPoints||[];
-    window.englishSummary=parsed.englishSummary||"";
-    if(english)english.value=window.englishSummary;
+    keyPoints=parsed.keyPoints||[];
+    englishSummary=parsed.englishSummary||"";
+    window.keyPoints=keyPoints;
+    window.englishSummary=englishSummary;
+    if(english)english.value=englishSummary;
     if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();
+    document.getElementById("keyPointsBox")?.classList.add("open");
+    document.getElementById("englishBox")?.classList.add("open");
     if(typeof render==='function')render();
     if(typeof scheduleAutosave==='function')scheduleAutosave();
     if(typeof pushUndoSnapshot==='function')pushUndoSnapshot();
@@ -1281,8 +1527,8 @@ ${JSON.stringify(data)}`;
     if(sub)sub.value=pendingEdit.subheadline??sub.value;
     if(body)body.value=pendingEdit.body??body.value;
     if(document.getElementById("category")){ const allowed=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"]; document.getElementById("category").value=allowed.includes(pendingEdit.category)?pendingEdit.category:"ಮೂಡುಬಿದಿರೆ"; }
-    if(Array.isArray(pendingEdit.keyPoints)){ window.keyPoints=pendingEdit.keyPoints; if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor(); }
-    if(typeof pendingEdit.englishSummary==='string'){ window.englishSummary=pendingEdit.englishSummary; const es=document.getElementById("englishSummaryEdit"); if(es)es.value=window.englishSummary; }
+    if(Array.isArray(pendingEdit.keyPoints)){ keyPoints=pendingEdit.keyPoints; window.keyPoints=keyPoints; if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor(); }
+    if(typeof pendingEdit.englishSummary==='string'){ englishSummary=pendingEdit.englishSummary; window.englishSummary=englishSummary; const es=document.getElementById("englishSummaryEdit"); if(es)es.value=englishSummary; }
     if(typeof render==='function')render();
     if(typeof saveDraftAutoV6==='function')saveDraftAutoV6(); else if(typeof saveDraftAuto==='function')saveDraftAuto();
     bubble("✓ ಬದಲಾವಣೆಗಳು ಸುದ್ದಿ ಸಂಪಾದನೆಗೆ ಅನ್ವಯಿಸಲಾಗಿದೆ.","ai"); pendingEdit=null; apply.disabled=true; setStatus("✓ Updated"); setTimeout(()=>setStatus(""),1000);
