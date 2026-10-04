@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+
+<html lang="kn">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="#0d1117" name="theme-color"/>
+<link href="manifest.webmanifest" rel="manifest"/>
+<script async="" defer="" src="https://accounts.google.com/gsi/client"></script>
+<meta name="bidire-build" content="FINAL-ERROR-FIX-2026-10-04">
+<title>Bidire News AI Editor — Advertisement Sync</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
+header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.brand{font-weight:800;color:#b40000;font-size:19px}.sub{font-size:11px;color:#777}.wrap{max-width:980px;margin:12px auto;padding:0 9px}
+.panel{background:#fff;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;overflow:hidden}.bar{padding:9px 11px;border-bottom:1px solid #eee;font-weight:700;background:#fafafa}.body{padding:11px}
+textarea,input,select{width:100%;border:1px solid #ccc;border-radius:6px;padding:9px;font:inherit}textarea{min-height:170px;resize:vertical}
+label{display:block;font-size:12px;font-weight:700;margin:7px 0 4px}.row,.actions{display:flex;gap:7px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}.actions{margin-top:9px}.actions button{flex:1;min-width:115px}
+button{border:0;border-radius:6px;padding:9px 11px;font-weight:700}.primary{background:#b40000;color:#fff}.black{background:#111;color:#fff}.light{background:#eee}
+.status{display:none;margin-top:8px;padding:8px;border-left:3px solid #b40000;background:#fff7d6;font-size:12px}.small{font-size:11px;color:#777}
+.post-preview{border:1px solid #ddd;border-radius:8px;background:#fff;padding:16px}.post-preview h1{font-size:26px;line-height:1.35;margin:0 0 8px}
+.post-sub{font-size:15px;font-weight:600;line-height:1.55;color:#555;margin:0 0 15px;padding:7px 10px;border-left:3px solid #aaa;background:#f7f7f7}
+.post-body p{margin:0 0 12px;line-height:1.75}.post-photo{margin:14px 0 18px;text-align:center}.post-photo img{max-width:100%;height:auto;display:block;margin:0 auto;border-radius:4px}
+.post-photo figcaption{font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4}
+.photo-box{margin-top:10px;border:1px dashed #ccc;border-radius:8px;padding:10px;background:#fafafa}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:9px}.photo-item{border:1px solid #ddd;border-radius:7px;overflow:hidden;background:#fff}
+.photo-item img{display:block;width:100%;height:120px;object-fit:cover}.photo-item .pcap{padding:6px 8px;font-size:11px;color:#666;font-style:italic;line-height:1.35}
+.photo-item .pname{padding:5px 8px;font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.photo-remove{margin:6px 8px 8px;width:calc(100% - 16px);font-size:11px}
+.hide{display:none}.summary-box{margin:18px 0;padding:13px 15px;border-left:4px solid #b40000;background:#fff4ef;border-radius:4px}.summary-box h3{margin:0 0 8px;font-size:19px}
+.summary-box ul{margin:0;padding-left:20px}.summary-box li{margin:5px 0;line-height:1.55}.english-box{border-left-color:#555;background:#f7f7f7}.english-box p{margin:0!important;font-size:15px;line-height:1.65!important;color:#444}
+@media(max-width:600px){header{padding:9px 8px}.brand{font-size:17px}.sub{font-size:10px}.actions button{min-width:100px;padding:8px}.post-preview h1{font-size:22px}}
+html[data-theme="dark"] body{background:#0d1117;color:#e6edf3}html[data-theme="dark"] header{background:#0d1117;border-bottom-color:#30363d}
+html[data-theme="dark"] .panel,html[data-theme="dark"] .post-preview{background:#161b22;border-color:#30363d}
+html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dark-in{background:#0d1117!important;color:#e6edf3!important;border-color:#484f58!important}
+
+/* Bidire AI Editor V2 */
+.edit-box{margin-top:12px;padding:12px;border:1px solid #ddd;border-radius:8px;background:#fff}
+.edit-box h4{margin:0 0 8px;color:#b40000;font-size:17px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.toggle-row input{width:auto}
+.points-editor{display:flex;flex-direction:column;gap:7px}
+.point-row{display:flex;gap:6px;align-items:center}
+.point-row input{flex:1}
+.all-posts-list{display:flex;flex-direction:column;gap:8px}
+.post-card{border:1px solid #ddd;border-radius:7px;padding:10px;background:#fff}
+.post-card-title{font-weight:700;line-height:1.4}
+.post-card-meta{font-size:11px;color:#777;margin-top:4px}
+.post-card-actions{display:flex;gap:6px;margin-top:7px}
+.post-card-actions button,.post-card-actions a{flex:1}
+.autosave{font-size:11px;color:#16803c;margin-top:7px;min-height:14px}
+.tool-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.tool-row button{flex:1;min-width:120px}
+@media(max-width:600px){.point-row{align-items:stretch}.point-row input{min-width:0}.tool-row button{min-width:100px}}
+
+
+/* Bidire Advertisement Manager V5 */
+.ad-tabs{display:flex;gap:7px;margin-bottom:10px}.ad-tab{flex:1;background:#eee;color:#222}.ad-tab.active{background:#b40000;color:#fff}
+.ad-panel{border:1px solid #ddd;border-radius:8px;background:#fff;padding:11px;margin-bottom:10px}
+.ad-preview{border:1px solid #ddd;border-radius:7px;padding:12px;background:#fafafa;margin-top:10px}.ad-preview img{max-width:100%;height:auto;display:block;margin:0 auto}
+.ad-list{display:flex;flex-direction:column;gap:8px}.ad-card{border:1px solid #ddd;border-radius:7px;padding:10px;background:#fff}
+.ad-card-title{font-weight:700}.ad-meta{font-size:11px;color:#777;margin-top:4px}
+.ad-status{display:inline-block;padding:3px 7px;border-radius:12px;font-size:10px;font-weight:700;background:#eee;margin-top:5px}
+.ad-status.active{background:#e7f7ec;color:#16803c}.ad-status.expired{background:#fde8e8;color:#b40000}
+.ad-actions{display:flex;gap:6px;margin-top:7px}.ad-actions button{flex:1}@media(max-width:600px){.ad-tabs{flex-direction:column}}
+
+
+/* Bidire V6: Audio to Text + News Chat + Safe Draft */
+.audio-box,.chat-box,.safe-draft-box{margin-top:12px;padding:12px;border:1px solid #ddd;border-radius:8px;background:#fff}
+.audio-actions,.chat-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.audio-actions button,.chat-actions button{flex:1;min-width:120px}
+.recording{background:#fff1f1!important;color:#b40000!important;border:1px solid #f0b0b0!important}
+.audio-file{margin-top:8px}
+.chat-messages{height:260px;overflow:auto;border:1px solid #ddd;border-radius:7px;padding:9px;background:#fafafa}
+.chat-msg{padding:8px 10px;border-radius:7px;margin:6px 0;line-height:1.55;white-space:pre-wrap}
+.chat-user{background:#fff4ef;margin-left:12%}
+.chat-ai{background:#f0f3f6;margin-right:12%}
+.chat-system{font-size:11px;color:#777;text-align:center}
+.chat-input{min-height:85px;margin-top:8px}
+.safe-draft-box{border-left:4px solid #16803c;background:#f6fff8}
+.safe-draft-title{font-weight:800;color:#16803c}
+.safe-draft-meta{font-size:11px;color:#666;margin-top:4px}
+.safe-draft-actions{display:flex;gap:7px;margin-top:8px}
+.safe-draft-actions button{flex:1}
+
+
+/* ===== Bidire Modern UI V2 ===== */
+:root{
+  --bn-red:#b40000; --bn-blue:#1769aa; --bn-purple:#6f42c1;
+  --bn-green:#16803c; --bn-amber:#b26a00; --bn-orange:#e8590c;
+  --bn-teal:#087f8c; --bn-slate:#495057; --bn-bg:#eef2f7;
+}
+body{background:linear-gradient(180deg,#eef2f7 0,#f7f9fc 420px,#eef2f7 100%)}
+header{
+  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid #d7dee8;box-shadow:0 3px 16px rgba(20,35,55,.08);
+  padding:12px 14px;
+}
+.brand{font-size:20px;letter-spacing:-.2px}
+.wrap{max-width:1040px;margin:18px auto;padding:0 12px}
+.panel{
+  border:1px solid #d9e0e8;border-radius:16px;margin-bottom:16px;
+  box-shadow:0 5px 20px rgba(26,39,58,.07);overflow:hidden;
+  scroll-margin-top:92px;
+}
+.panel>.bar{
+  padding:14px 16px;font-size:16px;border-bottom:1px solid rgba(0,0,0,.07);
+  display:flex;align-items:center;gap:8px;min-height:52px;
+}
+.panel>.body{padding:16px}
+.panel:nth-of-type(1){border-top:5px solid var(--bn-blue)}
+.panel:nth-of-type(2){border-top:5px solid var(--bn-red)}
+.panel:nth-of-type(3){border-top:5px solid var(--bn-purple)}
+.panel:nth-of-type(4){border-top:5px solid var(--bn-green)}
+.panel:nth-of-type(5){border-top:5px solid var(--bn-amber)}
+.panel:nth-of-type(6){border-top:5px solid var(--bn-orange)}
+.panel:nth-of-type(7){border-top:5px solid var(--bn-slate)}
+.panel:nth-of-type(8){border-top:5px solid var(--bn-teal)}
+
+.section-nav{
+  position:sticky;top:67px;z-index:4;display:flex;gap:8px;overflow:auto;
+  padding:9px 2px;margin:0 auto 14px;scrollbar-width:none;
+}
+.section-nav::-webkit-scrollbar{display:none}
+.section-nav button{
+  flex:0 0 auto;border:1px solid #d5dde7;background:#fff;color:#344054;
+  border-radius:999px;padding:9px 13px;font-size:12px;box-shadow:0 2px 8px rgba(20,35,55,.06);
+}
+.section-nav button.active{color:#fff;border-color:transparent}
+.section-nav button[data-target="newSection"].active{background:var(--bn-blue)}
+.section-nav button[data-target="editSection"].active{background:var(--bn-red)}
+.section-nav button[data-target="assistantSection"].active{background:var(--bn-purple)}
+.section-nav button[data-target="safeSection"].active{background:var(--bn-green)}
+.section-nav button[data-target="previewSection"].active{background:var(--bn-amber)}
+.section-nav button[data-target="adsPanel"].active{background:var(--bn-orange)}
+.section-nav button[data-target="settings"].active{background:var(--bn-slate)}
+.section-nav button[data-target="allPostsPanel"].active{background:var(--bn-teal)}
+
+.subtool{
+  border:1px solid #d7dee8;border-radius:14px;background:#fff;margin-top:12px;overflow:hidden;
+  box-shadow:0 2px 10px rgba(20,35,55,.05)
+}
+.subtool>button{
+  width:100%;text-align:left;background:linear-gradient(90deg,#f7f9fc,#fff);
+  color:#263238;padding:13px 15px;font-size:14px;border-radius:0;
+}
+.subtool>button .chev{float:right;transition:.2s}
+.subtool.open>button .chev{transform:rotate(180deg)}
+.subtool-body{display:none;padding:13px 15px;border-top:1px solid #e8edf3}
+.subtool.open .subtool-body{display:block}
+.subtool.audio{border-left:4px solid var(--bn-blue)}
+.subtool.assistant{border-left:4px solid var(--bn-purple)}
+.edit-box{border-radius:13px;border:1px solid #f0c9c9;background:#fff8f7;box-shadow:none}
+.edit-box h4{color:var(--bn-red)}
+.audio-box,.chat-box,.safe-draft-box{border-radius:13px}
+.safe-draft-box{border-left-color:var(--bn-green)}
+.ad-panel{border-radius:13px}
+.post-preview{border-radius:14px}
+.quick-note{font-size:11px;color:#667085;margin:2px 0 9px}
+@media(max-width:600px){
+  header{position:sticky}
+  .section-nav{top:62px;padding:8px 0}
+  .section-nav button{padding:8px 11px;font-size:11px}
+  .panel{border-radius:13px;margin-bottom:13px}
+  .panel>.body{padding:12px}
+}
+
+
+/* ===== V3 requested refinements ===== */
+header{min-height:58px;padding:9px 14px}
+.top-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.icon-btn{
+  width:38px;height:38px;padding:0!important;min-width:38px!important;
+  border-radius:50%!important;background:#f1f4f8!important;color:#253040!important;
+  border:1px solid #d9e1ea!important;font-size:18px!important;line-height:38px;
+}
+.icon-btn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(20,35,55,.12)}
+.legacy-controls,.legacy-new-actions{display:none!important}
+.section-nav{top:58px;margin-bottom:12px}
+.section-nav button{padding:7px 11px;font-size:11px}
+.section-nav button[data-target="newSection"]{border-color:#b8d5f0}
+.section-nav button[data-target="editSection"]{border-color:#efbcbc}
+.section-nav button[data-target="safeSection"]{border-color:#b9e1c7}
+.section-nav button[data-target="previewSection"]{border-color:#ead19d}
+.section-nav button[data-target="adsPanel"]{border-color:#f0c4aa}
+.section-nav button[data-target="allPostsPanel"]{border-color:#b9dfe4}
+
+.audio .subtool-body{padding:10px 12px}
+.audio-actions{gap:6px;margin-top:7px}
+.audio-actions button{min-width:105px;padding:7px 9px;font-size:12px}
+.audio-file{padding:7px;font-size:12px}
+#transcribeAudio,#clearAudio{min-width:105px}
+.row + .actions{margin-top:8px}
+.actions{gap:6px}
+.actions button{min-width:92px;padding:7px 9px;font-size:12px}
+#limit,#style{padding:7px 8px;font-size:12px}
+label{font-size:11px}
+.tool-row{gap:6px}
+.tool-row button{min-width:92px;padding:7px 8px;font-size:12px}
+
+@media(max-width:600px){
+  header{padding:8px 10px}
+  .icon-btn{width:34px;height:34px;min-width:34px!important;font-size:16px!important;line-height:34px}
+  .section-nav{top:50px}
+  .section-nav button{padding:7px 9px}
+  .audio-actions button,.actions button,.tool-row button{min-width:0;flex:1}
+}
+
+
+/* ===== V4: Raw News + AI Chat Composer ===== */
+.raw-chat{
+  border:1px solid #d8dee8;border-radius:16px;background:#fff;
+  box-shadow:0 4px 18px rgba(20,35,55,.06);overflow:hidden;margin-bottom:14px
+}
+.raw-chat-head{
+  padding:12px 14px;background:linear-gradient(90deg,#f4f7fb,#fff);
+  border-bottom:1px solid #e6eaf0;display:flex;align-items:center;gap:9px
+}
+.raw-chat-head strong{font-size:15px}.raw-chat-head span{font-size:11px;color:#667085}
+.raw-chat-body{padding:12px}
+.raw-chat-body textarea{
+  min-height:150px;border:0!important;outline:0!important;box-shadow:none!important;
+  background:#f7f9fc;border-radius:12px;padding:13px;font-size:14px;line-height:1.7
+}
+.raw-chat-actions{display:flex;gap:7px;align-items:center;margin-top:8px}
+.raw-chat-actions button{min-width:0;padding:8px 11px;font-size:12px}
+.raw-chat-actions .grow{flex:1}
+.ai-write-btn{
+  background:#b40000!important;color:#fff!important;
+  box-shadow:0 3px 10px rgba(180,0,0,.18)
+}
+.chat-send-btn{background:#202938!important;color:#fff!important}
+.chat-clear-btn{background:#edf1f5!important;color:#344054!important}
+.raw-chat-status{font-size:11px;color:#667085;margin-top:7px;min-height:14px}
+.chat-log{
+  max-height:260px;overflow:auto;margin-top:9px;padding:3px
+}
+.chat-log:empty{display:none}
+.chat-bubble{
+  max-width:88%;padding:9px 11px;border-radius:12px;margin:7px 0;
+  font-size:12px;line-height:1.55;white-space:pre-wrap
+}
+.chat-bubble.user{margin-left:auto;background:#e8f0fe;color:#263238}
+.chat-bubble.ai{margin-right:auto;background:#f0f2f5;color:#263238}
+#newSection .audio{margin-top:12px}
+@media(max-width:600px){
+  .raw-chat-actions{flex-wrap:wrap}
+  .raw-chat-actions button{flex:1}
+  .raw-chat-actions .grow{flex-basis:100%}
+}
+
+
+/* ===== V5 requested clean Chat / Audio / Safe Draft UI ===== */
+#newSection .raw-chat,
+#newSection .subtool.audio{
+  background:#050505!important;
+  color:#fff!important;
+  border-color:#050505!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+}
+#newSection .raw-chat-head{
+  background:#050505!important;
+  color:#fff!important;
+  border-bottom:1px solid #222!important;
+}
+#newSection .raw-chat-head strong{font-size:17px;color:#fff}
+#newSection .raw-chat-body{background:#050505!important}
+#newSection .raw-chat-body textarea#raw{
+  background:#111!important;color:#fff!important;
+  border:1px solid #333!important;border-radius:12px!important;
+}
+#newSection .raw-chat-body textarea#raw::placeholder,
+#newSection #rawChatInput::placeholder{color:#8f96a3}
+#newSection #rawChatInput{
+  min-height:76px;background:#111!important;color:#fff!important;
+  border:1px solid #333!important;border-radius:12px!important;
+  margin-top:9px;padding:12px;font-size:14px;line-height:1.55;
+}
+#newSection .chat-log{background:#050505!important}
+#newSection .chat-bubble.user{background:#242424!important;color:#fff!important}
+#newSection .chat-bubble.ai{background:#151515!important;color:#fff!important;border:1px solid #2d2d2d}
+#newSection .chat-send-btn{background:#fff!important;color:#111!important}
+#newSection .chat-clear-btn{background:#222!important;color:#fff!important}
+#newSection .normal-parse-note{margin-top:8px;padding:7px 9px;border-left:3px solid #b40000;background:#fff7f7;color:#5f6368;font-size:11px;line-height:1.5;border-radius:5px}.normal-parse-note strong{color:#b40000}#rawNormalWrite{background:#fff!important;color:#b40000!important;border:1px solid #d9a6a6!important}.raw-chat-actions #rawNormalWrite{font-size:12px}
+.raw-chat-status{display:none!important}
+#newSection .subtool.audio>button{
+  background:#050505!important;color:#fff!important;border:0!important;
+}
+#newSection .subtool.audio .subtool-body{background:#050505!important;border-top:1px solid #222!important}
+#newSection .subtool.audio label,
+#newSection .subtool.audio .small{color:#fff!important}
+#newSection .subtool.audio input,
+#newSection .subtool.audio select{background:#111!important;color:#fff!important;border-color:#333!important}
+#newSection .subtool.audio .audio-actions button{background:#fff!important;color:#111!important;border:0!important}
+#newSection .subtool.audio .audio-actions .black{background:#fff!important;color:#111!important}
+#newSection .subtool.audio .audio-file{background:#111!important;color:#fff!important;border-color:#333!important}
+#newSection .subtool.audio .recording{background:#330b0b!important;color:#fff!important;border-color:#6b2222!important}
+#newSection .subtool.audio .audio-preview{background:#111!important}
+
+/* Remove helper/instruction copy from the main editor UI. */
+#newSection .small:not(#photoStatus):not(#audioStatus),
+#editSection .quick-note{display:none!important}
+
+/* Compact green saved-draft strip */
+.safe-inline-panel{margin-bottom:16px;padding:0 2px}
+.safe-inline{
+  min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:7px 9px;border:1px solid #cdebd6;border-radius:11px;background:#f5fff8;
+}
+.safe-inline-text{font-size:14px;font-weight:800;color:#16803c}
+.safe-mini-btn{background:#16803c!important;color:#fff!important;padding:7px 11px!important;font-size:11px!important;border-radius:8px!important}
+html[data-theme="dark"] .safe-inline{background:#07140b;border-color:#1f5a32}
+html[data-theme="dark"] .safe-inline-text{color:#4ade80}
+
+@media(max-width:600px){
+  #newSection .raw-chat-head strong{font-size:16px}
+  #newSection .raw-chat-body textarea#raw{min-height:145px}
+  #newSection #rawChatInput{min-height:70px}
+  .safe-inline-text{font-size:13px}
+  .safe-mini-btn{font-size:11px!important;padding:7px 10px!important}
+}
+
+
+/* ===== V6 Edit Panel: compact systematic UI ===== */
+.edit-panel-modern{border-top:5px solid var(--bn-red)!important}
+.edit-panel-modern>.bar.edit-main-bar{background:linear-gradient(135deg,#b40000,#d20b0b);color:#fff;border:0;padding:13px 15px;justify-content:space-between}
+.edit-main-bar>div{display:flex;align-items:center;gap:10px}.edit-main-bar strong{display:block;font-size:19px}.edit-main-bar small{display:block;font-size:10px;opacity:.82;margin-top:2px}.edit-bar-icon{font-size:25px}.edit-draft-mini{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.55)!important;padding:6px 10px!important;font-size:11px!important;border-radius:9px!important}
+.edit-field{margin-bottom:10px;padding:9px 10px;border:1px solid #f0d5d5;border-radius:12px;background:#fffafa}.edit-field label{font-size:12px;margin:0 0 5px;color:#2f2f2f}.edit-field input,.edit-field textarea{background:#fff;border-color:#d7d7d7;border-radius:9px;padding:9px}.edit-field textarea{line-height:1.7}
+.edit-category-row{display:flex;align-items:center;gap:9px;padding:8px 10px;margin:0 0 10px;border:1px solid #ddd6f4;background:#faf8ff;border-radius:12px}.edit-category-row label{margin:0;font-size:12px;min-width:65px;color:#5637a5}.edit-category-row select{padding:8px 9px;border-radius:8px;border-color:#d9cff4;background:#fff;font-size:12px}
+.edit-accordion{padding:0!important;overflow:hidden;margin-top:9px!important;background:#fff!important;border:1px solid #e2e5ea!important;border-radius:12px!important}.edit-accordion-head{width:100%;display:flex;justify-content:space-between;align-items:center;background:#f7f9fc!important;color:#222!important;padding:11px 12px!important;border-radius:0!important;font-size:14px;text-align:left}.edit-accordion-head:hover{background:#f1f4f8!important}.accordion-right{display:flex;align-items:center;gap:9px}.accordion-right>b{font-size:18px;color:#667085;transition:.2s}.edit-accordion.open .accordion-right>b{transform:rotate(180deg)}.mini-enable{display:flex!important;align-items:center;gap:4px!important;margin:0!important;font-size:10px!important;font-weight:700!important;color:#555}.mini-enable input{width:auto!important;margin:0}.edit-accordion-body{display:none;padding:10px 11px;border-top:1px solid #edf0f3}.edit-accordion.open .edit-accordion-body{display:block}.edit-accordion.open .edit-accordion-head{background:#fff4f2!important;color:#b40000!important}.edit-accordion#englishBox.open .edit-accordion-head{background:#f1fff6!important;color:#16803c!important}.compact-publish-actions{display:flex;gap:6px;margin-top:11px}.compact-publish-actions button{flex:1;min-width:0!important;padding:8px 6px!important;font-size:11px!important;border-radius:9px!important}.compact-publish-actions .primary{box-shadow:0 3px 8px rgba(180,0,0,.16)}.autosave{font-size:10px;min-height:12px;margin-top:7px}
+html[data-theme="dark"] .edit-field{background:#1b1515;border-color:#4a3030}.edit-field label{color:inherit}html[data-theme="dark"] .edit-field input,html[data-theme="dark"] .edit-field textarea{background:#11161d;color:#e6edf3;border-color:#484f58}html[data-theme="dark"] .edit-category-row{background:#181427;border-color:#463b69}.edit-category-row select{color:#222}html[data-theme="dark"] .edit-accordion{background:#161b22!important;border-color:#30363d!important}.edit-accordion-head{color:#222!important}html[data-theme="dark"] .edit-accordion-head{background:#11161d!important;color:#e6edf3!important}html[data-theme="dark"] .edit-accordion.open .edit-accordion-head{background:#251514!important;color:#ff6b6b!important}html[data-theme="dark"] .edit-accordion#englishBox.open .edit-accordion-head{background:#102118!important;color:#4ade80!important}.edit-accordion-body{background:inherit}
+@media(max-width:600px){.edit-main-bar strong{font-size:17px}.edit-bar-icon{font-size:22px}.edit-category-row{gap:7px}.edit-category-row select{flex:1}.compact-publish-actions button{font-size:10px!important;padding:8px 4px!important}}
+
+
+/* ===== V8: AI Edit Chat above Category + fixed 4 categories ===== */
+.edit-ai-chat{margin-top:10px!important;margin-bottom:10px!important}
+.edit-ai-chat-head span{display:none!important}
+#editChatInput{min-height:54px!important;height:54px!important}
+.edit-category-row{margin-top:10px!important}
+ /* ===== V7: Copy All + compact Edit AI Chat ===== */
+.edit-head-actions{display:flex;align-items:center;gap:6px}.edit-copy-mini{background:#fff!important;color:#b40000!important;border:1px solid rgba(255,255,255,.8)!important;padding:6px 9px!important;font-size:10px!important;border-radius:8px!important;font-weight:800!important}
+.edit-ai-chat{margin-top:10px;border:1px solid #e2e5ea;border-radius:12px;overflow:hidden;background:#fafbfc}.edit-ai-chat-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;background:#202733;color:#fff}.edit-ai-chat-head>div{display:flex;align-items:baseline;gap:7px;min-width:0}.edit-ai-chat-head strong{font-size:13px;white-space:nowrap}.edit-ai-chat-head span{font-size:10px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.edit-chat-clear{border:0!important;background:#394250!important;color:#fff!important;border-radius:7px!important;padding:5px 8px!important;font-size:10px!important}.edit-chat-log{display:none;max-height:170px;overflow:auto;padding:8px;background:#f5f7fa}.edit-chat-log:not(:empty){display:block}.edit-chat-bubble{padding:7px 9px;margin:4px 0;border-radius:9px;font-size:11px;line-height:1.5;white-space:pre-wrap}.edit-chat-bubble.user{background:#e9eef5;margin-left:16%;color:#222}.edit-chat-bubble.ai{background:#fff;border:1px solid #dfe4ea;margin-right:8%;color:#222}.edit-ai-chat>textarea{display:block;width:100%;min-height:58px;resize:vertical;border:0!important;border-top:1px solid #e5e7eb!important;border-bottom:1px solid #e5e7eb!important;border-radius:0!important;background:#fff!important;padding:9px 10px!important;font-size:12px!important;line-height:1.5!important;box-sizing:border-box}.edit-chat-actions{display:flex;gap:6px;padding:7px;background:#fff}.edit-chat-actions button{flex:1;min-width:0!important;padding:7px 8px!important;border-radius:8px!important;font-size:10px!important;font-weight:800!important}.edit-chat-send{background:#b40000!important;color:#fff!important}.edit-chat-apply{background:#16803c!important;color:#fff!important}.edit-chat-apply:disabled{opacity:.4;cursor:not-allowed}.edit-chat-status{font-size:9px;min-height:12px;padding:0 9px 6px;color:#667085}.edit-ai-chat.has-answer{box-shadow:0 2px 10px rgba(32,39,51,.08)}
+html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.edit-ai-chat-head{background:#0d1117}.edit-chat-log{background:#161b22}.edit-chat-bubble.user{background:#222a35;color:#e6edf3}.edit-chat-bubble.ai{background:#11161d;border-color:#30363d;color:#e6edf3}.edit-ai-chat>textarea{background:#0d1117!important;color:#e6edf3!important;border-color:#30363d!important}.edit-chat-actions{background:#11161d}.edit-chat-status{color:#8b949e}
+@media(max-width:600px){.edit-main-bar{gap:5px}.edit-head-actions{gap:4px}.edit-copy-mini,.edit-draft-mini{padding:6px 7px!important;font-size:9px!important}.edit-ai-chat-head span{display:none}.edit-chat-actions button{font-size:10px!important}}
+
+/* Bidire V11 — Undo/Redo + Automatic English Labels */
+.edit-head-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.edit-head-actions button{font-size:11px;padding:7px 9px}
+.edit-head-actions button:disabled{opacity:.45;cursor:not-allowed}
+.auto-label-row{margin-top:9px;padding:9px 10px;border:1px dashed #d8d8d8;border-radius:8px;background:#fafafa;font-size:11px}
+.auto-label-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.auto-label-head span{font-weight:800}.auto-label-head small{color:#777}
+.auto-label-editor{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.auto-label-editor .label-edit-item{display:flex;gap:4px;align-items:center;min-width:0;flex:1}.auto-label-editor input{min-width:0;padding:6px 7px;font-size:11px;text-transform:uppercase}.auto-label-editor button{padding:5px 7px;font-size:10px}
+.auto-label-actions{display:flex;gap:6px;margin-top:6px}.auto-label-actions button{padding:5px 8px;font-size:10px}
+.undo-toast{font-size:11px;color:#555;margin-top:5px;min-height:14px}
+@media(max-width:600px){.edit-head-actions{gap:4px}.edit-head-actions button{padding:6px 7px}.auto-label-row{font-size:10px}.auto-label-editor{flex-direction:column}.auto-label-editor .label-edit-item{width:100%}}
+
+.social-share-box{margin:8px 0 12px;padding:8px 9px;border:1px solid #ddd;border-radius:9px;background:#fafafa;font-size:11px}
+.social-share-title{font-weight:800;color:#333}.social-share-actions{display:flex;gap:5px;margin-top:6px}
+.social-share-actions a{flex:1;text-align:center;text-decoration:none;padding:6px 5px;border-radius:6px;background:#111;color:#fff;font-weight:700;font-size:10px}
+.social-share-box.hide{display:none}
+/* ===== V13 Settings Button Fix ===== */
+#settingsBtn{
+  position:relative!important;
+  z-index:20!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+#settings{
+  position:relative;
+  z-index:10;
+}
+
+</style>
+<style id="bidire-ad-v7-css">
+.ad-dashboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.ad-stat{background:#f7f7f7;border:1px solid #ddd;border-radius:10px;padding:11px;text-align:center}.ad-stat span{display:block;font-size:12px;color:#666}.ad-stat b{display:block;font-size:20px;margin-top:3px}.ad-three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ad-creative{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fff}.ad-creative h3{margin:0 0 8px;font-size:16px}.ad-size-note{font-size:11px;color:#777;margin-bottom:7px}.ad-creative img{display:block;width:100%;max-height:150px;object-fit:contain;background:#f5f5f5;border-radius:6px;margin-top:8px}.ad-bill-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ad-card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0;background:#fff}.ad-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.ad-card-title{font-size:17px;font-weight:800}.ad-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800;background:#eee}.ad-badge.active{background:#dff6e5;color:#176b2c}.ad-badge.scheduled{background:#fff1c7;color:#8a5a00}.ad-badge.expired{background:#f8dddd;color:#9a1c1c}.ad-badge.paid{background:#dff6e5;color:#176b2c}.ad-badge.partial{background:#fff1c7;color:#8a5a00}.ad-badge.pending{background:#f8dddd;color:#9a1c1c}.bill-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:4px;padding:28px;max-width:850px;margin:15px auto;font-family:Arial,sans-serif}.bill-top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:14px}.bill-brand{font-size:28px;font-weight:900}.bill-title{font-size:30px;font-weight:900;text-align:right}.bill-small{font-size:12px;color:#555}.bill-table{width:100%;border-collapse:collapse;margin-top:18px}.bill-table th,.bill-table td{border:1px solid #ccc;padding:8px;font-size:13px}.bill-table th{background:#f5f5f5}.bill-total{margin-left:auto;width:330px;margin-top:15px}.bill-total div{display:flex;justify-content:space-between;padding:5px 0}.bill-grand{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:5px;padding-top:8px}.bill-notes{margin-top:20px;font-size:12px;line-height:1.55}.bill-footer{border-top:1px solid #ccc;margin-top:22px;padding-top:12px;font-size:11px;text-align:center;color:#444}.ad-filter-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.ad-summary-table{width:100%;border-collapse:collapse}.ad-summary-table th,.ad-summary-table td{border:1px solid #ddd;padding:7px;font-size:12px;text-align:left}.ad-summary-table th{background:#f5f5f5}@media(max-width:800px){.ad-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.ad-three-grid{grid-template-columns:1fr}.ad-filter-row{grid-template-columns:1fr}.bill-paper{padding:16px}.bill-top{flex-direction:column}.bill-title{text-align:left}.bill-total{width:100%}}
+</style></head>
+<body>
+<header>
+<div><div class="brand">Bidire News</div><div class="sub">AI News Editor</div></div>
+<div class="top-actions">
+<button class="icon-btn" id="themeBtn" title="Dark / Light mode" type="button">☾</button>
+<button class="icon-btn" id="settingsBtn" title="Settings" type="button">⚙</button>
+</div>
+<div aria-hidden="true" class="legacy-controls">
+<button id="newBtn" type="button"></button>
+<button id="allPostsBtn" type="button"></button>
+<button id="adsBtn" type="button"></button>
+</div>
+</header>
+<main class="wrap">
+<nav aria-label="Bidire News sections" class="section-nav" id="sectionNav">
+<button data-target="newSection" type="button">📰 ಹೊಸ ಸುದ್ದಿ</button>
+<button data-target="editSection" type="button">✍️ ಸಂಪಾದನೆ</button>
+<button data-target="safeSection" type="button">🛡️ Draft</button>
+<button data-target="previewSection" type="button">👁️ Preview</button>
+<button data-target="adsPanel" type="button">📢 Ads</button>
+<button data-target="allPostsPanel" type="button">📰 All Posts</button>
+</nav>
+<section class="panel" id="newSection"><div class="bar">📰 ಹೊಸ ಸುದ್ದಿ</div><div class="body">
+<div class="raw-chat" id="rawNewsChat">
+<div class="raw-chat-head">
+<strong>💬 Chat</strong>
+</div>
+<div class="raw-chat-body">
+<textarea id="raw" placeholder="ಕಚ್ಚಾ ಸುದ್ದಿ..."></textarea>
+<div class="normal-parse-note">✍️ <strong>Normal News Update</strong> = AI-free. ಇದು ನೀವು ನೀಡಿದ raw information ಅನ್ನು ಮಾತ್ರ ಸುದ್ದಿ ಸಂಪಾದನೆ ವಿಭಾಗಕ್ಕೆ ವರ್ಗಾಯಿಸುತ್ತದೆ; ಹೊಸ facts ಸೇರಿಸುವುದಿಲ್ಲ.</div>
+<div class="chat-log" id="rawChatLog"></div>
+<textarea class="chat-input" id="rawChatInput" placeholder="AIಗೆ ಕೇಳಿ..."></textarea>
+<div class="raw-chat-actions">
+<button class="chat-send-btn" id="rawChatSend" type="button">➤ Chat</button>
+<button class="chat-clear-btn" id="rawChatClear" type="button">Clear</button>
+<button class="light grow" id="rawNormalWrite" type="button">✍️ Normal News Update</button>
+<button class="ai-write-btn grow" id="rawAiWrite" type="button">✨ AI ಸುದ್ದಿ ಬರೆಯಿರಿ →</button>
+</div>
+<div class="raw-chat-status" id="rawChatStatus"></div>
+</div>
+</div>
+<div class="photo-box">
+<strong style="font-size:13px">📷 Photo + Automatic Caption</strong>
+<label>📷 Photos / ಫೋಟೋಗಳು</label>
+<input accept="image/*" id="photoInput" multiple="" type="file"/>
+<div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಸಿದ್ಧವಾದ ಸುದ್ದಿಯ ಆಧಾರದ ಮೇಲೆ caption automatic ಆಗಿ ತಯಾರಾಗುತ್ತದೆ.</div>
+<div class="photo-grid" id="photoGrid"></div><div class="small" id="photoStatus"></div>
+</div>
+<div class="subtool audio">
+<button class="subtool-toggle" type="button">🎙️ Audio to Text <span class="chev">▼</span></button><div class="subtool-body">
+<div class="small">ನೇರವಾಗಿ audio record ಮಾಡಬಹುದು ಅಥವಾ ನಿಮ್ಮ deviceನಲ್ಲಿ ಇರುವ audio file upload ಮಾಡಬಹುದು.</div>
+<div class="audio-actions">
+<button class="primary" id="recordAudio" type="button">🎙️ Start Recording</button>
+<button class="light" disabled="" id="stopAudio" type="button">⏹ Stop</button>
+</div>
+<input accept="audio/*" class="audio-file" id="audioInput" type="file"/>
+<div class="small" id="audioStatus"></div>
+<audio class="hide" controls="" id="audioPreview" style="width:100%;margin-top:8px"></audio>
+<div class="audio-actions">
+<button class="black" id="transcribeAudio" type="button">✨ Audio → Text</button>
+<button class="light" id="clearAudio" type="button">Clear Audio</button>
+</div>
+</div></div>
+<div class="row">
+<div><label>ಪದಗಳ ಮಿತಿ</label><select id="limit"><option value="0">Original</option><option>100</option><option>150</option><option>170</option><option>200</option></select></div>
+<div><label>ಶೈಲಿ</label><select id="style"><option value="normal">Bidire News</option><option value="vijayavani">ವಿಜಯವಾಣಿ ಶೈಲಿ</option></select></div>
+</div>
+<div aria-hidden="true" class="legacy-new-actions">
+<button id="generate" type="button"></button><button id="shorten" type="button"></button><button id="grammar" type="button"></button><button id="translate" type="button"></button>
+</div>
+<div class="status" id="status"></div>
+</div></section>
+<section class="panel edit-panel-modern" id="editSection"><div class="bar edit-main-bar"><div><span class="edit-bar-icon">✍️</span><div><strong>ಸುದ್ದಿ ಸಂಪಾದನೆ</strong><small>Edit &amp; Finalize News</small></div></div><div class="edit-head-actions"><button class="edit-copy-mini" id="undoEdit" type="button">↶ Undo</button><button class="edit-copy-mini" id="redoEdit" type="button">↷ Redo</button><button class="edit-copy-mini" id="copyAllEdit" type="button">📋 Copy All</button><button class="edit-draft-mini" id="editDraftJump" type="button">↩ Draft</button></div></div><div class="body">
+<div class="edit-field"><label>Headline</label><input id="headline"/></div>
+<div class="edit-field"><label>Subheadline / ಉಪಶೀರ್ಷಿಕೆ</label><input id="sub"/></div>
+<div class="edit-field"><label>News Body</label><textarea id="bodyOut" style="min-height:250px"></textarea></div>
+<div class="edit-ai-chat" id="editAiChat">
+<div class="edit-ai-chat-head">
+<div><strong>💬 AI Edit Chat</strong></div>
+<button class="edit-chat-clear" id="editChatClear" type="button">Clear</button>
+</div>
+<div class="edit-chat-log" id="editChatLog"></div>
+<textarea id="editChatInput" placeholder=""></textarea>
+<div class="edit-chat-actions">
+<button class="edit-chat-send" id="editChatSend" type="button">➤ AIಗೆ ಕೇಳಿ</button>
+<button class="edit-chat-apply" disabled="" id="editChatApply" type="button">✓ Apply Change</button>
+</div>
+<div class="edit-chat-status" id="editChatStatus"></div>
+</div>
+<div class="edit-category-row"><label for="category">Category</label><select id="category"><option selected="" value="ಮೂಡುಬಿದಿರೆ">ಮೂಡುಬಿದಿರೆ</option><option value="ಕ್ರೈಂ">ಕ್ರೈಂ</option><option value="ತಂತ್ರಜ್ಞಾನ">ತಂತ್ರಜ್ಞಾನ</option><option value="ವಿಶೇಷ">ವಿಶೇಷ</option></select></div>
+<div class="auto-label-row">
+<div class="auto-label-head"><span>🏷️ Automatic English Labels</span><small>AI automatic · ಬೇಕಾದರೆ edit ಮಾಡಿ</small></div>
+<div class="auto-label-editor" id="autoLabelsEditor"></div>
+<div class="auto-label-actions"><button class="light" id="addAutoLabel" type="button">＋ Add</button><button class="light" id="resetAutoLabels" type="button">↻ Auto</button></div>
+</div>
+<div class="edit-accordion edit-box" id="keyPointsBox">
+<button class="edit-accordion-head" id="keyPointsToggle" type="button"><span>⭐ ಪ್ರಮುಖ ಅಂಶಗಳು</span><span class="accordion-right"><label class="mini-enable"><input checked="" id="keyPointsEnabled" type="checkbox"/> Enable</label><b>⌄</b></span></button>
+<div class="edit-accordion-body" id="keyPointsBody">
+<div class="points-editor" id="pointsEditor"></div>
+<div class="tool-row"><button class="light" id="addPoint" type="button">＋ Add Point</button><button class="light" id="aiPoints" type="button">✨ AI Generate</button></div>
+</div>
+</div>
+<div class="edit-accordion edit-box" id="englishBox">
+<button class="edit-accordion-head" id="englishToggle" type="button"><span>🌐 English Summary</span><span class="accordion-right"><label class="mini-enable"><input checked="" id="englishEnabled" type="checkbox"/> Enable</label><b>⌄</b></span></button>
+<div class="edit-accordion-body" id="englishBody">
+<textarea id="englishSummaryEdit" placeholder="English summary..." style="min-height:100px"></textarea>
+<div class="tool-row"><button class="light" id="aiEnglish" type="button">✨ AI Generate</button></div>
+</div>
+</div>
+<div class="autosave" id="autosaveStatus"></div>
+<div class="compact-publish-actions"><button class="primary" id="publish" type="button">🚀 Publish</button><button class="black" id="copy" type="button">📋 Copy</button><button class="light" id="save" type="button">💾 Save</button></div>
+<div class="status" id="publishStatus"></div>
+</div></section>
+
+<section class="safe-inline-panel" id="safeSection">
+<div class="safe-inline">
+<span class="safe-inline-text" id="safeDraftMeta">✓ ಇಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ</span>
+<button class="safe-mini-btn" id="restoreSafeDraft" type="button">Draft ನೋಡಿ</button>
+<button aria-hidden="true" class="hide" id="deleteSafeDraft" tabindex="-1" type="button">Delete</button>
+</div>
+</section>
+<section class="panel" id="previewSection"><div class="bar">👁️ News Post Preview</div><div class="body">
+<div class="post-preview" id="preview">
+<h1 id="ph">ಶೀರ್ಷಿಕೆ</h1><div class="post-sub" id="ps">ಸಬ್‌ಹೆಡ್ಲೈನ್ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
+<div class="post-body" id="pbody">ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.</div>
+</div>
+</div></section>
+<section class="social-share-box" id="socialShareBox">
+<div class="social-share-title">📲 WhatsApp / Social Share</div>
+<div id="socialShareHint" style="font-size:11px;color:#777;margin:-3px 0 9px">ಮೊದಲು Publish ಮಾಡಿ; ನಂತರ WhatsAppಗೆ ನೇರವಾಗಿ share ಮಾಡಬಹುದು.</div>
+<div id="bidireFixedSocialLinks" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px">
+<a href="https://chat.whatsapp.com/HaSXuXonS5b5iklUgth1Nq?s=sh&amp;p=a&amp;mlu=4" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#16803c;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800" target="_blank">🟢 WhatsApp Group</a>
+<a href="https://www.facebook.com/share/1HeeJXHzaE/" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#1877f2;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800" target="_blank">🔵 Facebook</a>
+<a href="https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:8px;background:#111;color:#fff!important;text-decoration:none;font-size:11px;font-weight:800" target="_blank">📷 Instagram</a>
+</div>
+<div class="social-share-actions">
+<a href="#" id="waShare" rel="noopener" target="_blank">🟢 WhatsApp Share</a>
+<a href="#" id="fbShare" rel="noopener" target="_blank">Facebook</a>
+<a href="#" id="igShare" rel="noopener" target="_blank">Instagram</a><a href="#" id="personalWaUpdate" rel="noopener" style="background:#0b6b32" target="_blank">📲 9731410761 Update</a>
+</div>
+</section>
+<section class="panel hide" id="adsPanel">
+<div class="bar">📢 Bidire Advertisement Manager</div><div class="body">
+<div class="ad-dashboard"><div class="ad-stat"><span>Total Advertisements</span><b id="adDashTotal">0</b></div><div class="ad-stat"><span>Active Ads</span><b id="adDashActive">0</b></div><div class="ad-stat"><span>Scheduled Ads</span><b id="adDashScheduled">0</b></div><div class="ad-stat"><span>Expired Ads</span><b id="adDashExpired">0</b></div><div class="ad-stat"><span>Total Billing</span><b id="adDashBilling">₹0</b></div><div class="ad-stat"><span>Paid</span><b id="adDashPaid">₹0</b></div><div class="ad-stat"><span>Pending</span><b id="adDashPending">₹0</b></div><div class="ad-stat"><span>Partial</span><b id="adDashPartial">0</b></div></div>
+<div class="ad-tabs"><button class="ad-tab active" id="adCreateTab" type="button">➕ New Advertisement</button><button class="ad-tab" id="adManageTab" type="button">📋 All Advertisements</button><button class="ad-tab" id="adHistoryTab" type="button">🧾 History</button><button class="ad-tab" id="adSummaryTab" type="button">📊 Date-wise Summary</button></div>
+<div class="ad-panel" id="adCreatePanel"><div class="small">ಒಬ್ಬ client → ಒಂದು Advertisement ID + ಒಂದು Bill. ಅದೇ recordನಲ್ಲಿ ಮೂರು positionsಗೆ ಮೂರು ಪ್ರತ್ಯೇಕ creatives ಮತ್ತು links.</div>
+<div class="row"><div><label>Advertiser Name</label><input id="adBusiness" placeholder="Advertiser / ಸಂಸ್ಥೆ ಹೆಸರು"/></div><div><label>Address / Contact</label><input id="adContact" placeholder="Address / Contact"/></div></div>
+<label>Advertisement Title</label><input id="adTitle" placeholder="ಉದಾ: ಆಳ್ವಾಸ್ ಕ್ರೀಡೋತ್ಸವ 2026"/><label>Short Description / Advertisement Note</label><textarea id="adText" placeholder="ಜಾಹೀರಾತಿನ ಮುಖ್ಯ ಮಾಹಿತಿ..." style="min-height:90px"></textarea>
+<div class="row"><div><label>Mobile / WhatsApp</label><input id="adPhone" inputmode="tel"/></div><div><label>Default Advertisement Link</label><input id="adDefaultLink" placeholder="https://..." type="url"/></div></div>
+<div class="row"><div><label>Start Date</label><input id="adStart" type="date"/></div><div><label>End / Expiry Date</label><input id="adExpiry" type="date"/></div></div>
+<div class="ad-three-grid">
+<div class="ad-creative"><h3>🟥 News Top</h3><div class="ad-size-note">1536 × 512</div><label>Image</label><input accept="image/*" id="adTopImage" type="file"/><label>Advertisement Link</label><input id="adTopLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adTopPreview"/></div>
+<div class="ad-creative"><h3>🟦 News Middle</h3><div class="ad-size-note">728 × 120</div><label>Image</label><input accept="image/*" id="adMiddleImage" type="file"/><label>Advertisement Link</label><input id="adMiddleLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adMiddlePreview"/></div>
+<div class="ad-creative"><h3>🟩 Sidebar</h3><div class="ad-size-note">300 × 250</div><label>Image</label><input accept="image/*" id="adSidebarImage" type="file"/><label>Advertisement Link</label><input id="adSidebarLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adSidebarPreview"/></div></div>
+<div class="row"><div><label>Rate (₹)</label><input id="adRate" min="0" step="0.01" type="number" value="0"/></div><div><label>Discount (₹)</label><input id="adDiscount" min="0" step="0.01" type="number" value="0"/></div></div>
+<div class="row"><div><label>Total (Rate − Discount)</label><input id="adTotal" readonly="" value="₹0.00"/></div><div><label>Payment Status</label><select id="adPaymentStatus"><option>Pending</option><option>Partial</option><option>Paid</option></select></div></div>
+<div class="row"><div><label>Paid Amount (₹)</label><input id="adPaidAmount" min="0" step="0.01" type="number" value="0"/></div><div><label>Balance (₹)</label><input id="adBalance" readonly="" value="₹0.00"/></div></div>
+<div class="small">GST ಸಂಪೂರ್ಣ ತೆಗೆದುಹಾಕಲಾಗಿದೆ. Total = Rate − Discount. Websiteನಲ್ಲಿ size text ತೋರಿಸಲಾಗುವುದಿಲ್ಲ.</div>
+<div class="actions"><button class="primary" id="saveAd" type="button">💾 Save Advertisement</button><button class="black" id="publishAdWebsite" type="button">🌐 Publish / Sync to Blogger</button><button class="light" id="previewAdBtn" type="button">👁 Preview</button><button class="light" id="clearAd" type="button">Clear</button></div>
+<div class="ad-bill-actions"><button class="light" id="billPdfBtn" type="button">🧾 Bill PDF / Print</button><button class="light" id="billJpgBtn" type="button">🖼 Bill JPG</button><button class="light" id="billWaBtn" type="button">📲 WhatsApp Bill</button></div><div class="status" id="adStatus"></div><div class="ad-preview hide" id="adPreview"></div><div class="hide" id="billPreview"></div></div>
+<div class="ad-panel hide" id="adManagePanel"><div class="small">Active / Scheduled / Expired status Start ಮತ್ತು End Date ಆಧಾರಿತ.</div><div class="actions"><button class="black" id="refreshAds" type="button">↻ Refresh</button><button class="primary" id="syncAllAds" type="button">🌐 Sync All to Blogger</button></div><div class="ad-list" id="adList"></div></div>
+<div class="ad-panel hide" id="adHistoryPanel"><div class="ad-history" id="adHistoryList"></div></div>
+<div class="ad-panel hide" id="adSummaryPanel"><div class="ad-filter-row"><div><label>From</label><input id="adSummaryFrom" type="date"/></div><div><label>To</label><input id="adSummaryTo" type="date"/></div><button class="primary" id="adSummaryRun" type="button">Generate Summary</button></div><div class="actions"><button class="light" id="adSummaryPdf" type="button">🧾 Summary PDF / Print</button></div><div class="ad-summary" id="adSummaryList"></div></div>
+</div></section>
+<section class="panel hide" id="settings"><div class="bar">Gemini + Blogger Settings</div><div class="body">
+<label>Gemini API Key</label><input id="apiKey" placeholder="AIza..." type="password"/>
+<label>Gemini Model</label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash</option><option value="gemini-3.7-flash">Gemini 3.7 Flash</option><option value="gemini-3.6-flash">Gemini 3.6 Flash</option><option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option><option value="gemini-3.5-flash">Gemini 3.5 Flash</option></select>
+<div class="small" id="aiModelStatus">AI Auto Switch: ON — temporary/quota/server error ಬಂದರೆ next supported modelಗೆ automatic switch ಆಗುತ್ತದೆ.</div>
+<label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com"/>
+<label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619"/>
+<label>Default Blogger Label</label><input id="blogLabel"/>
+<div class="actions"><button class="primary" id="saveSettings" type="button">Save Settings</button><button class="black" id="connect" type="button">🔐 Connect Google / Blogger</button><button class="light" id="disconnect" type="button">Disconnect</button></div>
+<div class="small" id="settingsStatus"></div><div class="small" id="bloggerStatus"></div>
+</div></section>
+<section class="panel hide" id="allPostsPanel">
+<div class="bar">📰 All Posts</div>
+<div class="body">
+<div class="small">Blogger postsನ್ನು load ಮಾಡಿ AI Editorನಲ್ಲಿ edit/update ಮಾಡಬಹುದು.</div>
+<div class="actions"><button class="black" id="loadPosts" type="button">↻ Load Posts</button></div>
+<div class="status" id="allPostsStatus"></div>
+<div class="all-posts-list" id="allPostsList"></div>
+</div>
+</section>
+</main>
+<script>
+
+const $=id=>document.getElementById(id);
+
+function openSettingsPanel(){
+  const panel=$("settings");
+  if(!panel)return;
+  panel.classList.toggle("hide");
+  const isOpen=!panel.classList.contains("hide");
+  const key=$("apiKey"), model=$("model"), client=$("clientId"), blog=$("blogId"), label=$("blogLabel");
+  if(key)key.value=safeGet("bn_key","");
+  if(model)model.value=cleanModel(safeGet("bn_model",""));
+  if(client)client.value=safeGet("bn_client","");
+  if(blog)blog.value=safeGet("bn_blog","")||blogDefault;
+  if(label)label.value=safeGet("bn_label","");
+  const btn=$("settingsBtn");
+  if(btn){
+    btn.setAttribute("aria-expanded",String(isOpen));
+    btn.textContent=isOpen?"✕ Close Settings":"⚙ Settings";
+  }
+  if(isOpen)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),50);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const btn=$("settingsBtn");
+  if(btn){
+    btn.type="button";
+    btn.addEventListener("click",openSettingsPanel);
+    btn.setAttribute("aria-expanded","false");
+  }
+});
+
+function safeGet(key, fallback=""){
+  try { return localStorage.getItem(key) ?? fallback; } catch(e) { return fallback; }
+}
+function safeJsonGet(key, fallback){
+  try {
+    const v=localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  } catch(e) {
+    try { localStorage.removeItem(key); } catch(_) {}
+    return fallback;
+  }
+}
+function safeSet(key,value){
+  try { localStorage.setItem(key,value); return true; }
+  catch(e){ return false; }
+}
+window.addEventListener("error",e=>{
+  const m=e?.error?.message||e?.message||"Unknown JavaScript error";
+  const el=$("status");
+  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
+});
+window.addEventListener("unhandledrejection",e=>{
+  const m=e?.reason?.message||String(e?.reason||"Unhandled promise error");
+  const el=$("status");
+  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
+});
+let photos=[], keyPoints=[], englishSummary="", token=null, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
+let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels=[];
+const blogDefault="2799540703054854619";
+function esc(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+function cleanModel(v){
+ v=String(v||"");
+ if(v.toLowerCase().startsWith("models/")) v=v.slice(7);
+ if(v.includes("3.8"))return"gemini-3.8-flash";
+ if(v.includes("3.7"))return"gemini-3.7-flash";
+ if(v.includes("3.6"))return"gemini-3.6-flash";
+ if(v.includes("3.5")&&v.includes("lite"))return"gemini-3.5-flash-lite";
+ if(v.includes("3.5"))return"gemini-3.5-flash";
+ return"gemini-3.8-flash";
+}
+function aiModelList(){
+ const primary=cleanModel(safeGet("bn_model",""));
+ const order=["gemini-3.8-flash","gemini-3.7-flash","gemini-3.6-flash","gemini-3.5-flash-lite","gemini-3.5-flash"];
+ return [primary,...order.filter(x=>x!==primary)].slice(0,5);
+}
+function isRetryableAIError(status,message){
+ const m=String(message||"").toLowerCase();
+ return status===408 || status===409 || status===429 || status>=500 ||
+   m.includes("quota") || m.includes("resource_exhausted") ||
+   m.includes("rate limit") || m.includes("rate_limit") ||
+   m.includes("free_tier") || m.includes("too many requests") ||
+   m.includes("temporarily unavailable") || m.includes("overloaded") ||
+   m.includes("model is overloaded");
+}
+function setAIModelStatus(model,note){
+ const el=$("aiModelStatus");
+ if(el) el.textContent=`AI Model: ${model} — Auto Switch ON${note?` — ${note}`:""}`;
+}
+async function geminiRequest(apiKey, contents, generationConfig){
+ let lastError="AI request failed";
+ const models=aiModelList();
+ for(let i=0;i<models.length;i++){
+   const model=models[i];
+   try{
+     const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{
+       method:"POST",headers:{"Content-Type":"application/json"},
+       body:JSON.stringify({contents,generationConfig})
+     });
+     const j=await r.json().catch(()=>({}));
+     if(r.ok){
+       if(i>0){
+         safeSet("bn_model",model);
+         setAIModelStatus(model,`Fallback model selected automatically`);
+       }else{
+         setAIModelStatus(model,"Primary");
+       }
+       return {j,model};
+     }
+     lastError=j.error?.message||`API error (${r.status})`;
+     if(!isRetryableAIError(r.status,lastError) || i===models.length-1) break;
+     setAIModelStatus(model,`Retrying with ${models[i+1]}`);
+   }catch(e){
+     lastError=e.message||"Network/API error";
+     if(i===models.length-1) break;
+     setAIModelStatus(model,`Network error — retrying with ${models[i+1]}`);
+   }
+ }
+ throw Error(lastError);
+}
+
+function msg(t){$("status").textContent=t;$("status").style.display=t?"block":"none"}
+function render(){
+  $("ph").textContent=$("headline").value||"ಶೀರ್ಷಿಕೆ";
+  $("ps").textContent=$("sub").value||"ಸಬ್‌ಹೆಡ್ಲೈನ್ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.";
+  const b=$("bodyOut").value.trim(), paras=splitNewsParagraphs(b);
+  let h=paras.map(p=>"<p>"+esc(p).replace(/\n/g,"<br>")+"</p>");
+  if(photos.length){
+    let imgs=photos.map(p=>`<figure class="post-photo"><img src="${p.dataUrl||p.driveUrl||""}" alt=""><figcaption>${esc(p.caption)}</figcaption></figure>`).join("");
+    h.splice(Math.min(1,h.length),0,imgs);
+  }
+  if($("keyPointsEnabled")?.checked && keyPoints.length)
+    h.push(`<div class="summary-box"><h3>ಪ್ರಮುಖ ಅಂಶಗಳು</h3><ul>${keyPoints.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul></div>`);
+  if($("englishEnabled")?.checked && englishSummary)
+    h.push(`<div class="summary-box english-box"><h3>English Summary</h3><p>${esc(englishSummary)}</p></div>`);
+  $("pbody").innerHTML=h.join("")||"ನಿಮ್ಮ ಸುದ್ದಿ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.";
+}
+
+function renderKeyPointsEditor(){
+  const box=$("pointsEditor");
+  box.innerHTML=keyPoints.map((p,i)=>`<div class="point-row"><input data-point="${i}" value="${esc(p)}"><button type="button" class="light" data-remove-point="${i}">✕</button></div>`).join("");
+  box.querySelectorAll("[data-point]").forEach(inp=>inp.oninput=()=>{keyPoints[+inp.dataset.point]=inp.value;render();scheduleAutosave()});
+  box.querySelectorAll("[data-remove-point]").forEach(btn=>btn.onclick=()=>{keyPoints.splice(+btn.dataset.removePoint,1);renderKeyPointsEditor();render();scheduleAutosave()});
+}
+function syncEditors(){
+  renderKeyPointsEditor();
+  $("englishSummaryEdit").value=englishSummary||"";
+}
+function scheduleAutosave(){
+  clearTimeout(draftTimer);
+  draftTimer=setTimeout(saveDraftAuto,500);
+}
+function draftObject(){
+  const draftPhotos=(Array.isArray(photos)?photos:[]).map(p=>({
+    name:p.name||"",
+    dataUrl:"",
+    driveUrl:p.driveUrl||"",
+    caption:p.caption||""
+  }));
+  return {
+    headline:$("headline").value,sub:$("sub").value,body:$("bodyOut").value,category:$("category")?.value||"",
+    keyPoints,englishSummary:$("englishSummaryEdit").value,autoLabels,
+    keyPointsEnabled:$("keyPointsEnabled").checked,englishEnabled:$("englishEnabled").checked,
+    photos:draftPhotos,editingPostId,editingPostUrl,savedAt:new Date().toISOString()
+  };
+}
+function saveDraftAuto(){
+  if(!safeSet("bn_draft",JSON.stringify(draftObject()))){
+    $("autosaveStatus").textContent="⚠️ Draft save failed — storage full.";
+  }else{
+    $("autosaveStatus").textContent="✓ Draft auto-saved";
+  }
+}
+function setEditingPost(id,url){
+  editingPostId=id||null;editingPostUrl=url||"";
+  $("publish").textContent=id?"🔄 Update Blogger Post":"🚀 Publish to Blogger";
+}
+
+["raw","headline","sub","bodyOut"].forEach(x=>$(x).addEventListener("input",()=>{render();scheduleAutosave();scheduleHistory()}));
+$("englishSummaryEdit").addEventListener("input",()=>{englishSummary=$("englishSummaryEdit").value;render();scheduleAutosave();scheduleHistory()});
+$("keyPointsEnabled").onchange=()=>{render();scheduleAutosave();scheduleHistory()};
+$("englishEnabled").onchange=()=>{render();scheduleAutosave();scheduleHistory()};
+$("addPoint").onclick=()=>{keyPoints.push("");renderKeyPointsEditor();render();scheduleAutosave();pushUndoSnapshot()};
+$("aiPoints").onclick=async()=>{let p=promptFor("Generate 3-5 concise factual Kannada key points. Return only JSON with keyPoints.");if(p)await geminiExtra(p,"keyPoints")};
+$("category")?.addEventListener("change",()=>{scheduleAutosave();scheduleHistory()});
+$("addAutoLabel")?.addEventListener("click",addAutoLabel);
+$("resetAutoLabels")?.addEventListener("click",resetAutoLabels);
+
+$("aiEnglish").onclick=async()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}let p=`Create a concise factual English summary. Use only supplied facts. Return ONLY JSON with key englishSummary. NEWS:\n${b}`;await geminiExtra(p,"englishSummary")};
+$("loadPosts").onclick=loadAllPosts;
+$("allPostsBtn").onclick=()=>{let p=$("allPostsPanel");p.classList.toggle("hide");if(!p.classList.contains("hide"))loadAllPosts()};
+
+$("themeBtn").onclick=()=>{let d=document.documentElement.dataset.theme==="dark";document.documentElement.dataset.theme=d?"light":"dark";safeSet("bn_theme",d?"light":"dark");$("themeBtn").textContent=d?"🌙 Dark":"☀️ Light"};
+document.documentElement.dataset.theme=safeGet("bn_theme","")||"dark";$("themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀️ Light":"🌙 Dark";
+setAIModelStatus(cleanModel(safeGet("bn_model","")),"Primary selected; automatic fallback enabled");
+
+function editorSnapshot(){
+ return {
+   raw:$("raw")?.value||"",
+   headline:$("headline")?.value||"",
+   sub:$("sub")?.value||"",
+   body:$("bodyOut")?.value||"",
+   category:$("category")?.value||"ಮೂಡುಬಿದಿರೆ",
+   keyPoints:Array.isArray(keyPoints)?[...keyPoints]:[],
+   englishSummary:$("englishSummaryEdit")?.value||englishSummary||"",
+   keyPointsEnabled:$("keyPointsEnabled")?.checked!==false,
+   englishEnabled:$("englishEnabled")?.checked!==false,
+   editingPostId:editingPostId||null,
+   editingPostUrl:editingPostUrl||""
+ };
+}
+function sameSnapshot(a,b){return JSON.stringify(a)===JSON.stringify(b)}
+function applyEditorSnapshot(st){
+ if(!st)return;
+ historyLock=true;
+ $("raw").value=st.raw||"";
+ $("headline").value=st.headline||"";
+ $("sub").value=st.sub||"";
+ $("bodyOut").value=st.body||"";
+ if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(st.category)?st.category:"ಮೂಡುಬಿದಿರೆ";
+ keyPoints=Array.isArray(st.keyPoints)?[...st.keyPoints]:[];
+ englishSummary=st.englishSummary||"";
+ if($("keyPointsEnabled"))$("keyPointsEnabled").checked=st.keyPointsEnabled!==false;
+ if($("englishEnabled"))$("englishEnabled").checked=st.englishEnabled!==false;
+ $("englishSummaryEdit").value=englishSummary;
+ editingPostId=st.editingPostId||null;editingPostUrl=st.editingPostUrl||"";
+ setEditingPost(editingPostId,editingPostUrl);
+ renderKeyPointsEditor();render();scheduleAutosave();updateAutoLabelsDisplay();
+ historyLock=false;
+}
+function pushUndoSnapshot(){
+ if(historyLock)return;
+ const snap=editorSnapshot(), last=undoStack[undoStack.length-1];
+ if(last&&sameSnapshot(last,snap))return;
+ undoStack.push(snap);
+ if(undoStack.length>30)undoStack.shift();
+ redoStack=[];
+ safeSet("bn_undo_history",JSON.stringify({undo:undoStack,redo:redoStack}));
+ updateUndoButtons();
+}
+function restoreHistory(){
+ const h=safeJsonGet("bn_undo_history",null);
+ if(h&&Array.isArray(h.undo))undoStack=h.undo;
+ if(h&&Array.isArray(h.redo))redoStack=h.redo;
+ updateUndoButtons();
+}
+function updateUndoButtons(){
+ const u=$("undoEdit"),r=$("redoEdit");
+ if(u){u.disabled=undoStack.length<=1;u.title=undoStack.length>1?"Undo last edit":"No earlier edit";}
+ if(r){r.disabled=redoStack.length===0;r.title=redoStack.length?"Redo":"No redo";}
+}
+function undoEditor(){
+ if(undoStack.length<=1)return;
+ const current=undoStack.pop();
+ redoStack.push(current);
+ const target=undoStack[undoStack.length-1];
+ applyEditorSnapshot(target);
+ safeSet("bn_undo_history",JSON.stringify({undo:undoStack,redo:redoStack}));
+ updateUndoButtons();
+ showUndoStatus("↶ ಹಿಂದಿನ edit restore ಆಯಿತು");
+}
+function redoEditor(){
+ if(!redoStack.length)return;
+ const next=redoStack.pop();
+ undoStack.push(next);
+ applyEditorSnapshot(next);
+ safeSet("bn_undo_history",JSON.stringify({undo:undoStack,redo:redoStack}));
+ updateUndoButtons();
+ showUndoStatus("↷ Edit ಮತ್ತೆ apply ಆಯಿತು");
+}
+function showUndoStatus(t){
+ let el=$("undoStatus");
+ if(!el){
+   el=document.createElement("div");el.id="undoStatus";el.className="undo-toast";
+   const host=$("editSection")?.querySelector(".body"); if(host)host.prepend(el);
+ }
+ el.textContent=t;
+ clearTimeout(window.__undoToastTimer);window.__undoToastTimer=setTimeout(()=>{if(el)el.textContent=""},1400);
+}
+function scheduleHistory(){
+ if(historyLock)return;
+ clearTimeout(historyTimer);
+ historyTimer=setTimeout(()=>{pushUndoSnapshot();updateAutoLabelsDisplay()},450);
+}
+$("undoEdit")?.addEventListener("click",undoEditor);
+$("redoEdit")?.addEventListener("click",redoEditor);
+
+const LABEL_RULES=[
+ {terms:["ಆಳ್ವಾಸ್","ಆಳ್ವಾಸ","alvas","alvas education"],label:"ALVAS"},
+ {terms:["ಎಕ್ಸಲೆಂಟ್","excellent"],label:"EXCELLENT"},
+ {terms:["ಮೂಡುಬಿದಿರೆ","ಮೂಡುಬಿದ್ರೆ","moodubidire","moodubidri"],label:"MOODUBIDIRE"},
+ {terms:["ಪಾಲಡ್ಕ","paladka"],label:"PALADKA"},
+ {terms:["ಬೆಳುವಾಯಿ","belvai"],label:"BELVAI"},
+ {terms:["ಹೆಜಮಾಡಿ","hejamadi"],label:"HEJAMADI"},
+ {terms:["ಮುಲ್ಕಿ","mulki"],label:"MULKI"},
+ {terms:["ಕಾರ್ಕಳ","karkala"],label:"KARKALA"},
+ {terms:["ಮಂಗಳೂರು","mangaluru","mangalore"],label:"MANGALURU"},
+ {terms:["ಬೆಳ್ತಂಗಡಿ","belthangady"],label:"BELTHANGADY"},
+ {terms:["ಬಂಟ್ವಾಳ","bantwal"],label:"BANTWAL"},
+ {terms:["ಪುತ್ತೂರು","puttur"],label:"PUTTUR"}
+];
+function deterministicLabels(text){
+ const t=String(text||"").toLowerCase();
+ const found=[];
+ for(const r of LABEL_RULES){
+   if(r.terms.some(x=>t.includes(x.toLowerCase()))&&!found.includes(r.label))found.push(r.label);
+   if(found.length>=2)break;
+ }
+ return found.slice(0,2);
+}
+function setAutoLabels(labels){
+ autoLabels=[...new Set((labels||[]).map(x=>String(x||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"")).filter(Boolean))].slice(0,2);
+ updateAutoLabelsDisplay();
+}
+function renderAutoLabelsEditor(){
+ const box=$("autoLabelsEditor");if(!box)return;
+ box.innerHTML=autoLabels.map((x,i)=>`<div class="label-edit-item"><input data-auto-label="${i}" value="${esc(x)}" maxlength="40"><button type="button" class="light" data-remove-auto-label="${i}">✕</button></div>`).join("");
+ box.querySelectorAll("[data-auto-label]").forEach(inp=>inp.oninput=()=>{
+   autoLabels[+inp.dataset.autoLabel]=inp.value.toUpperCase().replace(/[^A-Z0-9_-]/g,"");
+   autoLabels=[...new Set(autoLabels.filter(Boolean))].slice(0,2);
+   scheduleAutosave();
+ });
+ box.querySelectorAll("[data-remove-auto-label]").forEach(btn=>btn.onclick=()=>{
+   autoLabels.splice(+btn.dataset.removeAutoLabel,1);renderAutoLabelsEditor();scheduleAutosave();pushUndoSnapshot();
+ });
+}
+function updateAutoLabelsDisplay(){
+ renderAutoLabelsEditor();
+ const el=$("autoLabelsDisplay");if(el) el.textContent=autoLabels.length?autoLabels.join(" · "):"—";
+}
+function addAutoLabel(){
+ if(autoLabels.length>=2){msg("ಗರಿಷ್ಠ 2 English labels ಮಾತ್ರ.");setTimeout(()=>msg(""),1000);return}
+ autoLabels.push("");renderAutoLabelsEditor();
+ const inputs=document.querySelectorAll("[data-auto-label]");inputs[inputs.length-1]?.focus();
+ scheduleAutosave();
+}
+function resetAutoLabels(){
+ const direct=deterministicLabels(($("raw").value||"")+"\n"+($("headline").value||"")+"\n"+($("bodyOut").value||""));
+ setAutoLabels(direct);scheduleAutosave();pushUndoSnapshot();
+}
+async function generateAutoLabels(){
+ const raw=$("raw").value.trim(), body=$("bodyOut").value.trim();
+ const direct=deterministicLabels(raw+"\\n"+$("headline").value+"\\n"+body);
+ if(direct.length>=2){setAutoLabels(direct);return direct}
+ const key=safeGet("bn_key","");
+ if(!key){setAutoLabels(direct.length?direct:[]);return direct}
+ const prompt=`Generate 1 or 2 English Blogger labels for this news.
+Rules:
+- Use ONLY entities/places/institutions explicitly present in the supplied news.
+- Prefer a major institution/organization/brand first (example: ಆಳ್ವಾಸ್ -> ALVAS; Excellent -> EXCELLENT).
+- If no institution/brand is present, use the main place/town name in simple English transliteration (example: ಪಾಲಡ್ಕ -> PALADKA).
+- If an institution and a place are both clearly present, return both.
+- Never return generic labels such as NEWS, INDIA, KARNATAKA, EDUCATION, EVENT.
+- Return ONLY valid JSON: {"labels":["LABEL1","LABEL2"]}. Maximum 2 labels.
+NEWS:
+${raw}\n${body}`;
+ try{
+   const {j}=await geminiRequest(key,[{parts:[{text:prompt}]}],{responseMimeType:"application/json"});
+   const txt=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").replace(/^```json\s*/,"").replace(/\s*```$/,"").trim();
+   const o=JSON.parse(txt);
+   const ai=Array.isArray(o.labels)?o.labels:direct;
+   const cleaned=ai.map(x=>String(x).replace(/[^A-Za-z0-9_-]/g,"").toUpperCase()).filter(Boolean).slice(0,2);
+   setAutoLabels(cleaned.length?cleaned:direct);
+ }catch(e){setAutoLabels(direct)}
+ return autoLabels;
+}
+
+function promptFor(task){
+ const raw=$("raw").value.trim();if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return null}
+ const lim=$("limit").value, date=$("style").value==="vijayavani"?"ವಿಜಯವಾಣಿ ಸುದ್ದಿಜಾಲ ಮೂಡುಬಿದಿರೆ":"ಮೂಡುಬಿದಿರೆ:";
+ return `You are the Bidire News Kannada news editor. ${task}
+Use ONLY the raw information supplied by the user. Never guess, invent, expand, add background, names, roles, dates, places, numbers, reasons or quotes. Preserve every supplied person, organization, association and important factual name. Do not omit important supplied information.
+Write professional, simple, natural Kannada newspaper style. Main headline must be concise and factual. Add a professional subheadline based only on supplied facts. Do NOT create an English SEO slug. Do NOT create a separate Lead heading; the lead belongs naturally in the first paragraph. Dateline must be exactly "ಮೂಡುಬಿದಿರೆ:".
+Do not use honorifics such as ಶ್ರೀ/ಶ್ರೀಮತಿ/ಕುಮಾರಿ/ಕು. and avoid unnecessary "ಅವರು". Avoid unnecessary repetition and social-media style.
+Target ${lim==="0"?"natural length":lim+" words"}. Do not cut sentences.
+Return ONLY valid JSON with keys: headline, subheadline, body, keyPoints, englishSummary, autoLabels.
+keyPoints: 3-5 concise factual Kannada points, based only on supplied news.
+englishSummary: concise factual English summary, based only on supplied news.
+autoLabels: 1-2 English labels only; prefer the main institution/brand, otherwise the main place; never invent a label not supported by the supplied news.
+RAW NEWS:
+${raw}`;
+}
+async function gemini(text){
+ const key=safeGet("bn_key","");
+ if(!key){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
+ msg("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
+ try{
+  const {j}=await geminiRequest(key,[{parts:[{text}]}],{responseMimeType:"application/json"});
+  let t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\\s*/,"").replace(/\\s*```$/,""),o=JSON.parse(t);
+  $("headline").value=o.headline||"";$("sub").value=o.subheadline||"";$("bodyOut").value=o.body||"";
+  keyPoints=Array.isArray(o.keyPoints)?o.keyPoints.filter(Boolean):[];
+  englishSummary=String(o.englishSummary||"").trim();
+  setAutoLabels(Array.isArray(o.autoLabels)?o.autoLabels:deterministicLabels(($("raw").value||"")+"\n"+($("headline").value||"")+"\n"+($("bodyOut").value||"")));
+  renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;render();scheduleAutosave();
+  msg("ಸುದ್ದಿ ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>msg(""),1200);
+ }catch(e){msg("AI error: "+e.message)}
+}
+
+async function geminiExtra(text,key){
+ const apiKey=safeGet("bn_key","");
+ if(!apiKey){msg("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
+ try{
+   msg("AI ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...");
+   const {j}=await geminiRequest(apiKey,[{parts:[{text}]}],{responseMimeType:"application/json"});
+   const t=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").replace(/^```json\\s*/,"").replace(/\\s*```$/,""),o=JSON.parse(t);
+   if(key==="keyPoints")keyPoints=Array.isArray(o.keyPoints)?o.keyPoints.filter(Boolean):[];
+   if(key==="englishSummary")englishSummary=String(o.englishSummary||"").trim();
+   syncEditors();render();scheduleAutosave();msg("ಸಿದ್ಧವಾಗಿದೆ.");setTimeout(()=>msg(""),1000);
+ }catch(e){msg("AI error: "+e.message)}
+}
+
+$("generate").onclick=()=>{let p=promptFor("Create the complete news report.");if(p)gemini(p)};
+$("shorten").onclick=()=>{let p=promptFor("Shorten the news while retaining all supplied important facts and names.");if(p)gemini(p)};
+$("grammar").onclick=()=>{let p=promptFor("Correct grammar and improve newspaper readability without adding facts.");if(p)gemini(p)};
+$("translate").onclick=()=>{let b=$("bodyOut").value.trim();if(!b){msg("ಮೊದಲು ಸುದ್ದಿ ತಯಾರಿಸಿ.");return}let p=`Translate the following Kannada news into natural English. Preserve all names, places, dates and factual meaning. Return JSON with keys headline,subheadline,body,keyPoints,englishSummary. In body, separate each newspaper paragraph with a blank line (two newline characters). English Summary should be concise. NEWS:\n${b}`;gemini(p)};
+
+function fileData(f){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
+async function caption(data){
+ const key=safeGet("bn_key","");if(!key)return"";
+ try{
+  const base64=data.split(",")[1],mime=(data.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
+  const prompt=`Write ONE short factual Kannada newspaper photo caption using only the supplied news context and visible image. Do not invent identities or facts. News headline: ${$("headline").value}. News: ${$("bodyOut").value}`;
+  const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});
+  return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"")
+ }catch(e){return""}
+}
+function renderPhotos(){
+ $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl||p.driveUrl||""}"><div class="pcap">${esc(p.caption||"Caption")}</div><div class="pname">${esc(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
+ document.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();render()});
+}
+$("photoInput").onchange=async e=>{
+ for(const f of [...e.target.files||[]]){
+  if(!f.type.startsWith("image/"))continue;
+  const dataUrl=await fileData(f),p={name:f.name,dataUrl,caption:"",driveUrl:""};photos.push(p);renderPhotos();
+  p.caption=await caption(dataUrl)||($("headline").value||"ಸುದ್ದಿ")+" — Bidire News";renderPhotos();render();
+ }
+ e.target.value="";
+};
+
+async function access(){
+ if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಿಲ್ಲ. Page refresh ಮಾಡಿ.");
+ const cid=$("clientId").value.trim();if(!cid)throw Error("OAuth Client ID ಹಾಕಿ.");
+ tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:r=>{if(r.error){pending?.reject(Error(r.error_description||r.error));return}token=r.access_token;safeSet("bn_client",cid);$("bloggerStatus").textContent="✓ Blogger connected.";pending?.resolve(token);pending=null}});
+ return new Promise((resolve,reject)=>{pending={resolve,reject};tokenClient.requestAccessToken({prompt:"consent"})})
+}
+$("connect").onclick=async()=>{try{await access()}catch(e){$("bloggerStatus").textContent="✕ "+e.message}};
+$("disconnect").onclick=()=>{token=null;$("bloggerStatus").textContent="Disconnected."};
+
+function blob(data){let a=data.split(","),mime=(a[0].match(/data:([^;]+)/)||[])[1]||"image/jpeg",bin=atob(a[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
+async function uploadDrive(p){
+ const b=blob(p.dataUrl),boundary="bn_"+Date.now()+"_"+Math.random().toString(16).slice(2),meta={name:p.name,mimeType:b.type};
+ const body=new Blob(["--"+boundary+"\r\n","Content-Type: application/json; charset=UTF-8\r\n\r\n",JSON.stringify(meta),"\r\n--"+boundary+"\r\n","Content-Type: "+b.type+"\r\n\r\n",b,"\r\n--"+boundary+"--\r\n"],{type:"multipart/related; boundary="+boundary});
+ let r=await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"multipart/related; boundary="+boundary},body}),j=await r.json();
+ if(!r.ok)throw Error(j.error?.message||"Drive upload failed");
+ let id=j.id;
+ r=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/permissions`,{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({role:"reader",type:"anyone"})});
+ if(!r.ok){j=await r.json().catch(()=>({}));throw Error(j.error?.message||"Drive permission failed")}
+ return `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w2000`;
+}
+async function hostedPhotos(){
+ let arr=[];for(let i=0;i<photos.length;i++){if(!photos[i].driveUrl){$("publishStatus").textContent=`ಫೋಟೋ ${i+1}/${photos.length} upload ಆಗುತ್ತಿದೆ...`;photos[i].driveUrl=await uploadDrive(photos[i])}arr.push(photos[i])}return arr;
+}
+function splitNewsParagraphs(text){
+ const clean=String(text||"").replace(/\r/g,"").trim();
+ if(!clean)return [];
+ let paras=clean.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);
+ // Some AI responses use single line breaks between paragraphs.
+ // In that case, treat each non-empty line as a paragraph so the
+ // first uploaded photo can reliably be placed after paragraph 1.
+ if(paras.length===1){
+   const lines=clean.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+   if(lines.length>1) paras=lines;
+ }
+ return paras;
+}
+function htmlContent(ph){
+ const sub=$("sub").value.trim(),b=$("bodyOut").value.trim(),paras=splitNewsParagraphs(b);
+ let out=sub?`<p style="font-size:15px;font-weight:600;line-height:1.55;color:#555;padding:7px 10px;border-left:3px solid #aaa;background:#f7f7f7;">${esc(sub)}</p>`:"";
+ if(paras.length)out+="<p>"+esc(paras[0]).replace(/\n/g,"<br>")+"</p>";
+ ph.forEach(p=>out+=`<figure style="margin:16px 0 18px;text-align:center;"><img src="${p.driveUrl}" alt="${esc(p.caption)}" style="max-width:100%;height:auto;display:block;margin:0 auto;"><figcaption style="font-size:12px;font-style:italic;color:#666;margin-top:5px;line-height:1.4;">${esc(p.caption)}</figcaption></figure>`);
+ for(let i=1;i<paras.length;i++)out+="<p>"+esc(paras[i]).replace(/\n/g,"<br>")+"</p>";
+ if($("keyPointsEnabled").checked && keyPoints.length)out+=`<div style="margin:24px 0;padding:14px 16px;background:#fff4ef;border-left:4px solid #d71920;border-radius:4px;"><div style="font-size:20px;font-weight:700;margin-bottom:8px;">ಪ್ರಮುಖ ಅಂಶಗಳು</div><ul style="margin:0;padding-left:20px;">${keyPoints.map(x=>`<li style="margin:6px 0;line-height:1.6;">${esc(x)}</li>`).join("")}</ul></div>`;
+ if($("englishEnabled").checked && englishSummary)out+=`<div style="margin:22px 0;padding:14px 16px;background:#f7f7f7;border-left:4px solid #555;border-radius:4px;"><div style="font-size:20px;font-weight:700;margin-bottom:8px;">English Summary</div><div style="font-size:15px;line-height:1.65;color:#444;">${esc(englishSummary)}</div></div>`;
+ return out;
+}
+$("publish").onclick=async()=>{
+  const title=$("headline").value.trim(),body=$("bodyOut").value.trim(),blogId=$("blogId").value.trim()||blogDefault;
+  if(!title||!body){$("publishStatus").textContent="Headline ಮತ್ತು News Body ಸಿದ್ಧಪಡಿಸಿ.";return}
+  $("publishStatus").style.display="block";
+  try{
+    if(!token)await access();
+    const ph=await hostedPhotos(),content=htmlContent(ph),labels=[];
+    const category=$("category")?.value.trim();
+    const userLabel=$("blogLabel").value.trim();if(userLabel)labels.push(userLabel);
+    if(category && !labels.includes(category))labels.push(category);
+    if(!autoLabels.length) await generateAutoLabels();
+    autoLabels.forEach(x=>{if(x&&!labels.includes(x))labels.push(x)});
+    if(!labels.includes("BidireAIEditor"))labels.push("BidireAIEditor");
+    const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels};
+    let r,j;
+    if(editingPostId){
+      r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(editingPostId)}`,{
+        method:"PUT",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
+      });
+    }else{
+      r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`,{
+        method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)
+      });
+    }
+    j=await r.json();if(!r.ok)throw Error(j.error?.message||"Blogger API error");
+    const wasUpdate=!!editingPostId; setEditingPost(j.id,j.url); try{localStorage.removeItem("bn_draft")}catch(_){}
+    $("publishStatus").style.color="#16803c";
+    $("publishStatus").textContent=editingPostId?"✓ Blogger post updated.":"✓ Bloggerಗೆ publish ಆಯಿತು.";
+    setupSocialShares(j.url||editingPostUrl||"");
+    setTimeout(()=>document.getElementById("socialShareBox")?.scrollIntoView({behavior:"smooth",block:"center"}),120);
+  }catch(e){$("publishStatus").style.color="#b40000";$("publishStatus").textContent="✕ "+(editingPostId?"Update":"Publish")+" ಆಗಲಿಲ್ಲ: "+e.message}
+};
+
+function getShareShortDescription(){
+ const body=$("bodyOut")?.value.trim()||"";
+ const first=(body.split(/\n\s*\n/)[0]||body).replace(/\s+/g," ").trim();
+ return (()=>{
+  const clean=first.replace(/\s+/g," ").trim();
+  if(clean.length<=60)return clean;
+  const cut=clean.slice(0,60);
+  const lastSpace=cut.lastIndexOf(" ");
+  const out=(lastSpace>=40?cut.slice(0,lastSpace):cut).trim();
+  return out.length>=40?out+"…":clean.slice(0,60)+"…";
+})();
+}
+function getSharePhoto(){
+ const p=Array.isArray(photos)?photos.find(x=>x&&x.dataUrl):null;
+ return p?.dataUrl||"";
+}
+async function shareWhatsAppWithThumbnail(url){
+ const title=$("headline").value.trim(),sub=$("sub").value.trim(),short=getShareShortDescription(),photo=getSharePhoto();
+ if(!photo){alert("WhatsApp Share ಮಾಡಲು Photo thumbnail ಕಡ್ಡಾಯ. ಮೊದಲು Photo upload ಮಾಡಿ.");return;}
+ if(!url){alert("ಮೊದಲು ಸುದ್ದಿಯನ್ನು Publish ಮಾಡಿ.");return;}
+ const text=`${title}\n${sub}\n${short}\n\nBidire News\n${url}\n\nWhatsApp Group: https://chat.whatsapp.com/HaSXuXonS5b5iklUgth1Nq?s=sh&p=a&mlu=4\nInstagram: https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl\nFacebook: https://www.facebook.com/share/1HeeJXHzaE/`;
+ try{
+   if(!navigator.share||!navigator.canShare){throw Error("ಈ browserನಲ್ಲಿ photo thumbnail share support ಇಲ್ಲ.");}
+   const file=new File([blob(photo)],"bidire-news-thumbnail.jpg",{type:"image/jpeg"});
+   if(!navigator.canShare({files:[file]}))throw Error("ಈ browserನಲ್ಲಿ photo thumbnail share support ಇಲ್ಲ.");
+   await navigator.share({title:title,text,files:[file]});
+ }catch(e){if(e?.name!=="AbortError")alert(e.message||"WhatsApp Share ಆಗಲಿಲ್ಲ.");}
+}
+function setupSocialShares(url){
+ const box=$("socialShareBox");if(!box)return;
+ const hint=$("socialShareHint"),wa=$("waShare"),fb=$("fbShare"),ig=$("igShare"),personal=$("personalWaUpdate");
+ const title=$("headline").value.trim(),photo=getSharePhoto();
+ if(!url){const msg="ಮೊದಲು ಸುದ್ದಿಯನ್ನು Publish ಮಾಡಿ.";if(hint)hint.textContent=msg;if(wa)wa.onclick=e=>{e.preventDefault();alert(msg)};return;}
+ if(wa){wa.href="#";wa.onclick=e=>{e.preventDefault();shareWhatsAppWithThumbnail(url)}}
+ if(fb){fb.href="https://www.facebook.com/share/1HeeJXHzaE/";fb.onclick=null;}
+ if(ig){ig.href="https://www.instagram.com/bidire._news?igsh=YzFqejZmNmNmNWtl";ig.onclick=null;}
+ if(personal){personal.href="https://wa.me/919731410761?text="+encodeURIComponent(title+"\n\n"+url);personal.onclick=null;}
+ if(hint)hint.textContent=photo?"✓ WhatsApp Share: Thumbnail photo ಕಡ್ಡಾಯ · Short Description news bodyಯಿಂದ 40–60 characters":"⚠️ WhatsApp Share ಮಾಡಲು Photo thumbnail ಕಡ್ಡಾಯ.";
+}
+async function loadAllPosts(){
+  const box=$("allPostsList"),st=$("allPostsStatus");box.innerHTML="";st.style.display="block";st.textContent="Loading posts...";
+  try{
+    if(!token)await access();
+    const blogId=$("blogId").value.trim()||blogDefault;
+    const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts?maxResults=100`,{headers:{Authorization:"Bearer "+token}});
+    const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Could not load posts");
+    const all=j.items||[];
+    if(!all.length){box.innerHTML='<div class="small">ಯಾವುದೇ posts ಸಿಗಲಿಲ್ಲ.</div>';st.style.display="none";return}
+    box.innerHTML=all.map(p=>`<div class="post-card"><div class="post-card-title">${esc(p.title||"(No title)")}</div><div class="post-card-meta">${esc(p.published||p.updated||"")}</div><div class="post-card-actions"><button type="button" class="light" data-edit-post="${esc(p.id)}">✏ Edit</button><a class="light" style="text-decoration:none;text-align:center" href="${esc(p.url||"#")}" target="_blank">View</a></div></div>`).join("");
+    box.querySelectorAll("[data-edit-post]").forEach(b=>b.onclick=()=>loadPostForEdit(b.dataset.editPost));
+    st.style.display="none";
+  }catch(e){st.textContent="✕ "+e.message;st.style.display="block"}
+}
+async function loadPostForEdit(id){
+  try{
+    if(!token)await access();
+    const blogId=$("blogId").value.trim()||blogDefault;
+    const r=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(id)}`,{headers:{Authorization:"Bearer "+token}});
+    const j=await r.json();if(!r.ok)throw Error(j.error?.message||"Could not load post");
+    $("headline").value=j.title||"";
+    if($("category")){ const existing=(j.labels||[]).find(x=>x!=="BidireAIEditor" && x!=="BidireAd" && x!==$("blogLabel").value.trim()); if(existing && ["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(existing)) $("category").value=existing; else $("category").value="ಮೂಡುಬಿದಿರೆ"; }
+    const tmp=document.createElement("div");tmp.innerHTML=j.content||"";
+    const summary=tmp.querySelector('p[style*="border-left"]');$("sub").value=summary?.textContent?.trim()||"";
+    const english=tmp.querySelector(".english-box p")||tmp.querySelector('div[style*="border-left:4px solid #555"] div:last-child');
+    englishSummary=english?.textContent?.trim()||"";
+    keyPoints=[...tmp.querySelectorAll(".summary-box ul li")].map(x=>x.textContent.trim());
+    photos=[...tmp.querySelectorAll("figure img")].map((img,i)=>{
+      const src=img.getAttribute("src")||"";
+      const m=src.match(/[?&]id=([^&]+)/)||src.match(/\/d\/([^/]+)/);
+      const driveId=m?decodeURIComponent(m[1]):"";
+      return {
+        name:"existing-photo-"+(i+1),
+        dataUrl:"",
+        driveUrl:driveId?"https://drive.google.com/thumbnail?id="+encodeURIComponent(driveId)+"&sz=w2000":src,
+        caption:img.parentElement?.querySelector("figcaption")?.textContent?.trim()||img.getAttribute("alt")||""
+      };
+    });
+    [...tmp.querySelectorAll("figure")].forEach(f=>f.remove());
+    tmp.querySelectorAll(".summary-box").forEach(x=>x.remove());
+    if(summary)summary.remove();
+    $("bodyOut").value=[...tmp.querySelectorAll("p")].map(x=>x.textContent.trim()).filter(Boolean).join("\n\n");
+    setEditingPost(j.id,j.url);syncEditors();renderPhotos();render();
+    $("allPostsPanel").classList.add("hide");window.scrollTo({top:0,behavior:"smooth"});scheduleAutosave();
+  }catch(e){$("allPostsStatus").textContent="✕ "+e.message;$("allPostsStatus").style.display="block"}
+}
+
+$("copy").onclick=()=>navigator.clipboard.writeText($("headline").value+"\n\n"+$("sub").value+"\n\n"+$("bodyOut").value);
+$("save").onclick=()=>{saveDraftAuto();msg("Draft saved.");};
+
+$("saveSettings").onclick=()=>{
+ const key=$("apiKey"),model=$("model"),client=$("clientId"),blog=$("blogId"),label=$("blogLabel");
+ safeSet("bn_key",key?.value.trim()||"");
+ safeSet("bn_model",cleanModel(model?.value||""));
+ safeSet("bn_client",client?.value.trim()||"");
+ safeSet("bn_blog",blog?.value.trim()||blogDefault);
+ safeSet("bn_label",label?.value.trim()||"");
+ setAIModelStatus(cleanModel(model?.value||""),"Primary selected; automatic fallback enabled");
+ if($("settingsStatus"))$("settingsStatus").textContent="✓ Settings saved.";
+};
+$("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";if($("category"))$("category").value="ಮೂಡುಬಿದಿರೆ";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");autoLabels=[];syncEditors();renderAutoLabelsEditor();renderPhotos();render();setupSocialShares("");localStorage.removeItem("bn_draft");undoStack=[];redoStack=[];pushUndoSnapshot();window.scrollTo({top:0,behavior:"smooth"})};
+let d=safeJsonGet("bn_draft",null);
+if(d){
+  $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
+  keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||""; autoLabels=Array.isArray(d.autoLabels)?d.autoLabels:[];photos=d.photos||[];
+  $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;$("englishEnabled").checked=d.englishEnabled!==false;
+  setEditingPost(d.editingPostId||null,d.editingPostUrl||"");syncEditors();renderPhotos();render();
+}else{syncEditors();renderAutoLabelsEditor();render();}
+["raw","headline","sub","bodyOut"].forEach(id=>$(id).addEventListener("input",scheduleAutosave));
+
+/* ---------------- Bidire Advertisement Manager V7 ---------------- */
+let ads=safeJsonGet("bn_ads",[]);if(!Array.isArray(ads))ads=[];let editingAdId=null;
+function adToday(){return new Date().toISOString().slice(0,10)}
+function adStatus(a){const t=adToday();if(a.enabled===false)return "INACTIVE";if(a.start&&t<a.start)return "SCHEDULED";if(a.expiry&&t>a.expiry)return "EXPIRED";return "ACTIVE"}
+function adEsc(v){return esc(v==null?"":String(v))}function money(v){return "₹"+(Number(v)||0).toFixed(2)}function adTotalValue(a){return Math.max(0,(Number(a.rate)||0)-(Number(a.discount)||0))}
+function nextAdNumber(){let n=parseInt(safeGet("bn_next_bill_no","1"),10);if(!Number.isFinite(n)||n<1)n=1;safeSet("bn_next_bill_no",String(n+1));return "BN2026"+String(n).padStart(4,"0")}
+function normalizeAd(a){a=a||{};a.billNo=a.billNo||a.id||"";a.rate=Number(a.rate)||0;a.discount=Number(a.discount)||0;a.total=adTotalValue(a);a.paidAmount=Number(a.paidAmount)||0;a.paymentStatus=a.paymentStatus||"Pending";a.enabled=a.enabled!==false;a.top=a.top||{imageData:a.imageData||"",imageUrl:a.imageUrl||"",link:a.contact||""};a.middle=a.middle||{imageData:"",imageUrl:"",link:""};a.sidebar=a.sidebar||{imageData:"",imageUrl:"",link:""};a.websitePostIds=a.websitePostIds||{};a.websiteUrls=a.websiteUrls||{};return a}
+ads=ads.map(normalizeAd);
+function readAdImage(file){return new Promise((resolve,reject)=>{if(!file)return resolve("");const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+function adWebsiteMeta(ad,pos){const c=ad[pos];return{id:String(ad.id||""),position:pos,size:pos==="top"?"1536x512":pos==="middle"?"728x120":"300x250",start:String(ad.start||""),expiry:String(ad.expiry||""),enabled:ad.enabled!==false,link:String(c?.link||"")}}
+async function publishAdPosition(ad,pos){const c=ad[pos];if(!c||(!c.imageData&&!c.imageUrl))throw Error(pos.toUpperCase()+" advertisement image upload ಮಾಡಿ.");if(!token)await access();const imageUrl=c.imageUrl||await uploadDrive({dataUrl:c.imageData,name:ad.id+"-"+pos+".jpg"});const m=adWebsiteMeta(ad,pos),link=m.link&&/^https?:\/\//i.test(m.link)?m.link:"";const content=`<div data-bidire-ad="1" data-ad-id="${adEsc(m.id)}" data-position="${m.position}" data-size="${m.size}" data-start="${adEsc(m.start)}" data-expiry="${adEsc(m.expiry)}" data-enabled="${m.enabled?"true":"false"}" data-link="${adEsc(link)}" style="display:none!important"><a href="${adEsc(link||"#")}"><img src="${adEsc(imageUrl)}" alt=""></a></div>`;const blogId=$("blogId").value.trim()||blogDefault;const title="[BIDIRE_AD] "+(ad.title||"Advertisement")+" - "+pos.toUpperCase();const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels:["BidireAd"]};const postId=ad.websitePostIds[pos];const url=postId?`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(postId)}`:`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`;const r=await fetch(url,{method:postId?"PUT":"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)});const j=await r.json();if(!r.ok)throw Error((j.error&&j.error.message)||"Blogger Advertisement sync failed");ad.websitePostIds[pos]=j.id;ad.websiteUrls[pos]=j.url||"";c.imageUrl=imageUrl}
+async function publishAdToWebsite(ad){ad=normalizeAd(ad);for(const p of ["top","middle","sidebar"]){if(!ad[p]?.imageData&&!ad[p]?.imageUrl)throw Error("ಮೂರು positionsಗೂ ಪ್ರತ್ಯೇಕ images ಕಡ್ಡಾಯ.")}if(!token)await access();for(const p of ["top","middle","sidebar"])await publishAdPosition(ad,p);saveAds();renderAds();return ad}
+function saveAds(){if(!safeSet("bn_ads",JSON.stringify(ads))){$("adStatus").textContent="⚠️ Advertisement save failed — storage full.";$("adStatus").style.display="block"}}
+function calcAdMoney(){const total=Math.max(0,(Number($("adRate").value)||0)-(Number($("adDiscount").value)||0));$("adTotal").value=money(total);const paid=Math.min(total,Math.max(0,Number($("adPaidAmount").value)||0));$("adBalance").value=money(total-paid);if($("adPaymentStatus").value==="Paid")$("adPaidAmount").value=total;}
+function previewCreative(id,file){if(!file)return;const r=new FileReader();r.onload=()=>{const x=$(id);x.src=r.result;x.classList.remove("hide")};r.readAsDataURL(file)}
+["Top","Middle","Sidebar"].forEach(p=>$("ad"+p+"Image").addEventListener("change",e=>previewCreative("ad"+p+"Preview",e.target.files?.[0])));
+["adRate","adDiscount","adPaidAmount","adPaymentStatus"].forEach(id=>$(id).addEventListener("input",calcAdMoney));$("adPaymentStatus").addEventListener("change",calcAdMoney);
+function renderAds(){updateAdDashboard();const box=$("adList");if(!ads.length){box.innerHTML='<div class="small">ಯಾವುದೇ ಜಾಹೀರಾತು ಇಲ್ಲ.</div>';return}box.innerHTML=ads.slice().sort((a,b)=>String(b.createdAt||b.billNo).localeCompare(String(a.createdAt||a.billNo))).map(a=>{a=normalizeAd(a);const st=adStatus(a),pay=(a.paymentStatus||"Pending").toLowerCase();return `<div class="ad-card"><div class="ad-card-head"><div><div class="ad-card-title">${adEsc(a.business||a.title)} — ${adEsc(a.billNo)}</div><div class="small">Advertisement ID: ${adEsc(a.id)} · ${adEsc(a.start||"")} → ${adEsc(a.expiry||"")}</div></div><div><span class="ad-badge ${st.toLowerCase()}">${st}</span> <span class="ad-badge ${pay}">${adEsc(a.paymentStatus)}</span></div></div><div class="small" style="margin-top:6px">Rate ${money(a.rate)} − Discount ${money(a.discount)} = <b>${money(a.total)}</b> · Balance ${money(a.total-(a.paidAmount||0))}</div><div class="small">Top ✓ Middle ✓ Sidebar ✓ ${a.websitePostIds?.top&&a.websitePostIds?.middle&&a.websitePostIds?.sidebar?'· Blogger synced':''}</div><div class="ad-actions"><button type="button" class="primary" data-ad-edit="${adEsc(a.id)}">✏ Edit</button><button type="button" class="black" data-ad-sync="${adEsc(a.id)}">🌐 Sync</button><button type="button" class="light" data-ad-bill="${adEsc(a.id)}">🧾 Bill</button><button type="button" class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?'Enable':'Disable'}</button><button type="button" class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button></div></div>`}).join("");box.querySelectorAll("[data-ad-edit]").forEach(b=>b.onclick=()=>editAd(b.dataset.adEdit));box.querySelectorAll("[data-ad-sync]").forEach(b=>b.onclick=async()=>{const a=ads.find(x=>x.id===b.dataset.adSync);try{await publishAdToWebsite(a);$("adStatus").textContent="✓ ಮೂರು advertisements Bloggerಗೆ sync ಆಯಿತು.";$("adStatus").style.display="block"}catch(e){$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}});box.querySelectorAll("[data-ad-bill]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adBill);showBill(a)});box.querySelectorAll("[data-ad-toggle]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adToggle);a.enabled=a.enabled===false;saveAds();renderAds()});box.querySelectorAll("[data-ad-delete]").forEach(b=>b.onclick=()=>{if(confirm("ಈ Advertisement delete ಮಾಡಬೇಕೇ?")){ads=ads.filter(x=>x.id!==b.dataset.adDelete);saveAds();renderAds()}})}
+function updateAdDashboard(){let active=0,scheduled=0,expired=0,billing=0,paid=0,pending=0,partial=0;ads.forEach(a=>{a=normalizeAd(a);const st=adStatus(a);if(st==="ACTIVE")active++;else if(st==="SCHEDULED")scheduled++;else if(st==="EXPIRED")expired++;billing+=a.total;paid+=Math.min(a.total,a.paidAmount);if(a.paymentStatus==="Partial")partial++;if(a.paymentStatus!=="Paid")pending+=Math.max(0,a.total-a.paidAmount)});$("adDashTotal").textContent=ads.length;$("adDashActive").textContent=active;$("adDashScheduled").textContent=scheduled;$("adDashExpired").textContent=expired;$("adDashBilling").textContent=money(billing);$("adDashPaid").textContent=money(paid);$("adDashPending").textContent=money(pending);$("adDashPartial").textContent=partial}
+function clearAdForm(){editingAdId=null;["adBusiness","adContact","adTitle","adText","adPhone","adDefaultLink","adStart","adExpiry","adTopLink","adMiddleLink","adSidebarLink","adRate","adDiscount","adPaidAmount"].forEach(id=>{if($(id))$(id).value=""});["adTopImage","adMiddleImage","adSidebarImage"].forEach(id=>$(id).value="");["adTopPreview","adMiddlePreview","adSidebarPreview"].forEach(id=>$(id).classList.add("hide"));$("adPaymentStatus").value="Pending";calcAdMoney();$("saveAd").textContent="💾 Save Advertisement";$("billPreview").innerHTML="";$("billPreview").classList.add("hide")}
+function editAd(id){const a=ads.find(x=>x.id===id);if(!a)return;editingAdId=id;a=normalizeAd(a);$("adBusiness").value=a.business||"";$("adContact").value=a.contact||"";$("adTitle").value=a.title||"";$("adText").value=a.text||"";$("adPhone").value=a.phone||"";$("adDefaultLink").value=a.defaultLink||"";$("adStart").value=a.start||"";$("adExpiry").value=a.expiry||"";$("adTopLink").value=a.top.link||"";$("adMiddleLink").value=a.middle.link||"";$("adSidebarLink").value=a.sidebar.link||"";$("adRate").value=a.rate||0;$("adDiscount").value=a.discount||0;$("adPaidAmount").value=a.paidAmount||0;$("adPaymentStatus").value=a.paymentStatus||"Pending";$("saveAd").textContent="🔄 Update Advertisement";calcAdMoney();["top","middle","sidebar"].forEach(p=>{const c=a[p];const im=$("ad"+p.charAt(0).toUpperCase()+p.slice(1)+"Preview");if(c.imageData||c.imageUrl){im.src=c.imageData||c.imageUrl;im.classList.remove("hide")}});$("adCreateTab").click();window.scrollTo({top:$("adsPanel").offsetTop-60,behavior:"smooth"})}
+function buildBill(a){a=normalizeAd(a);return `<div class="bill-paper" id="printBill"><div class="bill-top"><div><div class="bill-brand">BIDIRE ADVERTISERS</div><div class="bill-small">PAN No: ANRPB1538L</div><div class="bill-small">advertisment Bill</div></div><div class="bill-title">BILL</div></div><div style="margin-top:14px;font-size:13px;line-height:1.6"><b>Bill No / Advertisement ID:</b> ${adEsc(a.billNo||a.id)}<br><b>Advertiser:</b> ${adEsc(a.business)}<br><b>Address / Contact:</b> ${adEsc(a.contact)} ${a.phone?' / '+adEsc(a.phone):''}<br><b>Status:</b> ${adEsc(a.paymentStatus)}<br><b>Advertisement Period:</b> ${adEsc(a.start)} to ${adEsc(a.expiry)}</div><table class="bill-table"><tr><th>Position</th><th>Creative</th><th>Link</th></tr><tr><td>News Top</td><td>1536 × 512</td><td>${adEsc(a.top.link)}</td></tr><tr><td>News Middle</td><td>728 × 120</td><td>${adEsc(a.middle.link)}</td></tr><tr><td>Sidebar</td><td>300 × 250</td><td>${adEsc(a.sidebar.link)}</td></tr></table><div class="bill-total"><div><span>Rate</span><b>${money(a.rate)}</b></div><div><span>Discount</span><b>− ${money(a.discount)}</b></div><div class="bill-grand"><span>Total</span><b>${money(a.total)}</b></div><div><span>Paid</span><b>${money(a.paidAmount)}</b></div><div><span>Balance</span><b>${money(Math.max(0,a.total-a.paidAmount))}</b></div></div><div class="bill-notes"><b>Notes:</b><br><b>Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS</b><br><b>YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482</b></div><div class="bill-footer"><b>Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.</b><br>Contact: 9731410761<br>Email: bidirevv@mail.com</div></div>`}
+function showBill(a){$("billPreview").innerHTML=buildBill(a);$("billPreview").classList.remove("hide");$("billPreview").scrollIntoView({behavior:"smooth",block:"start"})}
+function currentBillAd(){return editingAdId?ads.find(x=>x.id===editingAdId):null}
+function printHtml(html,title){
+  const w=window.open("","_blank");
+  if(!w)return;
+  const css=document.getElementById("bidire-ad-v7-css")?.textContent||"";
+  const doc="<html><head><title>"+esc(title)+"</title><style>body{margin:20px;background:#fff}"+css+"</style></head><body>"+html+"<\/body>"+"</html>";
+  w.document.open();
+  w.document.write(doc);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+}
+
+/* ===== Advertisement button handlers — restored ===== */
+async function collectAdFromForm(){
+  const existing=editingAdId ? (ads.find(x=>x.id===editingAdId)||null) : null;
+  const readFile=file=>new Promise((resolve,reject)=>{
+    if(!file)return resolve("");
+    const r=new FileReader(); r.onload=()=>resolve(String(r.result||"")); r.onerror=reject; r.readAsDataURL(file);
+  });
+  const topFile=$("adTopImage")?.files?.[0]||null;
+  const middleFile=$("adMiddleImage")?.files?.[0]||null;
+  const sidebarFile=$("adSidebarImage")?.files?.[0]||null;
+  const topData=await readFile(topFile), middleData=await readFile(middleFile), sidebarData=await readFile(sidebarFile);
+  const billNo=existing?.billNo||nextAdNumber();
+  const defaultLink=$("adDefaultLink").value.trim();
+  const ad=normalizeAd({
+    ...(existing||{}),
+    id:billNo,
+    billNo,
+    business:$("adBusiness").value.trim(),
+    contact:$("adContact").value.trim(),
+    title:$("adTitle").value.trim(),
+    text:$("adText").value.trim(),
+    phone:$("adPhone").value.trim(),
+    defaultLink,
+    start:$("adStart").value,
+    expiry:$("adExpiry").value,
+    rate:Number($("adRate").value)||0,
+    discount:Number($("adDiscount").value)||0,
+    paidAmount:Number($("adPaidAmount").value)||0,
+    paymentStatus:$("adPaymentStatus").value||"Pending",
+    enabled:true,
+    createdAt:existing?.createdAt||new Date().toISOString(),
+    top:{...(existing?.top||{}),imageData:topData||existing?.top?.imageData||"",imageUrl:existing?.top?.imageUrl||"",link:$("adTopLink").value.trim()||defaultLink},
+    middle:{...(existing?.middle||{}),imageData:middleData||existing?.middle?.imageData||"",imageUrl:existing?.middle?.imageUrl||"",link:$("adMiddleLink").value.trim()||defaultLink},
+    sidebar:{...(existing?.sidebar||{}),imageData:sidebarData||existing?.sidebar?.imageData||"",imageUrl:existing?.sidebar?.imageUrl||"",link:$("adSidebarLink").value.trim()||defaultLink}
+  });
+  ad.total=adTotalValue(ad);
+  return ad;
+}
+async function saveAdvertisementForm(){
+  const st=$("adStatus");
+  try{
+    st.textContent="Advertisement save ಮಾಡಲಾಗುತ್ತಿದೆ...";st.style.display="block";
+    const ad=await collectAdFromForm();
+    if(!ad.business){throw Error("Advertiser Name ಹಾಕಿ.");}
+    if(!ad.title){throw Error("Advertisement Title ಹಾಕಿ.");}
+    for(const p of ["top","middle","sidebar"]){
+      if(!ad[p].imageData&&!ad[p].imageUrl)throw Error("ಮೂರು positionsಗೂ images ಕಡ್ಡಾಯ.");
+    }
+    const idx=ads.findIndex(x=>x.id===ad.id);
+    if(idx>=0)ads[idx]=ad;else ads.push(ad);
+    editingAdId=ad.id;
+    saveAds();renderAds();
+    st.textContent="✓ Advertisement saved. Bill No: "+ad.billNo;st.style.display="block";
+    $("saveAd").textContent="🔄 Update Advertisement";
+    return ad;
+  }catch(e){
+    st.textContent="✕ "+e.message;st.style.display="block";throw e;
+  }
+}
+$("saveAd").onclick=()=>{saveAdvertisementForm().catch(()=>{})};
+$("publishAdWebsite").onclick=async()=>{
+  const st=$("adStatus");
+  try{
+    const ad=await saveAdvertisementForm();
+    st.textContent="Google/Blogger authorization ಮತ್ತು sync ನಡೆಯುತ್ತಿದೆ...";st.style.display="block";
+    await publishAdToWebsite(ad);
+    saveAds();renderAds();
+    st.textContent="✓ News Top + News Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.";st.style.display="block";
+  }catch(e){st.textContent="✕ Publish / Sync ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
+};
+$("previewAdBtn").onclick=async()=>{
+  const st=$("adStatus");
+  try{
+    const ad=await collectAdFromForm();
+    const image=p=>p?.imageData||p?.imageUrl||"";
+    $("adPreview").innerHTML=`<div style="padding:12px"><h3 style="margin:0 0 8px">${adEsc(ad.business||"Advertisement")} — ${adEsc(ad.title||"")}</h3>
+      <div style="font-size:12px;margin-bottom:8px">Bill No: ${adEsc(ad.billNo)} · ${adEsc(ad.start)} → ${adEsc(ad.expiry)}</div>
+      <div style="display:grid;gap:10px">
+      <div><b>News Top — 1536 × 512</b><img src="${adEsc(image(ad.top))}" style="display:block;width:100%;max-width:768px;height:auto;margin-top:5px;border-radius:6px"></div>
+      <div><b>News Middle — 728 × 120</b><img src="${adEsc(image(ad.middle))}" style="display:block;width:100%;max-width:728px;height:auto;margin-top:5px;border-radius:6px"></div>
+      <div><b>Sidebar — 300 × 250</b><img src="${adEsc(image(ad.sidebar))}" style="display:block;width:300px;max-width:100%;height:auto;margin-top:5px;border-radius:6px"></div></div></div>`;
+    $("adPreview").classList.remove("hide");
+    $("adPreview").scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(e){st.textContent="✕ Preview ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
+};
+$("clearAd").onclick=()=>clearAdForm();
+$("billPdfBtn").onclick=async()=>{
+  try{const ad=await collectAdFromForm();showBill(ad);setTimeout(()=>printHtml(buildBill(ad),"Bidire Advertisement Bill"),250)}
+  catch(e){$("adStatus").textContent="✕ Bill ತಯಾರಿಸಲಾಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
+};
+$("billJpgBtn").onclick=async()=>{
+  try{
+    const ad=await collectAdFromForm();
+    const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
+    canvas.width=1400;canvas.height=1900;ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#111";ctx.font="bold 34px Arial";ctx.fillText("BIDIRE ADVERTISERS",60,70);
+    ctx.font="bold 28px Arial";ctx.fillText("ADVERTISEMENT BILL",60,120);
+    ctx.font="22px Arial";
+    const rows=[
+      "Bill No / Advertisement ID: "+(ad.billNo||ad.id),
+      "Advertiser: "+(ad.business||""),
+      "Address / Contact: "+(ad.contact||""),
+      "Phone: "+(ad.phone||""),
+      "Period: "+(ad.start||"")+" to "+(ad.expiry||""),
+      "Status: "+(ad.paymentStatus||"Pending"),
+      "News Top: 1536 x 512",
+      "News Middle: 728 x 120",
+      "Sidebar: 300 x 250",
+      "Rate: "+money(ad.rate),
+      "Discount: - "+money(ad.discount),
+      "Total: "+money(ad.total),
+      "Paid: "+money(ad.paidAmount),
+      "Balance: "+money(Math.max(0,ad.total-ad.paidAmount))
+    ];
+    let y=180;for(const row of rows){ctx.fillText(String(row).slice(0,90),60,y);y+=48}
+    ctx.font="bold 18px Arial";ctx.fillText("Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS",60,y+35);
+    ctx.font="16px Arial";ctx.fillText("YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482",60,y+70);
+    ctx.fillText("Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.",60,y+110);
+    ctx.fillText("Contact: 9731410761   Email: bidirevv@mail.com",60,y+140);
+    const a=document.createElement("a");a.href=canvas.toDataURL("image/jpeg",.92);a.download=(ad.billNo||"Bidire-Bill")+".jpg";a.click();
+  }catch(e){$("adStatus").textContent="✕ Bill JPG ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
+};
+$("billWaBtn").onclick=async()=>{
+  try{
+    const ad=await collectAdFromForm();
+    const msg=`BIDIRE ADVERTISERS\nAdvertisement Bill\nBill No: ${ad.billNo||ad.id}\nAdvertiser: ${ad.business||""}\nPeriod: ${ad.start||""} to ${ad.expiry||""}\nTotal: ${money(ad.total)}\nPaid: ${money(ad.paidAmount)}\nBalance: ${money(Math.max(0,ad.total-ad.paidAmount))}`;
+    const phone=(ad.phone||"").replace(/\D/g,"");
+    const url=phone?`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url,"_blank");
+  }catch(e){$("adStatus").textContent="✕ WhatsApp Bill ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
+};
+renderAds();calcAdMoney();
+/* ================= Bidire V6: Audio + Chat + Safe Draft ================= */
+let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
+
+function updateSafeDraftMeta(){
+  const meta=$("safeDraftMeta");
+  if(!meta)return;
+  meta.textContent="✓ ಇಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ";
+}
+function saveDraftAutoV6(){
+  try{
+    saveDraftAuto();
+    updateSafeDraftMeta();
+  }catch(e){}
+}
+function saveEmergencyDraft(){
+  try{
+    saveDraftAutoV6();
+    safeSet("bn_emergency_snapshot",JSON.stringify({
+      ...draftObject(),
+      raw:$("raw").value,
+      chatHistory,
+      savedAt:new Date().toISOString()
+    }));
+  }catch(e){}
+}
+function restoreSafeDraft(){
+  let raw=safeGet("bn_emergency_snapshot","")||safeGet("bn_draft","");
+  if(!raw){msg("Saved draft ಸಿಗಲಿಲ್ಲ.");return}
+  try{
+    const d=JSON.parse(raw);
+    $("raw").value=d.raw||$("raw").value||"";
+    $("headline").value=d.headline||"";
+    $("sub").value=d.sub||"";
+    $("bodyOut").value=d.body||"";
+    if($("category")) $("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
+    keyPoints=Array.isArray(d.keyPoints)?d.keyPoints:[];
+    englishSummary=d.englishSummary||"";
+    photos=Array.isArray(d.photos)?d.photos:[];
+    $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;
+    $("englishEnabled").checked=d.englishEnabled!==false;
+    setEditingPost(d.editingPostId||null,d.editingPostUrl||"");
+    chatHistory=Array.isArray(d.chatHistory)?d.chatHistory:[];
+    renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;
+    renderPhotos();render();
+    msg("✓ Latest draft restore ಆಯಿತು.");setTimeout(()=>msg(""),1200);
+  }catch(e){msg("Draft restore ಆಗಲಿಲ್ಲ: "+e.message)}
+}
+$("restoreSafeDraft").onclick=restoreSafeDraft;
+$("deleteSafeDraft").onclick=()=>{
+  if(!confirm("Saved draft ಅನ್ನು delete ಮಾಡಬೇಕೇ?"))return;
+  localStorage.removeItem("bn_draft");localStorage.removeItem("bn_emergency_snapshot");updateSafeDraftMeta();
+};
+window.addEventListener("beforeunload",saveEmergencyDraft);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveEmergencyDraft()});
+window.addEventListener("pagehide",saveEmergencyDraft);
+
+/* Recording */
+$("recordAudio").onclick=async()=>{
+  try{
+    if(!navigator.mediaDevices?.getUserMedia)throw Error("ಈ browserನಲ್ಲಿ microphone recording support ಇಲ್ಲ.");
+    audioChunks=[];
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRecorder=new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=e=>{if(e.data.size)audioChunks.push(e.data)};
+    mediaRecorder.onstop=()=>{
+      audioBlob=new Blob(audioChunks,{type:mediaRecorder.mimeType||"audio/webm"});
+      if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);
+      audioObjectUrl=URL.createObjectURL(audioBlob);
+      $("audioPreview").src=audioObjectUrl;$("audioPreview").classList.remove("hide");
+      $("audioStatus").textContent="✓ Recording ಸಿದ್ಧವಾಗಿದೆ.";
+      stream.getTracks().forEach(t=>t.stop());
+    };
+    mediaRecorder.start();
+    $("recordAudio").disabled=true;$("stopAudio").disabled=false;$("recordAudio").classList.add("recording");
+    $("recordAudio").textContent="🔴 Recording...";
+    $("audioStatus").textContent="Recording ನಡೆಯುತ್ತಿದೆ...";
+  }catch(e){$("audioStatus").textContent="✕ "+e.message}
+};
+$("stopAudio").onclick=()=>{
+  if(mediaRecorder?.state!=="inactive")mediaRecorder.stop();
+  $("recordAudio").disabled=false;$("stopAudio").disabled=true;$("recordAudio").classList.remove("recording");$("recordAudio").textContent="🎙️ Start Recording";
+};
+$("audioInput").onchange=e=>{
+  const f=e.target.files?.[0];if(!f)return;
+  audioBlob=f;
+  if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);
+  audioObjectUrl=URL.createObjectURL(f);
+  $("audioPreview").src=audioObjectUrl;$("audioPreview").classList.remove("hide");
+  $("audioStatus").textContent=`✓ ${f.name} selected.`;
+};
+$("clearAudio").onclick=()=>{
+  audioBlob=null;if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);audioObjectUrl="";
+  $("audioPreview").removeAttribute("src");$("audioPreview").classList.add("hide");$("audioInput").value="";$("audioStatus").textContent="";
+};
+
+/* Audio → Text using Gemini multimodal input */
+function blobToBase64(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();r.onload=()=>resolve(String(r.result).split(",")[1]);r.onerror=reject;r.readAsDataURL(blob);
+  });
+}
+$("transcribeAudio").onclick=async()=>{
+  if(!audioBlob){$("audioStatus").textContent="ಮೊದಲು audio record ಅಥವಾ upload ಮಾಡಿ.";return}
+  const apiKey=safeGet("bn_key","");
+  if(!apiKey){$("audioStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
+  try{
+    $("audioStatus").textContent="🎧 Audio transcription ನಡೆಯುತ್ತಿದೆ...";
+    saveEmergencyDraft();
+    const b64=await blobToBase64(audioBlob);
+    const mime=audioBlob.type||"audio/webm";
+    const prompt=`Transcribe this audio accurately into Kannada if the spoken content is Kannada, otherwise preserve the spoken language. Do not summarize. Do not invent missing words. Return ONLY the transcription text.`;
+    const models=aiModelList();
+    let result=null,last="";
+    for(let i=0;i<models.length;i++){
+      const model=models[i];
+      try{
+        const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}]})
+        });
+        const j=await r.json();
+        if(r.ok){result=j;if(i>0){safeSet("bn_model",model);setAIModelStatus(model,"Audio quota fallback");}break}
+        last=j.error?.message||`API error (${r.status})`;
+        if(!isQuotaError(r.status,last))break;
+      }catch(e){last=e.message}
+    }
+    if(!result)throw Error(last||"Audio transcription failed");
+    const text=(result.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").trim();
+    if(!text)throw Error("Audioನಲ್ಲಿ transcription text ಸಿಗಲಿಲ್ಲ.");
+    $("raw").value=($("raw").value.trim()?$("raw").value.trim()+"\n\n":"")+text;
+    render();scheduleAutosave();saveEmergencyDraft();
+    $("audioStatus").textContent="✓ Audio text Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.";
+  }catch(e){$("audioStatus").textContent="✕ Audio transcription error: "+e.message}
+};
+
+/* Stronger autosave hooks */
+["raw","headline","sub","bodyOut","englishSummaryEdit"].forEach(id=>{
+  $(id)?.addEventListener("input",()=>{clearTimeout(draftTimer);draftTimer=setTimeout(saveEmergencyDraft,350)});
+});
+try{
+  updateSafeDraftMeta();
+  $("status").style.display="none";
+}catch(e){
+  const el=$("status");
+  if(el){el.textContent="⚠️ Editor startup error: "+(e&&e.message?e.message:String(e));el.style.display="block";}
+}
+
+
+/* ===== Modern UI V2 navigation ===== */
+(function(){
+  const nav=document.getElementById("sectionNav");
+  if(!nav)return;
+  const buttons=[...nav.querySelectorAll("[data-target]")];
+  function go(id){
+    const el=document.getElementById(id);
+    if(!el)return;
+    // Treat the top navigation as real sections/tabs. Hide the other main
+    // sections first so the old/previous editor panels do not remain below.
+    const targets=new Set(buttons.map(b=>b.dataset.target));
+    targets.forEach(targetId=>{
+      const section=document.getElementById(targetId);
+      if(section) section.classList.toggle("hide",targetId!==id);
+    });
+    el.classList.remove("hide");
+    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===id));
+    window.scrollTo({top:Math.max(0,el.offsetTop-92),behavior:"smooth"});
+  }
+  buttons.forEach(b=>b.addEventListener("click",()=>go(b.dataset.target)));
+  document.querySelectorAll(".subtool-toggle").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const box=btn.closest(".subtool");
+      box.classList.toggle("open");
+    });
+  });
+  const ids=buttons.map(b=>b.dataset.target);
+  const obs=new IntersectionObserver(entries=>{
+    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(!visible)return;
+    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===visible.target.id));
+  },{rootMargin:"-95px 0px -55% 0px",threshold:[.1,.3,.6]});
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+  // Start with only the first editor section visible.
+  go("newSection");
+})();
+
+
+/* V6 compact edit accordions */
+(function(){
+  function bindToggle(btnId,boxId){
+    const btn=$(btnId),box=$(boxId); if(!btn||!box)return;
+    btn.addEventListener("click",e=>{ if(e.target.closest("input,label")) return; box.classList.toggle("open"); });
+  }
+  bindToggle("keyPointsToggle","keyPointsBox");
+  bindToggle("englishToggle","englishBox");
+  const jump=$("editDraftJump"); if(jump)jump.onclick=()=>$("restoreSafeDraft")?.click();
+})();
+
+/* V3 compact top controls */
+(function(){
+  const s=document.getElementById("settingsBtn");
+  if(s){
+    s.title="Settings";
+    s.setAttribute("aria-label","Settings");
+  }
+  const t=document.getElementById("themeBtn");
+  if(t){
+    t.title="Dark / Light mode";
+    t.setAttribute("aria-label","Dark / Light mode");
+  }
+})();
+
+
+/* ===== V5 Clean Raw News Chat ===== */
+(function(){
+  const raw=document.getElementById("raw");
+  const input=document.getElementById("rawChatInput");
+  const log=document.getElementById("rawChatLog");
+  const send=document.getElementById("rawChatSend");
+  const clear=document.getElementById("rawChatClear");
+  const write=document.getElementById("rawAiWrite");
+  const st=document.getElementById("rawChatStatus");
+  if(!raw||!input||!log||!send||!write)return;
+
+  function bubble(text,who){
+    const d=document.createElement("div");
+    d.className="chat-bubble "+who;
+    d.textContent=text;
+    log.appendChild(d);
+    log.scrollTop=log.scrollHeight;
+  }
+  function setStatus(t){if(st)st.textContent=t||""}
+
+  async function chat(){
+    const q=input.value.trim();
+    if(!q)return;
+    const news=raw.value.trim();
+    if(!news){setStatus("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
+    bubble(q,"user");
+    input.value="";
+    setStatus("AI ಉತ್ತರಿಸುತ್ತಿದೆ...");
+    const key=safeGet("bn_key","");
+    if(!key){setStatus("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
+    const promptText=`You are the Bidire News AI Assistant.
+Use ONLY the supplied raw news and the user's current request. Never invent facts.
+Help the user discuss, clarify, reorganize or correct the raw news. If the user asks for a revised version, return the revised raw news only.
+USER REQUEST:
+${q}
+RAW NEWS:
+${news}`;
+    try{
+      const {j}=await geminiRequest(key,[{parts:[{text:promptText}]}],{});
+      const ans=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim();
+      if(ans)bubble(ans,"ai");
+      setStatus("");
+      saveEmergencyDraft();
+    }catch(e){setStatus("AI error: "+e.message)}
+  }
+
+  send.onclick=chat;
+  clear.onclick=()=>{log.innerHTML="";input.value="";setStatus("")};
+  input.addEventListener("keydown",e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
+      e.preventDefault();chat();
+    }
+  });
+
+  write.onclick=()=>{
+    if(!raw.value.trim()){setStatus("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
+    const p=promptFor("Create the complete final news report from the raw news. Return headline, subheadline, body, keyPoints and englishSummary.");
+    if(!p)return;
+    gemini(p).then(()=>{
+      const edit=document.getElementById("editSection");
+      if(edit)edit.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+  };
+})();
+
+
+/* ===== Normal News Update — AI FREE (restored) ===== */
+(function(){
+  const raw=document.getElementById("raw");
+  const normalWrite=document.getElementById("rawNormalWrite");
+  if(!raw||!normalWrite)return;
+  function parseNormalNews(text){
+    const lines=String(text||"").replace(/\r/g,"").split("\n"),out={};let current=null;
+    for(const line of lines){
+      const t=line.trim();
+      const m=t.match(/^(ಶೀರ್ಷಿಕೆ|Headline)\s*:\s*(.*)$/i)
+        ||t.match(/^(ಉಪಶೀರ್ಷಿಕೆ|Subheadline)\s*:\s*(.*)$/i)
+        ||t.match(/^(ಸುದ್ದಿ|News Body)\s*:\s*(.*)$/i)
+        ||t.match(/^(ಪ್ರಮುಖ ಅಂಶಗಳು|Key Points)\s*:\s*(.*)$/i)
+        ||t.match(/^English Summary\s*:\s*(.*)$/i);
+      if(m){
+        const label=m[1];
+        current=/^(ಶೀರ್ಷಿಕೆ|Headline)$/i.test(label)?"headline"
+          :/^(ಉಪಶೀರ್ಷಿಕೆ|Subheadline)$/i.test(label)?"sub"
+          :/^(ಸುದ್ದಿ|News Body)$/i.test(label)?"body"
+          :/^(ಪ್ರಮುಖ ಅಂಶಗಳು|Key Points)$/i.test(label)?"keyPoints":"englishSummary";
+        out[current]=m[2]||"";
+        continue;
+      }
+      if(current)out[current]=(out[current]?out[current]+"\n":"")+line;
+    }
+    if(!Object.keys(out).length)return{headline:"",sub:"",body:String(text||"").trim(),keyPoints:[],englishSummary:""};
+    return{
+      headline:String(out.headline||"").trim(),
+      sub:String(out.sub||"").trim(),
+      body:String(out.body||"").trim(),
+      keyPoints:String(out.keyPoints||"").split(/\n+/).map(x=>x.replace(/^\s*(?:[-*•·]|\d+[.)])\s*/,"").trim()).filter(Boolean),
+      englishSummary:String(out.englishSummary||"").trim()
+    };
+  }
+  normalWrite.onclick=()=>{
+    const rawText=raw.value.trim();
+    const st=document.getElementById("status");
+    if(!rawText){
+      if(st){st.textContent="ಮೊದಲು ಸಂಪೂರ್ಣ ಸುದ್ದಿಯನ್ನು Raw Newsನಲ್ಲಿ paste ಮಾಡಿ.";st.style.display="block";}
+      raw.focus();return;
+    }
+    const parsed=parseNormalNews(rawText);
+    const headline=document.getElementById("headline"),sub=document.getElementById("sub"),body=document.getElementById("bodyOut"),english=document.getElementById("englishSummaryEdit");
+    if(headline)headline.value=parsed.headline||"";
+    if(sub)sub.value=parsed.sub||"";
+    if(body)body.value=parsed.body||"";
+    keyPoints=parsed.keyPoints||[];
+    englishSummary=parsed.englishSummary||"";
+    window.keyPoints=keyPoints;
+    window.englishSummary=englishSummary;
+    if(english)english.value=englishSummary;
+    if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();
+    if(typeof render==='function')render();
+    if(typeof scheduleAutosave==='function')scheduleAutosave();
+    if(typeof pushUndoSnapshot==='function')pushUndoSnapshot();
+    if(st){st.textContent="✓ Normal News Update: AI ಬಳಸಲಾಗಿಲ್ಲ. ಸುದ್ದಿ ಸಂಪಾದನೆ ವಿಭಾಗಕ್ಕೆ ಸೇರಿಸಲಾಗಿದೆ.";st.style.display="block";setTimeout(()=>st.style.display="none",1800);}
+    document.getElementById("editSection")?.scrollIntoView({behavior:"smooth",block:"start"});
+  };
+})();
+
+
+/* ===== V7 Edit AI Chat ===== */
+(function(){
+  const copyBtn=document.getElementById("copyAllEdit");
+  const headline=document.getElementById("headline"), sub=document.getElementById("sub"), body=document.getElementById("bodyOut");
+  const copyStatus=document.getElementById("publishStatus");
+  function editCopyText(){
+    return [headline?.value?.trim()||"",sub?.value?.trim()||"",body?.value?.trim()||""] .filter(Boolean).join("\n\n");
+  }
+  async function copyAll(){
+    const txt=editCopyText();
+    if(!txt){ if(copyStatus){copyStatus.textContent="Copy ಮಾಡಲು ಸುದ್ದಿ ಇಲ್ಲ.";copyStatus.style.display="block";setTimeout(()=>copyStatus.style.display="none",1200)} return; }
+    try{
+      if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(txt);
+      else { const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove(); }
+      if(copyStatus){copyStatus.textContent="✓ Headline + Subheadline + News Body copied";copyStatus.style.display="block";setTimeout(()=>copyStatus.style.display="none",1400)}
+    }catch(e){ if(copyStatus){copyStatus.textContent="Copy ಆಗಲಿಲ್ಲ: "+e.message;copyStatus.style.display="block";} }
+  }
+  if(copyBtn) copyBtn.onclick=copyAll;
+
+  const log=document.getElementById("editChatLog"), input=document.getElementById("editChatInput"), send=document.getElementById("editChatSend"), apply=document.getElementById("editChatApply"), clear=document.getElementById("editChatClear"), status=document.getElementById("editChatStatus"), box=document.getElementById("editAiChat");
+  if(!log||!input||!send||!apply)return;
+  let pendingEdit=null;
+  function bubble(t,who){const d=document.createElement("div");d.className="edit-chat-bubble "+who;d.textContent=t;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+  function setStatus(t){if(status)status.textContent=t||""}
+  function currentEdit(){
+    return {headline:headline?.value||"",subheadline:sub?.value||"",body:body?.value||"",keyPoints:Array.isArray(window.keyPoints)?window.keyPoints:[],englishSummary:window.englishSummary||"",category:document.getElementById("category")?.value||""};
+  }
+  async function askEditAI(){
+    const q=input.value.trim(); if(!q)return;
+    const data=currentEdit();
+    if(!data.headline&&!data.body){setStatus("ಮೊದಲು ಸುದ್ದಿ ಬರೆಯಿರಿ.");return;}
+    bubble(q,"user"); input.value=""; setStatus("AI ಬದಲಾವಣೆ ತಯಾರಿಸುತ್ತಿದೆ..."); send.disabled=true; apply.disabled=true; pendingEdit=null;
+    const key=safeGet("bn_key",""); if(!key){setStatus("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");send.disabled=false;return;}
+    const promptText=`You are the Bidire News AI Editor.
+Use ONLY the current editor content and the user's request. Never invent facts.
+Modify only what the user asks. Preserve all supplied names and facts.
+Return ONLY valid JSON with exactly these keys: headline, subheadline, body, keyPoints, englishSummary, category.
+If a field does not need a change, return its current value. keyPoints must be an array of strings.
+USER REQUEST:
+${q}
+CURRENT EDITOR CONTENT:
+${JSON.stringify(data)}`;
+    try{
+      const {j}=await geminiRequest(key,[{parts:[{text:promptText}]}],{responseMimeType:"application/json"});
+      let raw=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^```json\s*/i,"").replace(/```$/i,"").trim();
+      const parsed=JSON.parse(raw);
+      pendingEdit=parsed;
+      bubble("ಬದಲಾವಣೆ ಸಿದ್ಧವಾಗಿದೆ. Apply Change ಒತ್ತಿದರೆ ಸಂಪಾದನೆಗೆ ಅನ್ವಯವಾಗುತ್ತದೆ.","ai");
+      box.classList.add("has-answer"); apply.disabled=false; setStatus("");
+    }catch(e){setStatus("AI error: "+e.message);}
+    finally{send.disabled=false;}
+  }
+  function applyEdit(){
+    if(!pendingEdit)return;
+    if(headline)headline.value=pendingEdit.headline??headline.value;
+    if(sub)sub.value=pendingEdit.subheadline??sub.value;
+    if(body)body.value=pendingEdit.body??body.value;
+    if(document.getElementById("category")){ const allowed=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"]; document.getElementById("category").value=allowed.includes(pendingEdit.category)?pendingEdit.category:"ಮೂಡುಬಿದಿರೆ"; }
+    if(Array.isArray(pendingEdit.keyPoints)){ window.keyPoints=pendingEdit.keyPoints; if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor(); }
+    if(typeof pendingEdit.englishSummary==='string'){ window.englishSummary=pendingEdit.englishSummary; const es=document.getElementById("englishSummaryEdit"); if(es)es.value=window.englishSummary; }
+    if(typeof render==='function')render();
+    if(typeof saveDraftAutoV6==='function')saveDraftAutoV6(); else if(typeof saveDraftAuto==='function')saveDraftAuto();
+    bubble("✓ ಬದಲಾವಣೆಗಳು ಸುದ್ದಿ ಸಂಪಾದನೆಗೆ ಅನ್ವಯಿಸಲಾಗಿದೆ.","ai"); pendingEdit=null; apply.disabled=true; setStatus("✓ Updated"); setTimeout(()=>setStatus(""),1000);
+  }
+  send.onclick=askEditAI; apply.onclick=applyEdit;
+  clear.onclick=()=>{log.innerHTML="";input.value="";pendingEdit=null;apply.disabled=true;setStatus("");box.classList.remove("has-answer")};
+  input.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();askEditAI();}});
+})();
+</script>
+
+<script id="bidire-button-guard-v10">
+(function(){
+  'use strict';
+  function showButtonError(err){
+    try{
+      var el=document.getElementById('status');
+      if(el){el.textContent='⚠️ Button error: '+(err&&err.message?err.message:String(err));el.style.display='block';}
+      console.error('Bidire button error',err);
+    }catch(_){ }
+  }
+  window.addEventListener('error',function(e){ if(e && e.error) showButtonError(e.error); });
+  window.addEventListener('unhandledrejection',function(e){ if(e && e.reason) showButtonError(e.reason); });
+  document.addEventListener('click',function(e){
+    var b=e.target && e.target.closest ? e.target.closest('button') : null;
+    if(!b || b.disabled) return;
+    b.type='button';
+  },true);
+  document.addEventListener('submit',function(e){
+    var form=e.target;
+    if(form && form.closest && form.closest('main')) e.preventDefault();
+  },true);
+})();
+</script>
+
+
+<script id="bidire-runtime-diagnostic-v11">
+(function(){
+  window.addEventListener("error",function(e){
+    if(e && e.message && /\bi is not defined\b/.test(e.message)){
+      var el=document.getElementById("status");
+      if(el){el.textContent="⚠️ Cached/old JavaScript detected. Please open this version in Incognito or Hard Refresh.";el.style.display="block";}
+    }
+  });
+})();
+</script>
+
+<script>
+/* BIDIRE FINAL — single-section navigation */
+(function(){
+  const nav=document.getElementById("sectionNav");
+  if(!nav)return;
+  const ids=["newSection","editSection","safeSection","previewSection","adsPanel","allPostsPanel"];
+  const sections=ids.map(id=>document.getElementById(id)).filter(Boolean);
+  function show(id){
+    sections.forEach(el=>el.classList.toggle("hide",el.id!==id));
+    nav.querySelectorAll("[data-target]").forEach(b=>b.classList.toggle("active",b.dataset.target===id));
+    const el=document.getElementById(id);
+    if(el) window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-92),behavior:"smooth"});
+  }
+  nav.addEventListener("click",function(ev){
+    const b=ev.target.closest("[data-target]");
+    if(!b)return;
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    show(b.dataset.target);
+  },true);
+  show("newSection");
+})();
+</script>
+</body></html>
