@@ -6,9 +6,7 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#0d1117" name="theme-color"/>
 <link href="manifest.webmanifest" rel="manifest"/>
-<script async="" defer="" src="https://accounts.google.com/gsi/client"></script>
-<meta name="bidire-build" content="FINAL-ERROR-FIX-2026-10-04">
-<title>Bidire News AI Editor — Advertisement Sync</title>
+<title>Bidire News AI Editor</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#222;font-family:Arial,"Noto Sans Kannada",sans-serif}
 header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;z-index:5}
@@ -51,17 +49,6 @@ html[data-theme="dark"] .bar{background:#11161d;border-bottom-color:#30363d}.dar
 .tool-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 .tool-row button{flex:1;min-width:120px}
 @media(max-width:600px){.point-row{align-items:stretch}.point-row input{min-width:0}.tool-row button{min-width:100px}}
-
-
-/* Bidire Advertisement Manager V5 */
-.ad-tabs{display:flex;gap:7px;margin-bottom:10px}.ad-tab{flex:1;background:#eee;color:#222}.ad-tab.active{background:#b40000;color:#fff}
-.ad-panel{border:1px solid #ddd;border-radius:8px;background:#fff;padding:11px;margin-bottom:10px}
-.ad-preview{border:1px solid #ddd;border-radius:7px;padding:12px;background:#fafafa;margin-top:10px}.ad-preview img{max-width:100%;height:auto;display:block;margin:0 auto}
-.ad-list{display:flex;flex-direction:column;gap:8px}.ad-card{border:1px solid #ddd;border-radius:7px;padding:10px;background:#fff}
-.ad-card-title{font-weight:700}.ad-meta{font-size:11px;color:#777;margin-top:4px}
-.ad-status{display:inline-block;padding:3px 7px;border-radius:12px;font-size:10px;font-weight:700;background:#eee;margin-top:5px}
-.ad-status.active{background:#e7f7ec;color:#16803c}.ad-status.expired{background:#fde8e8;color:#b40000}
-.ad-actions{display:flex;gap:6px;margin-top:7px}.ad-actions button{flex:1}@media(max-width:600px){.ad-tabs{flex-direction:column}}
 
 
 /* Bidire V6: Audio to Text + News Chat + Safe Draft */
@@ -131,7 +118,6 @@ header{
 .section-nav button[data-target="assistantSection"].active{background:var(--bn-purple)}
 .section-nav button[data-target="safeSection"].active{background:var(--bn-green)}
 .section-nav button[data-target="previewSection"].active{background:var(--bn-amber)}
-.section-nav button[data-target="adsPanel"].active{background:var(--bn-orange)}
 .section-nav button[data-target="settings"].active{background:var(--bn-slate)}
 .section-nav button[data-target="allPostsPanel"].active{background:var(--bn-teal)}
 
@@ -181,7 +167,6 @@ header{min-height:58px;padding:9px 14px}
 .section-nav button[data-target="editSection"]{border-color:#efbcbc}
 .section-nav button[data-target="safeSection"]{border-color:#b9e1c7}
 .section-nav button[data-target="previewSection"]{border-color:#ead19d}
-.section-nav button[data-target="adsPanel"]{border-color:#f0c4aa}
 .section-nav button[data-target="allPostsPanel"]{border-color:#b9dfe4}
 
 .audio .subtool-body{padding:10px 12px}
@@ -370,6 +355,9 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
   z-index:10;
 }
 
+
+/* ===== Photo Studio + Image to Text ===== */
+.photo-editor{margin-top:12px;border:1px solid #d7dee8;border-radius:14px;padding:12px;background:#f8fafc}.photo-editor-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.photo-editor-preview{background:#111;border-radius:12px;min-height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:9px}.photo-editor-preview img{max-width:100%;max-height:420px;display:block;transform-origin:center}.photo-edit-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.photo-edit-controls label{display:flex;flex-direction:column;gap:4px}.photo-edit-controls input[type=range]{width:100%}.photo-card-tools{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.photo-card-tools button{font-size:11px;padding:6px 8px}.photo-caption-input{width:100%;min-height:54px;margin-top:6px;padding:8px;border:1px solid #d7dee8;border-radius:9px;resize:vertical;font:inherit}.image-text textarea,#imageTextOutput{min-height:150px;width:100%;box-sizing:border-box}.image-text .subtool-body{padding:10px 12px}@media(max-width:600px){.photo-edit-controls{grid-template-columns:1fr}.photo-editor-preview{min-height:140px}}
 </style>
 <style id="bidire-ad-v7-css">
 .ad-dashboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.ad-stat{background:#f7f7f7;border:1px solid #ddd;border-radius:10px;padding:11px;text-align:center}.ad-stat span{display:block;font-size:12px;color:#666}.ad-stat b{display:block;font-size:20px;margin-top:3px}.ad-three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ad-creative{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fff}.ad-creative h3{margin:0 0 8px;font-size:16px}.ad-size-note{font-size:11px;color:#777;margin-bottom:7px}.ad-creative img{display:block;width:100%;max-height:150px;object-fit:contain;background:#f5f5f5;border-radius:6px;margin-top:8px}.ad-bill-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ad-card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0;background:#fff}.ad-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.ad-card-title{font-size:17px;font-weight:800}.ad-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800;background:#eee}.ad-badge.active{background:#dff6e5;color:#176b2c}.ad-badge.scheduled{background:#fff1c7;color:#8a5a00}.ad-badge.expired{background:#f8dddd;color:#9a1c1c}.ad-badge.paid{background:#dff6e5;color:#176b2c}.ad-badge.partial{background:#fff1c7;color:#8a5a00}.ad-badge.pending{background:#f8dddd;color:#9a1c1c}.bill-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:4px;padding:28px;max-width:850px;margin:15px auto;font-family:Arial,sans-serif}.bill-top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:14px}.bill-brand{font-size:28px;font-weight:900}.bill-title{font-size:30px;font-weight:900;text-align:right}.bill-small{font-size:12px;color:#555}.bill-table{width:100%;border-collapse:collapse;margin-top:18px}.bill-table th,.bill-table td{border:1px solid #ccc;padding:8px;font-size:13px}.bill-table th{background:#f5f5f5}.bill-total{margin-left:auto;width:330px;margin-top:15px}.bill-total div{display:flex;justify-content:space-between;padding:5px 0}.bill-grand{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:5px;padding-top:8px}.bill-notes{margin-top:20px;font-size:12px;line-height:1.55}.bill-footer{border-top:1px solid #ccc;margin-top:22px;padding-top:12px;font-size:11px;text-align:center;color:#444}.ad-filter-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.ad-summary-table{width:100%;border-collapse:collapse}.ad-summary-table th,.ad-summary-table td{border:1px solid #ddd;padding:7px;font-size:12px;text-align:left}.ad-summary-table th{background:#f5f5f5}@media(max-width:800px){.ad-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.ad-three-grid{grid-template-columns:1fr}.ad-filter-row{grid-template-columns:1fr}.bill-paper{padding:16px}.bill-top{flex-direction:column}.bill-title{text-align:left}.bill-total{width:100%}}
@@ -384,7 +372,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <div aria-hidden="true" class="legacy-controls">
 <button id="newBtn" type="button"></button>
 <button id="allPostsBtn" type="button"></button>
-<button id="adsBtn" type="button"></button>
+
 </div>
 </header>
 <main class="wrap">
@@ -393,7 +381,6 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <button data-target="editSection" type="button">✍️ ಸಂಪಾದನೆ</button>
 <button data-target="safeSection" type="button">🛡️ Draft</button>
 <button data-target="previewSection" type="button">👁️ Preview</button>
-<button data-target="adsPanel" type="button">📢 Ads</button>
 <button data-target="allPostsPanel" type="button">📰 All Posts</button>
 </nav>
 <section class="panel" id="newSection"><div class="bar">📰 ಹೊಸ ಸುದ್ದಿ</div><div class="body">
@@ -416,12 +403,32 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 </div>
 </div>
 <div class="photo-box">
-<strong style="font-size:13px">📷 Photo + Automatic Caption</strong>
+<strong style="font-size:13px">📷 Photo Studio — Caption + Edit</strong>
 <label>📷 Photos / ಫೋಟೋಗಳು</label>
 <input accept="image/*" id="photoInput" multiple="" type="file"/>
-<div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಸಿದ್ಧವಾದ ಸುದ್ದಿಯ ಆಧಾರದ ಮೇಲೆ caption automatic ಆಗಿ ತಯಾರಾಗುತ್ತದೆ.</div>
+<div class="small">Automatic Caption, Manual Caption, Automatic Photo Edit ಮತ್ತು Manual Photo Edit ಲಭ್ಯ. Original photo ಯಾವತ್ತೂ overwrite ಆಗುವುದಿಲ್ಲ.</div>
 <div class="photo-grid" id="photoGrid"></div><div class="small" id="photoStatus"></div>
+<div class="photo-editor hide" id="photoEditor">
+  <div class="photo-editor-head"><strong>🖼️ Photo Edit</strong><button class="light" id="closePhotoEditor" type="button">Close</button></div>
+  <div class="photo-editor-preview"><img id="photoEditPreview" alt="Photo preview"/></div>
+  <div class="actions"><button class="primary" id="autoPhotoEdit" type="button">✨ Automatic Edit</button><button class="light" id="resetPhotoEdit" type="button">↺ Original</button></div>
+  <div class="photo-edit-controls">
+    <label>Brightness <input id="photoBrightness" type="range" min="60" max="160" value="100"/></label>
+    <label>Contrast <input id="photoContrast" type="range" min="60" max="160" value="100"/></label>
+    <label>Saturation <input id="photoSaturation" type="range" min="0" max="180" value="100"/></label>
+    <label>Rotation <input id="photoRotation" type="range" min="-180" max="180" value="0"/></label>
+  </div>
+  <div class="actions"><button class="primary" id="savePhotoEdit" type="button">✓ Save Edited Copy</button></div>
 </div>
+</div>
+<div class="subtool image-text">
+<button class="subtool-toggle" type="button">🖼️ Image to Text <span class="chev">▼</span></button><div class="subtool-body">
+<div class="small">ಫೋಟೋದಲ್ಲಿರುವ ಕಾಣುವ ಪಠ್ಯವನ್ನು AI ಮೂಲಕ ಹೊರತೆಗೆದು ಸಂಪಾದಿಸಬಹುದು. ಹೊಸ ಮಾಹಿತಿ ಸೇರಿಸುವುದಿಲ್ಲ.</div>
+<input accept="image/*" id="imageTextInput" type="file"/>
+<div class="actions"><button class="black" id="imageToTextBtn" type="button">🖼️ Image → Text</button><button class="light" id="imageTextClear" type="button">Clear</button><button class="light" id="imageTextToRaw" type="button">↳ Raw Newsಗೆ ಸೇರಿಸಿ</button></div>
+<textarea id="imageTextOutput" placeholder="Image text ಇಲ್ಲಿ ಬರುತ್ತದೆ..."></textarea>
+<div class="small" id="imageTextStatus"></div>
+</div></div>
 <div class="subtool audio">
 <button class="subtool-toggle" type="button">🎙️ Audio to Text <span class="chev">▼</span></button><div class="subtool-body">
 <div class="small">ನೇರವಾಗಿ audio record ಮಾಡಬಹುದು ಅಥವಾ ನಿಮ್ಮ deviceನಲ್ಲಿ ಇರುವ audio file upload ಮಾಡಬಹುದು.</div>
@@ -515,29 +522,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <a href="#" id="igShare" rel="noopener" target="_blank">Instagram</a><a href="#" id="personalWaUpdate" rel="noopener" style="background:#0b6b32" target="_blank">📲 9731410761 Update</a>
 </div>
 </section>
-<section class="panel hide" id="adsPanel">
-<div class="bar">📢 Bidire Advertisement Manager</div><div class="body">
-<div class="ad-dashboard"><div class="ad-stat"><span>Total Advertisements</span><b id="adDashTotal">0</b></div><div class="ad-stat"><span>Active Ads</span><b id="adDashActive">0</b></div><div class="ad-stat"><span>Scheduled Ads</span><b id="adDashScheduled">0</b></div><div class="ad-stat"><span>Expired Ads</span><b id="adDashExpired">0</b></div><div class="ad-stat"><span>Total Billing</span><b id="adDashBilling">₹0</b></div><div class="ad-stat"><span>Paid</span><b id="adDashPaid">₹0</b></div><div class="ad-stat"><span>Pending</span><b id="adDashPending">₹0</b></div><div class="ad-stat"><span>Partial</span><b id="adDashPartial">0</b></div></div>
-<div class="ad-tabs"><button class="ad-tab active" id="adCreateTab" type="button">➕ New Advertisement</button><button class="ad-tab" id="adManageTab" type="button">📋 All Advertisements</button><button class="ad-tab" id="adHistoryTab" type="button">🧾 History</button><button class="ad-tab" id="adSummaryTab" type="button">📊 Date-wise Summary</button></div>
-<div class="ad-panel" id="adCreatePanel"><div class="small">ಒಬ್ಬ client → ಒಂದು Advertisement ID + ಒಂದು Bill. ಅದೇ recordನಲ್ಲಿ ಮೂರು positionsಗೆ ಮೂರು ಪ್ರತ್ಯೇಕ creatives ಮತ್ತು links.</div>
-<div class="row"><div><label>Advertiser Name</label><input id="adBusiness" placeholder="Advertiser / ಸಂಸ್ಥೆ ಹೆಸರು"/></div><div><label>Address / Contact</label><input id="adContact" placeholder="Address / Contact"/></div></div>
-<label>Advertisement Title</label><input id="adTitle" placeholder="ಉದಾ: ಆಳ್ವಾಸ್ ಕ್ರೀಡೋತ್ಸವ 2026"/><label>Short Description / Advertisement Note</label><textarea id="adText" placeholder="ಜಾಹೀರಾತಿನ ಮುಖ್ಯ ಮಾಹಿತಿ..." style="min-height:90px"></textarea>
-<div class="row"><div><label>Mobile / WhatsApp</label><input id="adPhone" inputmode="tel"/></div><div><label>Default Advertisement Link</label><input id="adDefaultLink" placeholder="https://..." type="url"/></div></div>
-<div class="row"><div><label>Start Date</label><input id="adStart" type="date"/></div><div><label>End / Expiry Date</label><input id="adExpiry" type="date"/></div></div>
-<div class="ad-three-grid">
-<div class="ad-creative"><h3>🟥 News Top</h3><div class="ad-size-note">1536 × 512</div><label>Image</label><input accept="image/*" id="adTopImage" type="file"/><label>Advertisement Link</label><input id="adTopLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adTopPreview"/></div>
-<div class="ad-creative"><h3>🟦 News Middle</h3><div class="ad-size-note">728 × 120</div><label>Image</label><input accept="image/*" id="adMiddleImage" type="file"/><label>Advertisement Link</label><input id="adMiddleLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adMiddlePreview"/></div>
-<div class="ad-creative"><h3>🟩 Sidebar</h3><div class="ad-size-note">300 × 250</div><label>Image</label><input accept="image/*" id="adSidebarImage" type="file"/><label>Advertisement Link</label><input id="adSidebarLink" placeholder="https://..." type="url"/><img alt="" class="hide" id="adSidebarPreview"/></div></div>
-<div class="row"><div><label>Rate (₹)</label><input id="adRate" min="0" step="0.01" type="number" value="0"/></div><div><label>Discount (₹)</label><input id="adDiscount" min="0" step="0.01" type="number" value="0"/></div></div>
-<div class="row"><div><label>Total (Rate − Discount)</label><input id="adTotal" readonly="" value="₹0.00"/></div><div><label>Payment Status</label><select id="adPaymentStatus"><option>Pending</option><option>Partial</option><option>Paid</option></select></div></div>
-<div class="row"><div><label>Paid Amount (₹)</label><input id="adPaidAmount" min="0" step="0.01" type="number" value="0"/></div><div><label>Balance (₹)</label><input id="adBalance" readonly="" value="₹0.00"/></div></div>
-<div class="small">GST ಸಂಪೂರ್ಣ ತೆಗೆದುಹಾಕಲಾಗಿದೆ. Total = Rate − Discount. Websiteನಲ್ಲಿ size text ತೋರಿಸಲಾಗುವುದಿಲ್ಲ.</div>
-<div class="actions"><button class="primary" id="saveAd" type="button">💾 Save Advertisement</button><button class="black" id="publishAdWebsite" type="button">🌐 Publish / Sync to Blogger</button><button class="light" id="previewAdBtn" type="button">👁 Preview</button><button class="light" id="clearAd" type="button">Clear</button></div>
-<div class="ad-bill-actions"><button class="light" id="billPdfBtn" type="button">🧾 Bill PDF / Print</button><button class="light" id="billJpgBtn" type="button">🖼 Bill JPG</button><button class="light" id="billWaBtn" type="button">📲 WhatsApp Bill</button></div><div class="status" id="adStatus"></div><div class="ad-preview hide" id="adPreview"></div><div class="hide" id="billPreview"></div></div>
-<div class="ad-panel hide" id="adManagePanel"><div class="small">Active / Scheduled / Expired status Start ಮತ್ತು End Date ಆಧಾರಿತ.</div><div class="actions"><button class="black" id="refreshAds" type="button">↻ Refresh</button><button class="primary" id="syncAllAds" type="button">🌐 Sync All to Blogger</button></div><div class="ad-list" id="adList"></div></div>
-<div class="ad-panel hide" id="adHistoryPanel"><div class="ad-history" id="adHistoryList"></div></div>
-<div class="ad-panel hide" id="adSummaryPanel"><div class="ad-filter-row"><div><label>From</label><input id="adSummaryFrom" type="date"/></div><div><label>To</label><input id="adSummaryTo" type="date"/></div><button class="primary" id="adSummaryRun" type="button">Generate Summary</button></div><div class="actions"><button class="light" id="adSummaryPdf" type="button">🧾 Summary PDF / Print</button></div><div class="ad-summary" id="adSummaryList"></div></div>
-</div></section>
+
 <section class="panel hide" id="settings"><div class="bar">Gemini + Blogger Settings</div><div class="body">
 <label>Gemini API Key</label><input id="apiKey" placeholder="AIza..." type="password"/>
 <label>Gemini Model</label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash</option><option value="gemini-3.7-flash">Gemini 3.7 Flash</option><option value="gemini-3.6-flash">Gemini 3.6 Flash</option><option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option><option value="gemini-3.5-flash">Gemini 3.5 Flash</option></select>
@@ -545,7 +530,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com"/>
 <label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619"/>
 <label>Default Blogger Label</label><input id="blogLabel"/>
-<div class="actions"><button class="primary" id="saveSettings" type="button">Save Settings</button><button class="black" id="connect" type="button">🔐 Connect Google / Blogger</button><button class="light" id="disconnect" type="button">Disconnect</button></div>
+<div class="actions"><button class="primary" id="saveSettings" type="button">Save Settings</button><button class="black" id="connect" type="button">🔐 Connect Blogger</button><button class="light" id="disconnect" type="button">Disconnect</button></div><div class="small">Blogger authorization ಈಗ Google OAuth ಮೂಲಕ ನಡೆಯುತ್ತದೆ. Gmail password/verification code ಅನ್ನು Editorಗೆ ಹಂಚಬೇಡಿ. ನಿಮ್ಮ Bidire authorization gateway ಬೇಕಿದ್ದರೆ ಅದಕ್ಕೆ server-side OAuth endpoint ಅಗತ್ಯ.</div>
 <div class="small" id="settingsStatus"></div><div class="small" id="bloggerStatus"></div>
 </div></section>
 <section class="panel hide" id="allPostsPanel">
@@ -606,23 +591,22 @@ function safeSet(key,value){
   try { localStorage.setItem(key,value); return true; }
   catch(e){ return false; }
 }
-window.addEventListener("error",e=>{
-  const m=e?.error?.message||e?.message||"Unknown JavaScript error";
+function showOwnRuntimeError(e){
+  const source=String(e?.filename||"");
+  const page=String(location.href||"");
+  if(source && source!==page && !source.startsWith(location.origin))return;
+  if(source && /accounts\.google\.com/i.test(source))return;
+  const msg=e?.error?.message||e?.message||"Unknown JavaScript error";
   const el=$("status");
-  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
-});
-window.addEventListener("unhandledrejection",e=>{
-  const m=e?.reason?.message||String(e?.reason||"Unhandled promise error");
-  const el=$("status");
-  if(el){el.textContent="⚠️ "+m;el.style.display="block";}
-});
+  if(el){el.textContent="⚠️ "+msg;el.style.display="block";}
+}
+window.addEventListener("error",showOwnRuntimeError);
 let photos=[], keyPoints=[], englishSummary="", token=null, tokenClient=null, pending=null, editingPostId=null, editingPostUrl="", draftTimer=null;
 let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels=[];
 const blogDefault="2799540703054854619";
 function esc(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function cleanModel(v){
- v=String(v||"");
- if(v.toLowerCase().startsWith("models/")) v=v.slice(7);
+ v=String(v||"").replace(/^models\\//i,"");
  if(v.includes("3.8"))return"gemini-3.8-flash";
  if(v.includes("3.7"))return"gemini-3.7-flash";
  if(v.includes("3.6"))return"gemini-3.6-flash";
@@ -985,21 +969,87 @@ async function caption(data){
   return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"")
  }catch(e){return""}
 }
+let activePhotoIndex=-1;
 function renderPhotos(){
- $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl||p.driveUrl||""}"><div class="pcap">${esc(p.caption||"Caption")}</div><div class="pname">${esc(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
+ $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item">
+ <img src="${p.dataUrl||p.driveUrl||""}">
+ <textarea class="photo-caption-input" data-caption-i="${i}" placeholder="Manual caption...">${esc(p.caption||"")}</textarea>
+ <div class="pname">${esc(p.name)}</div>
+ <div class="photo-card-tools">
+  <button type="button" class="light photo-ai-caption" data-i="${i}">✨ AI Caption</button>
+  <button type="button" class="light photo-manual-edit" data-i="${i}">🖌️ Manual Edit</button>
+  <button type="button" class="light photo-auto-edit" data-i="${i}">⚡ Auto Edit</button>
+  <button type="button" class="light photo-remove" data-i="${i}">Remove</button>
+ </div></div>`).join("");
  document.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();render()});
+ document.querySelectorAll(".photo-caption-input").forEach(t=>t.oninput=()=>{photos[+t.dataset.captionI].caption=t.value;render()});
+ document.querySelectorAll(".photo-ai-caption").forEach(b=>b.onclick=async()=>{const i=+b.dataset.i;const p=photos[i];b.disabled=true;b.textContent="⏳ Caption";p.caption=await caption(p.dataUrl)||p.caption||($("headline").value||"ಸುದ್ದಿ")+" — Bidire News";b.disabled=false;b.textContent="✨ AI Caption";renderPhotos();render()});
+ document.querySelectorAll(".photo-manual-edit").forEach(b=>b.onclick=()=>openPhotoEditor(+b.dataset.i));
+ document.querySelectorAll(".photo-auto-edit").forEach(b=>b.onclick=async()=>{b.disabled=true;b.textContent="⏳ Edit";await autoEditPhoto(+b.dataset.i);b.disabled=false;b.textContent="⚡ Auto Edit"});
 }
 $("photoInput").onchange=async e=>{
  for(const f of [...e.target.files||[]]){
   if(!f.type.startsWith("image/"))continue;
-  const dataUrl=await fileData(f),p={name:f.name,dataUrl,caption:"",driveUrl:""};photos.push(p);renderPhotos();
+  const dataUrl=await fileData(f),p={name:f.name,dataUrl,originalDataUrl:dataUrl,caption:"",driveUrl:""};photos.push(p);renderPhotos();
   p.caption=await caption(dataUrl)||($("headline").value||"ಸುದ್ದಿ")+" — Bidire News";renderPhotos();render();
  }
  e.target.value="";
 };
+function openPhotoEditor(i){
+ activePhotoIndex=i;const p=photos[i];if(!p)return;
+ $("photoEditor").classList.remove("hide");$("photoEditPreview").src=p.dataUrl||p.originalDataUrl||"";
+ $("photoBrightness").value=100;$("photoContrast").value=100;$("photoSaturation").value=100;$("photoRotation").value=0;applyPhotoPreview();
+ $("photoEditor").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function applyPhotoPreview(){
+ const img=$("photoEditPreview");if(!img)return;
+ img.style.filter=`brightness(${$("photoBrightness").value}%) contrast(${$("photoContrast").value}%) saturate(${$("photoSaturation").value}%)`;
+ img.style.transform=`rotate(${$("photoRotation").value}deg)`;
+}
+["photoBrightness","photoContrast","photoSaturation","photoRotation"].forEach(id=>$(id).addEventListener("input",applyPhotoPreview));
+$("closePhotoEditor").onclick=()=>{$("photoEditor").classList.add("hide");activePhotoIndex=-1};
+$("resetPhotoEdit").onclick=()=>{if(activePhotoIndex<0)return;const p=photos[activePhotoIndex];p.dataUrl=p.originalDataUrl||p.dataUrl;$("photoBrightness").value=100;$("photoContrast").value=100;$("photoSaturation").value=100;$("photoRotation").value=0;$("photoEditPreview").src=p.dataUrl;applyPhotoPreview();renderPhotos();render()};
+async function renderEditedDataUrl(p,brightness,contrast,saturation,rotation){
+ const img=new Image();img.src=p.originalDataUrl||p.dataUrl;await new Promise((res,rej)=>{img.onload=res;img.onerror=rej});
+ const rad=Math.abs(rotation)*Math.PI/180,sw=Math.abs(Math.sin(rad)),cw=Math.abs(Math.cos(rad));
+ const w=Math.max(1,Math.round(img.width*cw+img.height*sw)),h=Math.max(1,Math.round(img.width*sw+img.height*cw));
+ const c=document.createElement("canvas");c.width=w;c.height=h;const ctx=c.getContext("2d");ctx.filter=`brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;ctx.translate(w/2,h/2);ctx.rotate(rotation*Math.PI/180);ctx.drawImage(img,-img.width/2,-img.height/2);return c.toDataURL("image/jpeg",.92);
+}
+async function autoEditPhoto(i){
+ const p=photos[i];if(!p)return;p.dataUrl=await renderEditedDataUrl(p,106,110,108,0);renderPhotos();render();
+}
+$("autoPhotoEdit").onclick=async()=>{if(activePhotoIndex<0)return;const b=$("autoPhotoEdit");b.disabled=true;try{const p=photos[activePhotoIndex];p.dataUrl=await renderEditedDataUrl(p,106,110,108,0);$("photoEditPreview").src=p.dataUrl;applyPhotoPreview();renderPhotos();render()}finally{b.disabled=false}};
+$("savePhotoEdit").onclick=async()=>{if(activePhotoIndex<0)return;const p=photos[activePhotoIndex];const b=$("savePhotoEdit");b.disabled=true;try{p.dataUrl=await renderEditedDataUrl(p,+$("photoBrightness").value,+$("photoContrast").value,+$("photoSaturation").value,+$("photoRotation").value);renderPhotos();render();$("photoEditor").classList.add("hide")}finally{b.disabled=false}};
 
+async function imageToText(dataUrl){
+ const key=safeGet("bn_key","");if(!key)throw Error("ಮೊದಲು Gemini API Key ಹಾಕಿ.");
+ const base64=dataUrl.split(",")[1],mime=(dataUrl.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
+ const prompt=`Extract ONLY the visible written text from this image. Preserve Kannada/English wording, numbers, names, punctuation and line meaning as closely as possible. Do not summarize, translate, correct, or invent anything. If no readable text is present, say: No readable text found.`;
+ const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});
+ return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim();
+}
+$("imageToTextBtn").onclick=async()=>{const f=$("imageTextInput").files?.[0];if(!f){$("imageTextStatus").textContent="ಮೊದಲು image ಆಯ್ಕೆ ಮಾಡಿ.";return}const b=$("imageToTextBtn");b.disabled=true;b.textContent="⏳ Reading...";$("imageTextStatus").textContent="Image text ಹೊರತೆಗೆಯಲಾಗುತ್ತಿದೆ...";try{const d=await fileData(f);$("imageTextOutput").value=await imageToText(d);$("imageTextStatus").textContent="✓ Image to Text complete."}catch(e){$("imageTextStatus").textContent="✕ "+e.message}finally{b.disabled=false;b.textContent="🖼️ Image → Text"}};
+$("imageTextClear").onclick=()=>{$("imageTextInput").value="";$("imageTextOutput").value="";$("imageTextStatus").textContent=""};
+$("imageTextToRaw").onclick=()=>{const t=$("imageTextOutput").value.trim();if(!t)return;$("raw").value=$("raw").value.trim()?$("raw").value.trim()+"\n\n"+t:t;$("raw").dispatchEvent(new Event("input"));$("imageTextStatus").textContent="✓ Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ."};
+
+
+let gsiLoadingPromise=null;
+function loadGoogleIdentityScript(){
+ if(window.google?.accounts?.oauth2)return Promise.resolve();
+ if(gsiLoadingPromise)return gsiLoadingPromise;
+ gsiLoadingPromise=new Promise((resolve,reject)=>{
+   const script=document.createElement("script");
+   script.src="https://accounts.google.com/gsi/client";
+   script.async=true;script.defer=true;
+   script.onload=()=>resolve();
+   script.onerror=()=>{gsiLoadingPromise=null;reject(Error("Google authorization load ಆಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."));};
+   document.head.appendChild(script);
+ });
+ return gsiLoadingPromise;
+}
 async function access(){
- if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಿಲ್ಲ. Page refresh ಮಾಡಿ.");
+ await loadGoogleIdentityScript();
+ if(!window.google?.accounts?.oauth2)throw Error("Google authorization load ಆಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.");
  const cid=$("clientId").value.trim();if(!cid)throw Error("OAuth Client ID ಹಾಕಿ.");
  tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:"https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file",callback:r=>{if(r.error){pending?.reject(Error(r.error_description||r.error));return}token=r.access_token;safeSet("bn_client",cid);$("bloggerStatus").textContent="✓ Blogger connected.";pending?.resolve(token);pending=null}});
  return new Promise((resolve,reject)=>{pending={resolve,reject};tokenClient.requestAccessToken({prompt:"consent"})})
@@ -1186,451 +1236,6 @@ if(d){
 }else{syncEditors();renderAutoLabelsEditor();render();}
 ["raw","headline","sub","bodyOut"].forEach(id=>$(id).addEventListener("input",scheduleAutosave));
 
-/* ---------------- Bidire Advertisement Manager V7 ---------------- */
-let ads=safeJsonGet("bn_ads",[]);if(!Array.isArray(ads))ads=[];let editingAdId=null;
-function adToday(){return new Date().toISOString().slice(0,10)}
-function adStatus(a){const t=adToday();if(a.enabled===false)return "INACTIVE";if(a.start&&t<a.start)return "SCHEDULED";if(a.expiry&&t>a.expiry)return "EXPIRED";return "ACTIVE"}
-function adEsc(v){return esc(v==null?"":String(v))}function money(v){return "₹"+(Number(v)||0).toFixed(2)}function adTotalValue(a){return Math.max(0,(Number(a.rate)||0)-(Number(a.discount)||0))}
-function nextAdNumber(){let n=parseInt(safeGet("bn_next_bill_no","1"),10);if(!Number.isFinite(n)||n<1)n=1;safeSet("bn_next_bill_no",String(n+1));return "BN2026"+String(n).padStart(4,"0")}
-function normalizeAd(a){a=a||{};a.billNo=a.billNo||a.id||"";a.rate=Number(a.rate)||0;a.discount=Number(a.discount)||0;a.total=adTotalValue(a);a.paidAmount=Number(a.paidAmount)||0;a.paymentStatus=a.paymentStatus||"Pending";a.enabled=a.enabled!==false;a.top=a.top||{imageData:a.imageData||"",imageUrl:a.imageUrl||"",link:a.contact||""};a.middle=a.middle||{imageData:"",imageUrl:"",link:""};a.sidebar=a.sidebar||{imageData:"",imageUrl:"",link:""};a.websitePostIds=a.websitePostIds||{};a.websiteUrls=a.websiteUrls||{};return a}
-ads=ads.map(normalizeAd);
-function readAdImage(file){return new Promise((resolve,reject)=>{if(!file)return resolve("");const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
-function adWebsiteMeta(ad,pos){const c=ad[pos];return{id:String(ad.id||""),position:pos,size:pos==="top"?"1536x512":pos==="middle"?"728x120":"300x250",start:String(ad.start||""),expiry:String(ad.expiry||""),enabled:ad.enabled!==false,link:String(c?.link||"")}}
-async function publishAdPosition(ad,pos){const c=ad[pos];if(!c||(!c.imageData&&!c.imageUrl))throw Error(pos.toUpperCase()+" advertisement image upload ಮಾಡಿ.");if(!token)await access();const imageUrl=c.imageUrl||await uploadDrive({dataUrl:c.imageData,name:ad.id+"-"+pos+".jpg"});const m=adWebsiteMeta(ad,pos),link=m.link&&/^https?:\/\//i.test(m.link)?m.link:"";const content=`<div data-bidire-ad="1" data-ad-id="${adEsc(m.id)}" data-position="${m.position}" data-size="${m.size}" data-start="${adEsc(m.start)}" data-expiry="${adEsc(m.expiry)}" data-enabled="${m.enabled?"true":"false"}" data-link="${adEsc(link)}" style="display:none!important"><a href="${adEsc(link||"#")}"><img src="${adEsc(imageUrl)}" alt=""></a></div>`;const blogId=$("blogId").value.trim()||blogDefault;const title="[BIDIRE_AD] "+(ad.title||"Advertisement")+" - "+pos.toUpperCase();const payload={kind:"blogger#post",blog:{id:blogId},title,content,labels:["BidireAd"]};const postId=ad.websitePostIds[pos];const url=postId?`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts/${encodeURIComponent(postId)}`:`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blogId)}/posts`;const r=await fetch(url,{method:postId?"PUT":"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)});const j=await r.json();if(!r.ok)throw Error((j.error&&j.error.message)||"Blogger Advertisement sync failed");ad.websitePostIds[pos]=j.id;ad.websiteUrls[pos]=j.url||"";c.imageUrl=imageUrl}
-async function publishAdToWebsite(ad){ad=normalizeAd(ad);for(const p of ["top","middle","sidebar"]){if(!ad[p]?.imageData&&!ad[p]?.imageUrl)throw Error("ಮೂರು positionsಗೂ ಪ್ರತ್ಯೇಕ images ಕಡ್ಡಾಯ.")}if(!token)await access();for(const p of ["top","middle","sidebar"])await publishAdPosition(ad,p);saveAds();renderAds();return ad}
-function saveAds(){if(!safeSet("bn_ads",JSON.stringify(ads))){$("adStatus").textContent="⚠️ Advertisement save failed — storage full.";$("adStatus").style.display="block"}}
-function calcAdMoney(){const total=Math.max(0,(Number($("adRate").value)||0)-(Number($("adDiscount").value)||0));$("adTotal").value=money(total);const paid=Math.min(total,Math.max(0,Number($("adPaidAmount").value)||0));$("adBalance").value=money(total-paid);if($("adPaymentStatus").value==="Paid")$("adPaidAmount").value=total;}
-function previewCreative(id,file){if(!file)return;const r=new FileReader();r.onload=()=>{const x=$(id);x.src=r.result;x.classList.remove("hide")};r.readAsDataURL(file)}
-["Top","Middle","Sidebar"].forEach(p=>$("ad"+p+"Image").addEventListener("change",e=>previewCreative("ad"+p+"Preview",e.target.files?.[0])));
-["adRate","adDiscount","adPaidAmount","adPaymentStatus"].forEach(id=>$(id).addEventListener("input",calcAdMoney));$("adPaymentStatus").addEventListener("change",calcAdMoney);
-function renderAds(){updateAdDashboard();const box=$("adList");if(!ads.length){box.innerHTML='<div class="small">ಯಾವುದೇ ಜಾಹೀರಾತು ಇಲ್ಲ.</div>';return}box.innerHTML=ads.slice().sort((a,b)=>String(b.createdAt||b.billNo).localeCompare(String(a.createdAt||a.billNo))).map(a=>{a=normalizeAd(a);const st=adStatus(a),pay=(a.paymentStatus||"Pending").toLowerCase();return `<div class="ad-card"><div class="ad-card-head"><div><div class="ad-card-title">${adEsc(a.business||a.title)} — ${adEsc(a.billNo)}</div><div class="small">Advertisement ID: ${adEsc(a.id)} · ${adEsc(a.start||"")} → ${adEsc(a.expiry||"")}</div></div><div><span class="ad-badge ${st.toLowerCase()}">${st}</span> <span class="ad-badge ${pay}">${adEsc(a.paymentStatus)}</span></div></div><div class="small" style="margin-top:6px">Rate ${money(a.rate)} − Discount ${money(a.discount)} = <b>${money(a.total)}</b> · Balance ${money(a.total-(a.paidAmount||0))}</div><div class="small">Top ✓ Middle ✓ Sidebar ✓ ${a.websitePostIds?.top&&a.websitePostIds?.middle&&a.websitePostIds?.sidebar?'· Blogger synced':''}</div><div class="ad-actions"><button type="button" class="primary" data-ad-edit="${adEsc(a.id)}">✏ Edit</button><button type="button" class="black" data-ad-sync="${adEsc(a.id)}">🌐 Sync</button><button type="button" class="light" data-ad-bill="${adEsc(a.id)}">🧾 Bill</button><button type="button" class="light" data-ad-toggle="${adEsc(a.id)}">${a.enabled===false?'Enable':'Disable'}</button><button type="button" class="light" data-ad-delete="${adEsc(a.id)}">🗑 Delete</button></div></div>`}).join("");box.querySelectorAll("[data-ad-edit]").forEach(b=>b.onclick=()=>editAd(b.dataset.adEdit));box.querySelectorAll("[data-ad-sync]").forEach(b=>b.onclick=async()=>{const a=ads.find(x=>x.id===b.dataset.adSync);try{await publishAdToWebsite(a);$("adStatus").textContent="✓ ಮೂರು advertisements Bloggerಗೆ sync ಆಯಿತು.";$("adStatus").style.display="block"}catch(e){$("adStatus").textContent="✕ Sync ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}});box.querySelectorAll("[data-ad-bill]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adBill);showBill(a)});box.querySelectorAll("[data-ad-toggle]").forEach(b=>b.onclick=()=>{const a=ads.find(x=>x.id===b.dataset.adToggle);a.enabled=a.enabled===false;saveAds();renderAds()});box.querySelectorAll("[data-ad-delete]").forEach(b=>b.onclick=()=>{if(confirm("ಈ Advertisement delete ಮಾಡಬೇಕೇ?")){ads=ads.filter(x=>x.id!==b.dataset.adDelete);saveAds();renderAds()}})}
-function updateAdDashboard(){let active=0,scheduled=0,expired=0,billing=0,paid=0,pending=0,partial=0;ads.forEach(a=>{a=normalizeAd(a);const st=adStatus(a);if(st==="ACTIVE")active++;else if(st==="SCHEDULED")scheduled++;else if(st==="EXPIRED")expired++;billing+=a.total;paid+=Math.min(a.total,a.paidAmount);if(a.paymentStatus==="Partial")partial++;if(a.paymentStatus!=="Paid")pending+=Math.max(0,a.total-a.paidAmount)});$("adDashTotal").textContent=ads.length;$("adDashActive").textContent=active;$("adDashScheduled").textContent=scheduled;$("adDashExpired").textContent=expired;$("adDashBilling").textContent=money(billing);$("adDashPaid").textContent=money(paid);$("adDashPending").textContent=money(pending);$("adDashPartial").textContent=partial}
-function clearAdForm(){editingAdId=null;["adBusiness","adContact","adTitle","adText","adPhone","adDefaultLink","adStart","adExpiry","adTopLink","adMiddleLink","adSidebarLink","adRate","adDiscount","adPaidAmount"].forEach(id=>{if($(id))$(id).value=""});["adTopImage","adMiddleImage","adSidebarImage"].forEach(id=>$(id).value="");["adTopPreview","adMiddlePreview","adSidebarPreview"].forEach(id=>$(id).classList.add("hide"));$("adPaymentStatus").value="Pending";calcAdMoney();$("saveAd").textContent="💾 Save Advertisement";$("billPreview").innerHTML="";$("billPreview").classList.add("hide")}
-function editAd(id){const a=ads.find(x=>x.id===id);if(!a)return;editingAdId=id;a=normalizeAd(a);$("adBusiness").value=a.business||"";$("adContact").value=a.contact||"";$("adTitle").value=a.title||"";$("adText").value=a.text||"";$("adPhone").value=a.phone||"";$("adDefaultLink").value=a.defaultLink||"";$("adStart").value=a.start||"";$("adExpiry").value=a.expiry||"";$("adTopLink").value=a.top.link||"";$("adMiddleLink").value=a.middle.link||"";$("adSidebarLink").value=a.sidebar.link||"";$("adRate").value=a.rate||0;$("adDiscount").value=a.discount||0;$("adPaidAmount").value=a.paidAmount||0;$("adPaymentStatus").value=a.paymentStatus||"Pending";$("saveAd").textContent="🔄 Update Advertisement";calcAdMoney();["top","middle","sidebar"].forEach(p=>{const c=a[p];const im=$("ad"+p.charAt(0).toUpperCase()+p.slice(1)+"Preview");if(c.imageData||c.imageUrl){im.src=c.imageData||c.imageUrl;im.classList.remove("hide")}});$("adCreateTab").click();window.scrollTo({top:$("adsPanel").offsetTop-60,behavior:"smooth"})}
-function buildBill(a){a=normalizeAd(a);return `<div class="bill-paper" id="printBill"><div class="bill-top"><div><div class="bill-brand">BIDIRE ADVERTISERS</div><div class="bill-small">PAN No: ANRPB1538L</div><div class="bill-small">advertisment Bill</div></div><div class="bill-title">BILL</div></div><div style="margin-top:14px;font-size:13px;line-height:1.6"><b>Bill No / Advertisement ID:</b> ${adEsc(a.billNo||a.id)}<br><b>Advertiser:</b> ${adEsc(a.business)}<br><b>Address / Contact:</b> ${adEsc(a.contact)} ${a.phone?' / '+adEsc(a.phone):''}<br><b>Status:</b> ${adEsc(a.paymentStatus)}<br><b>Advertisement Period:</b> ${adEsc(a.start)} to ${adEsc(a.expiry)}</div><table class="bill-table"><tr><th>Position</th><th>Creative</th><th>Link</th></tr><tr><td>News Top</td><td>1536 × 512</td><td>${adEsc(a.top.link)}</td></tr><tr><td>News Middle</td><td>728 × 120</td><td>${adEsc(a.middle.link)}</td></tr><tr><td>Sidebar</td><td>300 × 250</td><td>${adEsc(a.sidebar.link)}</td></tr></table><div class="bill-total"><div><span>Rate</span><b>${money(a.rate)}</b></div><div><span>Discount</span><b>− ${money(a.discount)}</b></div><div class="bill-grand"><span>Total</span><b>${money(a.total)}</b></div><div><span>Paid</span><b>${money(a.paidAmount)}</b></div><div><span>Balance</span><b>${money(Math.max(0,a.total-a.paidAmount))}</b></div></div><div class="bill-notes"><b>Notes:</b><br><b>Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS</b><br><b>YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482</b></div><div class="bill-footer"><b>Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.</b><br>Contact: 9731410761<br>Email: bidirevv@mail.com</div></div>`}
-function showBill(a){$("billPreview").innerHTML=buildBill(a);$("billPreview").classList.remove("hide");$("billPreview").scrollIntoView({behavior:"smooth",block:"start"})}
-function currentBillAd(){return editingAdId?ads.find(x=>x.id===editingAdId):null}
-function printHtml(html,title){
-  const w=window.open("","_blank");
-  if(!w)return;
-  const css=document.getElementById("bidire-ad-v7-css")?.textContent||"";
-  const doc="<html><head><title>"+esc(title)+"</title><style>body{margin:20px;background:#fff}"+css+"</style></head><body>"+html+"<\/body>"+"</html>";
-  w.document.open();
-  w.document.write(doc);
-  w.document.close();
-  setTimeout(()=>w.print(),400);
-}
-
-/* ===== Advertisement button handlers — restored ===== */
-async function collectAdFromForm(){
-  const existing=editingAdId ? (ads.find(x=>x.id===editingAdId)||null) : null;
-  const readFile=file=>new Promise((resolve,reject)=>{
-    if(!file)return resolve("");
-    const r=new FileReader(); r.onload=()=>resolve(String(r.result||"")); r.onerror=reject; r.readAsDataURL(file);
-  });
-  const topFile=$("adTopImage")?.files?.[0]||null;
-  const middleFile=$("adMiddleImage")?.files?.[0]||null;
-  const sidebarFile=$("adSidebarImage")?.files?.[0]||null;
-  const topData=await readFile(topFile), middleData=await readFile(middleFile), sidebarData=await readFile(sidebarFile);
-  const billNo=existing?.billNo||nextAdNumber();
-  const defaultLink=$("adDefaultLink").value.trim();
-  const ad=normalizeAd({
-    ...(existing||{}),
-    id:billNo,
-    billNo,
-    business:$("adBusiness").value.trim(),
-    contact:$("adContact").value.trim(),
-    title:$("adTitle").value.trim(),
-    text:$("adText").value.trim(),
-    phone:$("adPhone").value.trim(),
-    defaultLink,
-    start:$("adStart").value,
-    expiry:$("adExpiry").value,
-    rate:Number($("adRate").value)||0,
-    discount:Number($("adDiscount").value)||0,
-    paidAmount:Number($("adPaidAmount").value)||0,
-    paymentStatus:$("adPaymentStatus").value||"Pending",
-    enabled:true,
-    createdAt:existing?.createdAt||new Date().toISOString(),
-    top:{...(existing?.top||{}),imageData:topData||existing?.top?.imageData||"",imageUrl:existing?.top?.imageUrl||"",link:$("adTopLink").value.trim()||defaultLink},
-    middle:{...(existing?.middle||{}),imageData:middleData||existing?.middle?.imageData||"",imageUrl:existing?.middle?.imageUrl||"",link:$("adMiddleLink").value.trim()||defaultLink},
-    sidebar:{...(existing?.sidebar||{}),imageData:sidebarData||existing?.sidebar?.imageData||"",imageUrl:existing?.sidebar?.imageUrl||"",link:$("adSidebarLink").value.trim()||defaultLink}
-  });
-  ad.total=adTotalValue(ad);
-  return ad;
-}
-async function saveAdvertisementForm(){
-  const st=$("adStatus");
-  try{
-    st.textContent="Advertisement save ಮಾಡಲಾಗುತ್ತಿದೆ...";st.style.display="block";
-    const ad=await collectAdFromForm();
-    if(!ad.business){throw Error("Advertiser Name ಹಾಕಿ.");}
-    if(!ad.title){throw Error("Advertisement Title ಹಾಕಿ.");}
-    for(const p of ["top","middle","sidebar"]){
-      if(!ad[p].imageData&&!ad[p].imageUrl)throw Error("ಮೂರು positionsಗೂ images ಕಡ್ಡಾಯ.");
-    }
-    const idx=ads.findIndex(x=>x.id===ad.id);
-    if(idx>=0)ads[idx]=ad;else ads.push(ad);
-    editingAdId=ad.id;
-    saveAds();renderAds();
-    st.textContent="✓ Advertisement saved. Bill No: "+ad.billNo;st.style.display="block";
-    $("saveAd").textContent="🔄 Update Advertisement";
-    return ad;
-  }catch(e){
-    st.textContent="✕ "+e.message;st.style.display="block";throw e;
-  }
-}
-$("saveAd").onclick=()=>{saveAdvertisementForm().catch(()=>{})};
-$("publishAdWebsite").onclick=async()=>{
-  const st=$("adStatus");
-  try{
-    const ad=await saveAdvertisementForm();
-    st.textContent="Google/Blogger authorization ಮತ್ತು sync ನಡೆಯುತ್ತಿದೆ...";st.style.display="block";
-    await publishAdToWebsite(ad);
-    saveAds();renderAds();
-    st.textContent="✓ News Top + News Middle + Sidebar Bloggerಗೆ sync ಆಯಿತು.";st.style.display="block";
-  }catch(e){st.textContent="✕ Publish / Sync ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
-};
-$("previewAdBtn").onclick=async()=>{
-  const st=$("adStatus");
-  try{
-    const ad=await collectAdFromForm();
-    const image=p=>p?.imageData||p?.imageUrl||"";
-    $("adPreview").innerHTML=`<div style="padding:12px"><h3 style="margin:0 0 8px">${adEsc(ad.business||"Advertisement")} — ${adEsc(ad.title||"")}</h3>
-      <div style="font-size:12px;margin-bottom:8px">Bill No: ${adEsc(ad.billNo)} · ${adEsc(ad.start)} → ${adEsc(ad.expiry)}</div>
-      <div style="display:grid;gap:10px">
-      <div><b>News Top — 1536 × 512</b><img src="${adEsc(image(ad.top))}" style="display:block;width:100%;max-width:768px;height:auto;margin-top:5px;border-radius:6px"></div>
-      <div><b>News Middle — 728 × 120</b><img src="${adEsc(image(ad.middle))}" style="display:block;width:100%;max-width:728px;height:auto;margin-top:5px;border-radius:6px"></div>
-      <div><b>Sidebar — 300 × 250</b><img src="${adEsc(image(ad.sidebar))}" style="display:block;width:300px;max-width:100%;height:auto;margin-top:5px;border-radius:6px"></div></div></div>`;
-    $("adPreview").classList.remove("hide");
-    $("adPreview").scrollIntoView({behavior:"smooth",block:"start"});
-  }catch(e){st.textContent="✕ Preview ಆಗಲಿಲ್ಲ: "+e.message;st.style.display="block"}
-};
-$("clearAd").onclick=()=>clearAdForm();
-$("billPdfBtn").onclick=async()=>{
-  try{const ad=await collectAdFromForm();showBill(ad);setTimeout(()=>printHtml(buildBill(ad),"Bidire Advertisement Bill"),250)}
-  catch(e){$("adStatus").textContent="✕ Bill ತಯಾರಿಸಲಾಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
-};
-$("billJpgBtn").onclick=async()=>{
-  try{
-    const ad=await collectAdFromForm();
-    const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
-    canvas.width=1400;canvas.height=1900;ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="#111";ctx.font="bold 34px Arial";ctx.fillText("BIDIRE ADVERTISERS",60,70);
-    ctx.font="bold 28px Arial";ctx.fillText("ADVERTISEMENT BILL",60,120);
-    ctx.font="22px Arial";
-    const rows=[
-      "Bill No / Advertisement ID: "+(ad.billNo||ad.id),
-      "Advertiser: "+(ad.business||""),
-      "Address / Contact: "+(ad.contact||""),
-      "Phone: "+(ad.phone||""),
-      "Period: "+(ad.start||"")+" to "+(ad.expiry||""),
-      "Status: "+(ad.paymentStatus||"Pending"),
-      "News Top: 1536 x 512",
-      "News Middle: 728 x 120",
-      "Sidebar: 300 x 250",
-      "Rate: "+money(ad.rate),
-      "Discount: - "+money(ad.discount),
-      "Total: "+money(ad.total),
-      "Paid: "+money(ad.paidAmount),
-      "Balance: "+money(Math.max(0,ad.total-ad.paidAmount))
-    ];
-    let y=180;for(const row of rows){ctx.fillText(String(row).slice(0,90),60,y);y+=48}
-    ctx.font="bold 18px Arial";ctx.fillText("Cheques/ Draft accepted in favour of BIDIRE ADVERTISERS",60,y+35);
-    ctx.font="16px Arial";ctx.fillText("YASHODHARA V BANGERA A/c No.4822500101075201 KARNATAKA Bank, Moodbidri - IFSC Code - KARB0000482",60,y+70);
-    ctx.fillText("Yashodhara V Bangera, 1ST FLOOR, INDIRA COMPLEX, BUS STAND Moodubidire - 574 227, D.K.",60,y+110);
-    ctx.fillText("Contact: 9731410761   Email: bidirevv@mail.com",60,y+140);
-    const a=document.createElement("a");a.href=canvas.toDataURL("image/jpeg",.92);a.download=(ad.billNo||"Bidire-Bill")+".jpg";a.click();
-  }catch(e){$("adStatus").textContent="✕ Bill JPG ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
-};
-$("billWaBtn").onclick=async()=>{
-  try{
-    const ad=await collectAdFromForm();
-    const msg=`BIDIRE ADVERTISERS\nAdvertisement Bill\nBill No: ${ad.billNo||ad.id}\nAdvertiser: ${ad.business||""}\nPeriod: ${ad.start||""} to ${ad.expiry||""}\nTotal: ${money(ad.total)}\nPaid: ${money(ad.paidAmount)}\nBalance: ${money(Math.max(0,ad.total-ad.paidAmount))}`;
-    const phone=(ad.phone||"").replace(/\D/g,"");
-    const url=phone?`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;
-    window.open(url,"_blank");
-  }catch(e){$("adStatus").textContent="✕ WhatsApp Bill ಆಗಲಿಲ್ಲ: "+e.message;$("adStatus").style.display="block"}
-};
-renderAds();calcAdMoney();
-/* ================= Bidire V6: Audio + Chat + Safe Draft ================= */
-let mediaRecorder=null, audioChunks=[], audioBlob=null, audioObjectUrl="", chatHistory=[];
-
-function updateSafeDraftMeta(){
-  const meta=$("safeDraftMeta");
-  if(!meta)return;
-  meta.textContent="✓ ಇಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ";
-}
-function saveDraftAutoV6(){
-  try{
-    saveDraftAuto();
-    updateSafeDraftMeta();
-  }catch(e){}
-}
-function saveEmergencyDraft(){
-  try{
-    saveDraftAutoV6();
-    safeSet("bn_emergency_snapshot",JSON.stringify({
-      ...draftObject(),
-      raw:$("raw").value,
-      chatHistory,
-      savedAt:new Date().toISOString()
-    }));
-  }catch(e){}
-}
-function restoreSafeDraft(){
-  let raw=safeGet("bn_emergency_snapshot","")||safeGet("bn_draft","");
-  if(!raw){msg("Saved draft ಸಿಗಲಿಲ್ಲ.");return}
-  try{
-    const d=JSON.parse(raw);
-    $("raw").value=d.raw||$("raw").value||"";
-    $("headline").value=d.headline||"";
-    $("sub").value=d.sub||"";
-    $("bodyOut").value=d.body||"";
-    if($("category")) $("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
-    keyPoints=Array.isArray(d.keyPoints)?d.keyPoints:[];
-    englishSummary=d.englishSummary||"";
-    photos=Array.isArray(d.photos)?d.photos:[];
-    $("keyPointsEnabled").checked=d.keyPointsEnabled!==false;
-    $("englishEnabled").checked=d.englishEnabled!==false;
-    setEditingPost(d.editingPostId||null,d.editingPostUrl||"");
-    chatHistory=Array.isArray(d.chatHistory)?d.chatHistory:[];
-    renderKeyPointsEditor();$("englishSummaryEdit").value=englishSummary;
-    renderPhotos();render();
-    msg("✓ Latest draft restore ಆಯಿತು.");setTimeout(()=>msg(""),1200);
-  }catch(e){msg("Draft restore ಆಗಲಿಲ್ಲ: "+e.message)}
-}
-$("restoreSafeDraft").onclick=restoreSafeDraft;
-$("deleteSafeDraft").onclick=()=>{
-  if(!confirm("Saved draft ಅನ್ನು delete ಮಾಡಬೇಕೇ?"))return;
-  localStorage.removeItem("bn_draft");localStorage.removeItem("bn_emergency_snapshot");updateSafeDraftMeta();
-};
-window.addEventListener("beforeunload",saveEmergencyDraft);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveEmergencyDraft()});
-window.addEventListener("pagehide",saveEmergencyDraft);
-
-/* Recording */
-$("recordAudio").onclick=async()=>{
-  try{
-    if(!navigator.mediaDevices?.getUserMedia)throw Error("ಈ browserನಲ್ಲಿ microphone recording support ಇಲ್ಲ.");
-    audioChunks=[];
-    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    mediaRecorder=new MediaRecorder(stream);
-    mediaRecorder.ondataavailable=e=>{if(e.data.size)audioChunks.push(e.data)};
-    mediaRecorder.onstop=()=>{
-      audioBlob=new Blob(audioChunks,{type:mediaRecorder.mimeType||"audio/webm"});
-      if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);
-      audioObjectUrl=URL.createObjectURL(audioBlob);
-      $("audioPreview").src=audioObjectUrl;$("audioPreview").classList.remove("hide");
-      $("audioStatus").textContent="✓ Recording ಸಿದ್ಧವಾಗಿದೆ.";
-      stream.getTracks().forEach(t=>t.stop());
-    };
-    mediaRecorder.start();
-    $("recordAudio").disabled=true;$("stopAudio").disabled=false;$("recordAudio").classList.add("recording");
-    $("recordAudio").textContent="🔴 Recording...";
-    $("audioStatus").textContent="Recording ನಡೆಯುತ್ತಿದೆ...";
-  }catch(e){$("audioStatus").textContent="✕ "+e.message}
-};
-$("stopAudio").onclick=()=>{
-  if(mediaRecorder?.state!=="inactive")mediaRecorder.stop();
-  $("recordAudio").disabled=false;$("stopAudio").disabled=true;$("recordAudio").classList.remove("recording");$("recordAudio").textContent="🎙️ Start Recording";
-};
-$("audioInput").onchange=e=>{
-  const f=e.target.files?.[0];if(!f)return;
-  audioBlob=f;
-  if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);
-  audioObjectUrl=URL.createObjectURL(f);
-  $("audioPreview").src=audioObjectUrl;$("audioPreview").classList.remove("hide");
-  $("audioStatus").textContent=`✓ ${f.name} selected.`;
-};
-$("clearAudio").onclick=()=>{
-  audioBlob=null;if(audioObjectUrl)URL.revokeObjectURL(audioObjectUrl);audioObjectUrl="";
-  $("audioPreview").removeAttribute("src");$("audioPreview").classList.add("hide");$("audioInput").value="";$("audioStatus").textContent="";
-};
-
-/* Audio → Text using Gemini multimodal input */
-function blobToBase64(blob){
-  return new Promise((resolve,reject)=>{
-    const r=new FileReader();r.onload=()=>resolve(String(r.result).split(",")[1]);r.onerror=reject;r.readAsDataURL(blob);
-  });
-}
-$("transcribeAudio").onclick=async()=>{
-  if(!audioBlob){$("audioStatus").textContent="ಮೊದಲು audio record ಅಥವಾ upload ಮಾಡಿ.";return}
-  const apiKey=safeGet("bn_key","");
-  if(!apiKey){$("audioStatus").textContent="Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.";return}
-  try{
-    $("audioStatus").textContent="🎧 Audio transcription ನಡೆಯುತ್ತಿದೆ...";
-    saveEmergencyDraft();
-    const b64=await blobToBase64(audioBlob);
-    const mime=audioBlob.type||"audio/webm";
-    const prompt=`Transcribe this audio accurately into Kannada if the spoken content is Kannada, otherwise preserve the spoken language. Do not summarize. Do not invent missing words. Return ONLY the transcription text.`;
-    const models=aiModelList();
-    let result=null,last="";
-    for(let i=0;i<models.length;i++){
-      const model=models[i];
-      try{
-        const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{
-          method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}]})
-        });
-        const j=await r.json();
-        if(r.ok){result=j;if(i>0){safeSet("bn_model",model);setAIModelStatus(model,"Audio quota fallback");}break}
-        last=j.error?.message||`API error (${r.status})`;
-        if(!isQuotaError(r.status,last))break;
-      }catch(e){last=e.message}
-    }
-    if(!result)throw Error(last||"Audio transcription failed");
-    const text=(result.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("").trim();
-    if(!text)throw Error("Audioನಲ್ಲಿ transcription text ಸಿಗಲಿಲ್ಲ.");
-    $("raw").value=($("raw").value.trim()?$("raw").value.trim()+"\n\n":"")+text;
-    render();scheduleAutosave();saveEmergencyDraft();
-    $("audioStatus").textContent="✓ Audio text Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.";
-  }catch(e){$("audioStatus").textContent="✕ Audio transcription error: "+e.message}
-};
-
-/* Stronger autosave hooks */
-["raw","headline","sub","bodyOut","englishSummaryEdit"].forEach(id=>{
-  $(id)?.addEventListener("input",()=>{clearTimeout(draftTimer);draftTimer=setTimeout(saveEmergencyDraft,350)});
-});
-try{
-  updateSafeDraftMeta();
-  $("status").style.display="none";
-}catch(e){
-  const el=$("status");
-  if(el){el.textContent="⚠️ Editor startup error: "+(e&&e.message?e.message:String(e));el.style.display="block";}
-}
-
-
-/* ===== Modern UI V2 navigation ===== */
-(function(){
-  const nav=document.getElementById("sectionNav");
-  if(!nav)return;
-  const buttons=[...nav.querySelectorAll("[data-target]")];
-  function go(id){
-    const el=document.getElementById(id);
-    if(!el)return;
-    // Treat the top navigation as real sections/tabs. Hide the other main
-    // sections first so the old/previous editor panels do not remain below.
-    const targets=new Set(buttons.map(b=>b.dataset.target));
-    targets.forEach(targetId=>{
-      const section=document.getElementById(targetId);
-      if(section) section.classList.toggle("hide",targetId!==id);
-    });
-    el.classList.remove("hide");
-    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===id));
-    window.scrollTo({top:Math.max(0,el.offsetTop-92),behavior:"smooth"});
-  }
-  buttons.forEach(b=>b.addEventListener("click",()=>go(b.dataset.target)));
-  document.querySelectorAll(".subtool-toggle").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      const box=btn.closest(".subtool");
-      box.classList.toggle("open");
-    });
-  });
-  const ids=buttons.map(b=>b.dataset.target);
-  const obs=new IntersectionObserver(entries=>{
-    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-    if(!visible)return;
-    buttons.forEach(b=>b.classList.toggle("active",b.dataset.target===visible.target.id));
-  },{rootMargin:"-95px 0px -55% 0px",threshold:[.1,.3,.6]});
-  ids.forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
-  // Start with only the first editor section visible.
-  go("newSection");
-})();
-
-
-/* V6 compact edit accordions */
-(function(){
-  function bindToggle(btnId,boxId){
-    const btn=$(btnId),box=$(boxId); if(!btn||!box)return;
-    btn.addEventListener("click",e=>{ if(e.target.closest("input,label")) return; box.classList.toggle("open"); });
-  }
-  bindToggle("keyPointsToggle","keyPointsBox");
-  bindToggle("englishToggle","englishBox");
-  const jump=$("editDraftJump"); if(jump)jump.onclick=()=>$("restoreSafeDraft")?.click();
-})();
-
-/* V3 compact top controls */
-(function(){
-  const s=document.getElementById("settingsBtn");
-  if(s){
-    s.title="Settings";
-    s.setAttribute("aria-label","Settings");
-  }
-  const t=document.getElementById("themeBtn");
-  if(t){
-    t.title="Dark / Light mode";
-    t.setAttribute("aria-label","Dark / Light mode");
-  }
-})();
-
-
-/* ===== V5 Clean Raw News Chat ===== */
-(function(){
-  const raw=document.getElementById("raw");
-  const input=document.getElementById("rawChatInput");
-  const log=document.getElementById("rawChatLog");
-  const send=document.getElementById("rawChatSend");
-  const clear=document.getElementById("rawChatClear");
-  const write=document.getElementById("rawAiWrite");
-  const st=document.getElementById("rawChatStatus");
-  if(!raw||!input||!log||!send||!write)return;
-
-  function bubble(text,who){
-    const d=document.createElement("div");
-    d.className="chat-bubble "+who;
-    d.textContent=text;
-    log.appendChild(d);
-    log.scrollTop=log.scrollHeight;
-  }
-  function setStatus(t){if(st)st.textContent=t||""}
-
-  async function chat(){
-    const q=input.value.trim();
-    if(!q)return;
-    const news=raw.value.trim();
-    if(!news){setStatus("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
-    bubble(q,"user");
-    input.value="";
-    setStatus("AI ಉತ್ತರಿಸುತ್ತಿದೆ...");
-    const key=safeGet("bn_key","");
-    if(!key){setStatus("Settingsನಲ್ಲಿ Gemini API key ಹಾಕಿ.");return}
-    const promptText=`You are the Bidire News AI Assistant.
-Use ONLY the supplied raw news and the user's current request. Never invent facts.
-Help the user discuss, clarify, reorganize or correct the raw news. If the user asks for a revised version, return the revised raw news only.
-USER REQUEST:
-${q}
-RAW NEWS:
-${news}`;
-    try{
-      const {j}=await geminiRequest(key,[{parts:[{text:promptText}]}],{});
-      const ans=(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim();
-      if(ans)bubble(ans,"ai");
-      setStatus("");
-      saveEmergencyDraft();
-    }catch(e){setStatus("AI error: "+e.message)}
-  }
-
-  send.onclick=chat;
-  clear.onclick=()=>{log.innerHTML="";input.value="";setStatus("")};
-  input.addEventListener("keydown",e=>{
-    if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){
-      e.preventDefault();chat();
-    }
-  });
-
-  write.onclick=()=>{
-    if(!raw.value.trim()){setStatus("ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಹಾಕಿ.");raw.focus();return}
-    const p=promptFor("Create the complete final news report from the raw news. Return headline, subheadline, body, keyPoints and englishSummary.");
-    if(!p)return;
-    gemini(p).then(()=>{
-      const edit=document.getElementById("editSection");
-      if(edit)edit.scrollIntoView({behavior:"smooth",block:"start"});
-    });
-  };
-})();
-
-
 /* ===== Normal News Update — AI FREE (restored) ===== */
 (function(){
   const raw=document.getElementById("raw");
@@ -1677,11 +1282,9 @@ ${news}`;
     if(headline)headline.value=parsed.headline||"";
     if(sub)sub.value=parsed.sub||"";
     if(body)body.value=parsed.body||"";
-    keyPoints=parsed.keyPoints||[];
-    englishSummary=parsed.englishSummary||"";
-    window.keyPoints=keyPoints;
-    window.englishSummary=englishSummary;
-    if(english)english.value=englishSummary;
+    window.keyPoints=parsed.keyPoints||[];
+    window.englishSummary=parsed.englishSummary||"";
+    if(english)english.value=window.englishSummary;
     if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();
     if(typeof render==='function')render();
     if(typeof scheduleAutosave==='function')scheduleAutosave();
@@ -1762,18 +1365,9 @@ ${JSON.stringify(data)}`;
 })();
 </script>
 
-<script id="bidire-button-guard-v10">
+<script id="bidire-button-guard-v11">
 (function(){
   'use strict';
-  function showButtonError(err){
-    try{
-      var el=document.getElementById('status');
-      if(el){el.textContent='⚠️ Button error: '+(err&&err.message?err.message:String(err));el.style.display='block';}
-      console.error('Bidire button error',err);
-    }catch(_){ }
-  }
-  window.addEventListener('error',function(e){ if(e && e.error) showButtonError(e.error); });
-  window.addEventListener('unhandledrejection',function(e){ if(e && e.reason) showButtonError(e.reason); });
   document.addEventListener('click',function(e){
     var b=e.target && e.target.closest ? e.target.closest('button') : null;
     if(!b || b.disabled) return;
@@ -1787,23 +1381,12 @@ ${JSON.stringify(data)}`;
 </script>
 
 
-<script id="bidire-runtime-diagnostic-v11">
-(function(){
-  window.addEventListener("error",function(e){
-    if(e && e.message && /\bi is not defined\b/.test(e.message)){
-      var el=document.getElementById("status");
-      if(el){el.textContent="⚠️ Cached/old JavaScript detected. Please open this version in Incognito or Hard Refresh.";el.style.display="block";}
-    }
-  });
-})();
-</script>
-
 <script>
 /* BIDIRE FINAL — single-section navigation */
 (function(){
   const nav=document.getElementById("sectionNav");
   if(!nav)return;
-  const ids=["newSection","editSection","safeSection","previewSection","adsPanel","allPostsPanel"];
+  const ids=["newSection","editSection","safeSection","previewSection","allPostsPanel"];
   const sections=ids.map(id=>document.getElementById(id)).filter(Boolean);
   function show(id){
     sections.forEach(el=>el.classList.toggle("hide",el.id!==id));
@@ -1821,4 +1404,6 @@ ${JSON.stringify(data)}`;
   show("newSection");
 })();
 </script>
+
+
 </body></html>
