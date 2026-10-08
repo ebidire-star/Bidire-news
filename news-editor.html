@@ -2,6 +2,7 @@
 
 <html lang="kn">
 <head>
+<meta name="bidire-news-editor-version" content="FINAL-FIX-2026-10-08">
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#0d1117" name="theme-color"/>
@@ -545,6 +546,14 @@ function openSettingsPanel(){
   if(isOpen)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),50);
 }
 
+document.addEventListener("DOMContentLoaded",()=>{
+  const btn=$("settingsBtn");
+  if(btn){
+    btn.type="button";
+    btn.addEventListener("click",openSettingsPanel);
+    btn.setAttribute("aria-expanded","false");
+  }
+});
 
 function safeGet(key, fallback=""){
   try { return localStorage.getItem(key) ?? fallback; } catch(e) { return fallback; }
@@ -577,7 +586,7 @@ let undoStack=[], redoStack=[], historyLock=false, historyTimer=null, autoLabels
 const blogDefault="2799540703054854619";
 function esc(x){return String(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function cleanModel(v){
- v=String(v||"").replace(/^models\\//i,"");
+ v=String(v||"").replace(/^models\//i,"");
  if(v.includes("3.8"))return"gemini-3.8-flash";
  if(v.includes("3.7"))return"gemini-3.7-flash";
  if(v.includes("3.6"))return"gemini-3.6-flash";
@@ -1299,7 +1308,34 @@ ${JSON.stringify(data)}`;
   },true);
 })();
 </script>
+
+
 <script>
+/* BIDIRE FINAL — single-section navigation */
+(function(){
+  const nav=document.getElementById("sectionNav");
+  if(!nav)return;
+  const ids=["newSection","editSection","safeSection","previewSection","allPostsPanel"];
+  const sections=ids.map(id=>document.getElementById(id)).filter(Boolean);
+  function show(id){
+    sections.forEach(el=>el.classList.toggle("hide",el.id!==id));
+    nav.querySelectorAll("[data-target]").forEach(b=>b.classList.toggle("active",b.dataset.target===id));
+    const el=document.getElementById(id);
+    if(el) window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-92),behavior:"smooth"});
+  }
+  nav.addEventListener("click",function(ev){
+    const b=ev.target.closest("[data-target]");
+    if(!b)return;
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    show(b.dataset.target);
+  },true);
+  show("newSection");
+})();
+</script>
+
+
+
 (function(){
 'use strict';
 const q=id=>document.getElementById(id);
@@ -1406,7 +1442,7 @@ if(q('rawNormalWrite'))q('rawNormalWrite').onclick=()=>{
  if(q('englishSummaryEdit'))q('englishSummaryEdit').value=out.englishSummary.trim();
  if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();if(typeof render==='function')render();if(typeof scheduleAutosave==='function')scheduleAutosave();if(typeof pushUndoSnapshot==='function')pushUndoSnapshot();
  setStatus('status','✓ Normal News Update ಪೂರ್ಣಗೊಂಡಿದೆ — AI ಬಳಸಲಾಗಿಲ್ಲ.');
- showSection('editSection',true);
+ scrollToId('editSection');
 };
 
 /* Raw News AI Chat */
@@ -1416,7 +1452,7 @@ if(q('rawChatSend'))q('rawChatSend').onclick=async()=>{
  const question=q('rawChatInput')?.value.trim();const raw=q('raw')?.value.trim();
  if(!question){setStatus('rawChatStatus','AIಗೆ ಕೇಳಬೇಕಾದ ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ.');return}
  if(!raw){setStatus('rawChatStatus','ಮೊದಲು Raw News ಹಾಕಿ.');return}
- const key=safeGet('bn_key','');if(!key){setStatus('rawChatStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');if(q('settings')?.classList.contains('hide'))q('settingsBtn')?.click();scrollToId('settings');return}
+ const key=safeGet('bn_key','');if(!key){setStatus('rawChatStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');scrollToId('settings');return}
  addChat(question,'user');q('rawChatInput').value='';q('rawChatSend').disabled=true;setStatus('rawChatStatus','AI ಉತ್ತರ ತಯಾರಿಸುತ್ತಿದೆ...');
  try{
   const prompt=`You are the Bidire News Raw News Assistant. Use ONLY the supplied raw news. Never invent facts. Answer the editor's request clearly. If asked to rewrite, preserve names, dates, places, numbers and supplied facts. RAW NEWS:\n${raw}\n\nEDITOR REQUEST:\n${question}`;
@@ -1437,14 +1473,12 @@ function openManualCrop(i){ensureCropStyles();const p=photos[i];const modal=docu
  modal.querySelector('#bnCropCancel').onclick=()=>modal.remove();modal.querySelector('#bnCropApply').onclick=()=>{const x=Math.max(0,+modal.querySelector('#bnX').value||0),y=Math.max(0,+modal.querySelector('#bnY').value||0),w=Math.max(1,+modal.querySelector('#bnW').value||im.naturalWidth),h=Math.max(1,+modal.querySelector('#bnH').value||im.naturalHeight);const cc=document.createElement('canvas');cc.width=Math.min(w,im.naturalWidth-x);cc.height=Math.min(h,im.naturalHeight-y);cc.getContext('2d').drawImage(im,x,y,cc.width,cc.height,0,0,cc.width,cc.height);photos[i].dataUrl=cc.toDataURL('image/jpeg',.92);photos[i].driveUrl='';modal.remove();renderPhotos();render();setStatus('photoStatus','✓ Manual Crop ಪೂರ್ಣಗೊಂಡಿದೆ.');};}
 const originalRenderPhotos=window.renderPhotos;
 window.renderPhotos=function(){if(typeof originalRenderPhotos==='function')originalRenderPhotos();const grid=q('photoGrid');if(!grid)return;grid.querySelectorAll('.photo-item').forEach((item,i)=>{let tools=item.querySelector('.bn-photo-tools');if(!tools){tools=document.createElement('div');tools.className='bn-photo-tools';tools.innerHTML='<button type="button" class="light">✂ Auto Crop</button><button type="button" class="light">✂ Manual Crop</button>';item.appendChild(tools);const bs=tools.querySelectorAll('button');bs[0].onclick=()=>applyAutoCrop(i);bs[1].onclick=()=>openManualCrop(i);}});};
-const bnPhotoObserver=new MutationObserver(()=>{const grid=q('photoGrid');if(!grid)return;grid.querySelectorAll('.photo-item').forEach((item,i)=>{if(item.querySelector('.bn-photo-tools'))return;const tools=document.createElement('div');tools.className='bn-photo-tools';tools.innerHTML='<button type="button" class="light">✂ Auto Crop</button><button type="button" class="light">✂ Manual Crop</button>';item.appendChild(tools);const bs=tools.querySelectorAll('button');bs[0].onclick=()=>applyAutoCrop(i);bs[1].onclick=()=>openManualCrop(i);});});
-if(q('photoGrid'))bnPhotoObserver.observe(q('photoGrid'),{childList:true,subtree:true});
 
 /* Image → Text */
 (function(){
  const box=q('photo-box');if(!box)return;
  if(!q('imageTextTools')){const d=document.createElement('div');d.className='bn-ocr-box';d.id='imageTextTools';d.innerHTML='<strong>📝 Image to Text</strong><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:7px"><input id="imageTextInput" type="file" accept="image/*" multiple style="flex:1"><button id="imageToTextBtn" type="button" class="black">✨ Extract Text</button></div><div id="imageTextStatus" class="small"></div>';box.appendChild(d);}
- q('imageToTextBtn').onclick=async()=>{const files=[...(q('imageTextInput')?.files||[])];if(!files.length){setStatus('imageTextStatus','ಮೊದಲು image ಆಯ್ಕೆ ಮಾಡಿ.');return}const key=safeGet('bn_key','');if(!key){setStatus('imageTextStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');if(q('settings')?.classList.contains('hide'))q('settingsBtn')?.click();scrollToId('settings');return}q('imageToTextBtn').disabled=true;setStatus('imageTextStatus','Image text ಓದಲಾಗುತ್ತಿದೆ...');try{let all=[];for(const f of files){const data=await fileData(f);const b64=data.split(',')[1],mime=f.type||'image/jpeg';const prompt='Extract all readable text from this image exactly as visible. Preserve Kannada/English wording, numbers and line breaks as much as possible. Return only the extracted text. Do not invent or summarize.';const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}],{});all.push((j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('').trim());}const txt=all.filter(Boolean).join('\n\n');q('raw').value=q('raw').value.trim()?q('raw').value.trim()+'\n\n'+txt:txt;if(typeof scheduleAutosave==='function')scheduleAutosave();setStatus('imageTextStatus','✓ Image to Text ಪೂರ್ಣಗೊಂಡಿದೆ. Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.');scrollToId('newSection');q('raw')?.focus();}catch(e){setStatus('imageTextStatus','Image to Text error: '+e.message)}finally{q('imageToTextBtn').disabled=false}};
+ q('imageToTextBtn').onclick=async()=>{const files=[...(q('imageTextInput')?.files||[])];if(!files.length){setStatus('imageTextStatus','ಮೊದಲು image ಆಯ್ಕೆ ಮಾಡಿ.');return}const key=safeGet('bn_key','');if(!key){setStatus('imageTextStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');scrollToId('settings');return}q('imageToTextBtn').disabled=true;setStatus('imageTextStatus','Image text ಓದಲಾಗುತ್ತಿದೆ...');try{let all=[];for(const f of files){const data=await fileData(f);const b64=data.split(',')[1],mime=f.type||'image/jpeg';const prompt='Extract all readable text from this image exactly as visible. Preserve Kannada/English wording, numbers and line breaks as much as possible. Return only the extracted text. Do not invent or summarize.';const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}],{});all.push((j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('').trim());}const txt=all.filter(Boolean).join('\n\n');q('raw').value=q('raw').value.trim()?q('raw').value.trim()+'\n\n'+txt:txt;if(typeof scheduleAutosave==='function')scheduleAutosave();setStatus('imageTextStatus','✓ Image to Text ಪೂರ್ಣಗೊಂಡಿದೆ. Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.');scrollToId('newSection');q('raw')?.focus();}catch(e){setStatus('imageTextStatus','Image to Text error: '+e.message)}finally{q('imageToTextBtn').disabled=false}};
 })();
 
 /* Audio → Text: file + microphone recording + Gemini transcription */
@@ -1455,15 +1489,15 @@ if(q('photoGrid'))bnPhotoObserver.observe(q('photoGrid'),{childList:true,subtree
  rec.onclick=async()=>{try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onstop=()=>{const b=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});stream.getTracks().forEach(t=>t.stop());setAudioBlob(b);};recorder.start();rec.disabled=true;if(stop)stop.disabled=false;rec.textContent='🔴 Recording...';setStatus('audioStatus','Recording… Stop ಒತ್ತಿ.')}catch(e){setStatus('audioStatus','Microphone error: '+e.message)}};
  if(stop)stop.onclick=()=>{if(recorder&&recorder.state!=='inactive')recorder.stop();rec.disabled=false;stop.disabled=true;rec.textContent='🎙️ Start Recording';};
  if(file)file.onchange=async()=>{const f=file.files?.[0];if(f)setAudioBlob(f)};
- trans.onclick=async()=>{if(!blobData){setStatus('audioStatus','ಮೊದಲು audio record ಅಥವಾ upload ಮಾಡಿ.');return}const key=safeGet('bn_key','');if(!key){setStatus('audioStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');if(q('settings')?.classList.contains('hide'))q('settingsBtn')?.click();scrollToId('settings');return}trans.disabled=true;setStatus('audioStatus','Audio transcription ನಡೆಯುತ್ತಿದೆ...');try{const data=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(blobData)});const b64=data.split(',')[1],mime=blobData.type||'audio/webm';const prompt='Transcribe this audio accurately. Preserve the spoken Kannada/English wording, names, numbers and sentence order. Return only the transcript. Do not summarize or invent.';const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}],{});const txt=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('').trim();q('raw').value=q('raw').value.trim()?q('raw').value.trim()+'\n\n'+txt:txt;if(typeof scheduleAutosave==='function')scheduleAutosave();setStatus('audioStatus','✓ Audio → Text ಪೂರ್ಣಗೊಂಡಿದೆ. Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.');scrollToId('newSection');q('raw')?.focus();}catch(e){setStatus('audioStatus','Audio transcription error: '+e.message)}finally{trans.disabled=false}};
+ trans.onclick=async()=>{if(!blobData){setStatus('audioStatus','ಮೊದಲು audio record ಅಥವಾ upload ಮಾಡಿ.');return}const key=safeGet('bn_key','');if(!key){setStatus('audioStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');scrollToId('settings');return}trans.disabled=true;setStatus('audioStatus','Audio transcription ನಡೆಯುತ್ತಿದೆ...');try{const data=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(blobData)});const b64=data.split(',')[1],mime=blobData.type||'audio/webm';const prompt='Transcribe this audio accurately. Preserve the spoken Kannada/English wording, names, numbers and sentence order. Return only the transcript. Do not summarize or invent.';const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}],{});const txt=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('').trim();q('raw').value=q('raw').value.trim()?q('raw').value.trim()+'\n\n'+txt:txt;if(typeof scheduleAutosave==='function')scheduleAutosave();setStatus('audioStatus','✓ Audio → Text ಪೂರ್ಣಗೊಂಡಿದೆ. Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.');scrollToId('newSection');q('raw')?.focus();}catch(e){setStatus('audioStatus','Audio transcription error: '+e.message)}finally{trans.disabled=false}};
  if(clear)clear.onclick=()=>{blobData=null;chunks=[];if(file)file.value='';if(prev){prev.pause();prev.removeAttribute('src');prev.classList.add('hide');}setStatus('audioStatus','');};
 })();
 
 /* Stage auto-jump: AI/normal/edit/photo/audio/draft/preview actions. */
-if(q('rawAiWrite')){q('rawAiWrite').addEventListener('click',()=>{setTimeout(()=>showSection('editSection',true),900)},true);}
-if(q('publish'))q('publish').addEventListener('click',()=>setTimeout(()=>showSection('previewSection',true),1400));
-if(q('save'))q('save').addEventListener('click',()=>setTimeout(()=>showSection('safeSection',true),350));
-if(q('restoreSafeDraft'))q('restoreSafeDraft').addEventListener('click',()=>setTimeout(()=>showSection('editSection',true),350));
+if(q('rawAiWrite')){q('rawAiWrite').addEventListener('click',()=>{setTimeout(()=>scrollToId('editSection'),350)},true);}
+if(q('publish'))q('publish').addEventListener('click',()=>setTimeout(()=>scrollToId('previewSection'),500));
+if(q('save'))q('save').addEventListener('click',()=>setTimeout(()=>scrollToId('safeSection'),250));
+if(q('restoreSafeDraft'))q('restoreSafeDraft').addEventListener('click',()=>setTimeout(()=>scrollToId('editSection'),250));
 if(q('transcribeAudio'))q('transcribeAudio').addEventListener('click',()=>setTimeout(()=>scrollToId('newSection'),350));
 if(q('imageToTextBtn'))q('imageToTextBtn').addEventListener('click',()=>setTimeout(()=>scrollToId('newSection'),350));
 
@@ -1473,6 +1507,4 @@ window.addEventListener('beforeunload',()=>{try{if(typeof saveDraftAuto==='funct
 /* Initial state: New News only, clean and at top. */
 setTimeout(()=>{showSection('newSection',false);},0);
 })();
-
-</script>
 </body></html>
