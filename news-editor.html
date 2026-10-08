@@ -118,6 +118,7 @@ header{
 .section-nav button[data-target="assistantSection"].active{background:var(--bn-purple)}
 .section-nav button[data-target="safeSection"].active{background:var(--bn-green)}
 .section-nav button[data-target="previewSection"].active{background:var(--bn-amber)}
+.section-nav button[data-target="adsPanel"].active{background:var(--bn-orange)}
 .section-nav button[data-target="settings"].active{background:var(--bn-slate)}
 .section-nav button[data-target="allPostsPanel"].active{background:var(--bn-teal)}
 
@@ -167,6 +168,7 @@ header{min-height:58px;padding:9px 14px}
 .section-nav button[data-target="editSection"]{border-color:#efbcbc}
 .section-nav button[data-target="safeSection"]{border-color:#b9e1c7}
 .section-nav button[data-target="previewSection"]{border-color:#ead19d}
+.section-nav button[data-target="adsPanel"]{border-color:#f0c4aa}
 .section-nav button[data-target="allPostsPanel"]{border-color:#b9dfe4}
 
 .audio .subtool-body{padding:10px 12px}
@@ -355,15 +357,9 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
   z-index:10;
 }
 
-
-/* ===== Photo Studio + Image to Text ===== */
-.photo-editor{margin-top:12px;border:1px solid #d7dee8;border-radius:14px;padding:12px;background:#f8fafc}.photo-editor-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.photo-editor-preview{background:#111;border-radius:12px;min-height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:9px}.photo-editor-preview img{max-width:100%;max-height:420px;display:block;transform-origin:center}.photo-edit-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.photo-edit-controls label{display:flex;flex-direction:column;gap:4px}.photo-edit-controls input[type=range]{width:100%}.photo-card-tools{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.photo-card-tools button{font-size:11px;padding:6px 8px}.photo-caption-input{width:100%;min-height:54px;margin-top:6px;padding:8px;border:1px solid #d7dee8;border-radius:9px;resize:vertical;font:inherit}.image-text textarea,#imageTextOutput{min-height:150px;width:100%;box-sizing:border-box}.image-text .subtool-body{padding:10px 12px}@media(max-width:600px){.photo-edit-controls{grid-template-columns:1fr}.photo-editor-preview{min-height:140px}}
 </style>
 <style id="bidire-ad-v7-css">
 .ad-dashboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.ad-stat{background:#f7f7f7;border:1px solid #ddd;border-radius:10px;padding:11px;text-align:center}.ad-stat span{display:block;font-size:12px;color:#666}.ad-stat b{display:block;font-size:20px;margin-top:3px}.ad-three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ad-creative{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fff}.ad-creative h3{margin:0 0 8px;font-size:16px}.ad-size-note{font-size:11px;color:#777;margin-bottom:7px}.ad-creative img{display:block;width:100%;max-height:150px;object-fit:contain;background:#f5f5f5;border-radius:6px;margin-top:8px}.ad-bill-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ad-card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0;background:#fff}.ad-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.ad-card-title{font-size:17px;font-weight:800}.ad-badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800;background:#eee}.ad-badge.active{background:#dff6e5;color:#176b2c}.ad-badge.scheduled{background:#fff1c7;color:#8a5a00}.ad-badge.expired{background:#f8dddd;color:#9a1c1c}.ad-badge.paid{background:#dff6e5;color:#176b2c}.ad-badge.partial{background:#fff1c7;color:#8a5a00}.ad-badge.pending{background:#f8dddd;color:#9a1c1c}.bill-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:4px;padding:28px;max-width:850px;margin:15px auto;font-family:Arial,sans-serif}.bill-top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111;padding-bottom:14px}.bill-brand{font-size:28px;font-weight:900}.bill-title{font-size:30px;font-weight:900;text-align:right}.bill-small{font-size:12px;color:#555}.bill-table{width:100%;border-collapse:collapse;margin-top:18px}.bill-table th,.bill-table td{border:1px solid #ccc;padding:8px;font-size:13px}.bill-table th{background:#f5f5f5}.bill-total{margin-left:auto;width:330px;margin-top:15px}.bill-total div{display:flex;justify-content:space-between;padding:5px 0}.bill-grand{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:5px;padding-top:8px}.bill-notes{margin-top:20px;font-size:12px;line-height:1.55}.bill-footer{border-top:1px solid #ccc;margin-top:22px;padding-top:12px;font-size:11px;text-align:center;color:#444}.ad-filter-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.ad-summary-table{width:100%;border-collapse:collapse}.ad-summary-table th,.ad-summary-table td{border:1px solid #ddd;padding:7px;font-size:12px;text-align:left}.ad-summary-table th{background:#f5f5f5}@media(max-width:800px){.ad-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.ad-three-grid{grid-template-columns:1fr}.ad-filter-row{grid-template-columns:1fr}.bill-paper{padding:16px}.bill-top{flex-direction:column}.bill-title{text-align:left}.bill-total{width:100%}}
-
-/* ===== FINAL FIX: Photo crop ===== */
-.photo-crop-tools{margin-top:10px;padding:10px;border:1px dashed #cfd7e2;border-radius:10px;background:#fff}.photo-crop-manual{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.photo-crop-manual label{display:flex;flex-direction:column;gap:4px}.photo-crop-manual input[type=range]{width:100%}@media(max-width:600px){.photo-crop-manual{grid-template-columns:1fr}}
 </style></head>
 <body>
 <header>
@@ -375,7 +371,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <div aria-hidden="true" class="legacy-controls">
 <button id="newBtn" type="button"></button>
 <button id="allPostsBtn" type="button"></button>
-
+<button id="adsBtn" type="button"></button>
 </div>
 </header>
 <main class="wrap">
@@ -406,47 +402,12 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 </div>
 </div>
 <div class="photo-box">
-<strong style="font-size:13px">📷 Photo Studio — Caption + Edit</strong>
+<strong style="font-size:13px">📷 Photo + Automatic Caption</strong>
 <label>📷 Photos / ಫೋಟೋಗಳು</label>
 <input accept="image/*" id="photoInput" multiple="" type="file"/>
-<div class="small">Automatic Caption, Manual Caption, Automatic Photo Edit ಮತ್ತು Manual Photo Edit ಲಭ್ಯ. Original photo ಯಾವತ್ತೂ overwrite ಆಗುವುದಿಲ್ಲ.</div>
+<div class="small">ಫೋಟೋ ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಸಿದ್ಧವಾದ ಸುದ್ದಿಯ ಆಧಾರದ ಮೇಲೆ caption automatic ಆಗಿ ತಯಾರಾಗುತ್ತದೆ.</div>
 <div class="photo-grid" id="photoGrid"></div><div class="small" id="photoStatus"></div>
-<div class="photo-editor hide" id="photoEditor">
-  <div class="photo-editor-head"><strong>🖼️ Photo Edit</strong><button class="light" id="closePhotoEditor" type="button">Close</button></div>
-  <div class="photo-editor-preview"><img id="photoEditPreview" alt="Photo preview"/></div>
-  <div class="actions"><button class="primary" id="autoPhotoEdit" type="button">✨ Automatic Edit</button><button class="light" id="resetPhotoEdit" type="button">↺ Original</button></div>
-  <div class="photo-edit-controls">
-    <label>Brightness <input id="photoBrightness" type="range" min="60" max="160" value="100"/></label>
-    <label>Contrast <input id="photoContrast" type="range" min="60" max="160" value="100"/></label>
-    <label>Saturation <input id="photoSaturation" type="range" min="0" max="180" value="100"/></label>
-    <label>Rotation <input id="photoRotation" type="range" min="-180" max="180" value="0"/></label>
-  </div>
-  <div class="photo-crop-tools">
-    <div class="small"><strong>✂️ Crop</strong> — Automatic ಅಥವಾ Manual</div>
-    <div class="actions">
-      <button class="primary" id="autoCropPhoto" type="button">✂️ Auto Crop 16:9</button>
-      <button class="light" id="manualCropPhoto" type="button">🖐 Manual Crop</button>
-      <button class="light" id="resetCropPhoto" type="button">↺ Reset Crop</button>
-    </div>
-    <div class="photo-crop-manual hide" id="photoCropManual">
-      <label>X <input id="cropX" type="range" min="0" max="100" value="0"/></label>
-      <label>Y <input id="cropY" type="range" min="0" max="100" value="0"/></label>
-      <label>Width <input id="cropW" type="range" min="10" max="100" value="100"/></label>
-      <label>Height <input id="cropH" type="range" min="10" max="100" value="100"/></label>
-    </div>
-  </div>
-  </div>
-  <div class="actions"><button class="primary" id="savePhotoEdit" type="button">✓ Save Edited Copy</button></div>
 </div>
-</div>
-<div class="subtool image-text">
-<button class="subtool-toggle" type="button">🖼️ Image to Text <span class="chev">▼</span></button><div class="subtool-body">
-<div class="small">ಫೋಟೋದಲ್ಲಿರುವ ಕಾಣುವ ಪಠ್ಯವನ್ನು AI ಮೂಲಕ ಹೊರತೆಗೆದು ಸಂಪಾದಿಸಬಹುದು. ಹೊಸ ಮಾಹಿತಿ ಸೇರಿಸುವುದಿಲ್ಲ.</div>
-<input accept="image/*" id="imageTextInput" type="file"/>
-<div class="actions"><button class="black" id="imageToTextBtn" type="button">🖼️ Image → Text</button><button class="light" id="imageTextClear" type="button">Clear</button><button class="light" id="imageTextToRaw" type="button">↳ Raw Newsಗೆ ಸೇರಿಸಿ</button></div>
-<textarea id="imageTextOutput" placeholder="Image text ಇಲ್ಲಿ ಬರುತ್ತದೆ..."></textarea>
-<div class="small" id="imageTextStatus"></div>
-</div></div>
 <div class="subtool audio">
 <button class="subtool-toggle" type="button">🎙️ Audio to Text <span class="chev">▼</span></button><div class="subtool-body">
 <div class="small">ನೇರವಾಗಿ audio record ಮಾಡಬಹುದು ಅಥವಾ ನಿಮ್ಮ deviceನಲ್ಲಿ ಇರುವ audio file upload ಮಾಡಬಹುದು.</div>
@@ -548,7 +509,7 @@ html[data-theme="dark"] .edit-ai-chat{background:#11161d;border-color:#30363d}.e
 <label>Google OAuth Client ID</label><input id="clientId" placeholder="xxxxx.apps.googleusercontent.com"/>
 <label>Blogger Blog ID</label><input id="blogId" value="2799540703054854619"/>
 <label>Default Blogger Label</label><input id="blogLabel"/>
-<div class="actions"><button class="primary" id="saveSettings" type="button">Save Settings</button><button class="black" id="connect" type="button">🔐 Connect Blogger</button><button class="light" id="disconnect" type="button">Disconnect</button></div><div class="small">Blogger authorization ಈಗ Google OAuth ಮೂಲಕ ನಡೆಯುತ್ತದೆ. Gmail password/verification code ಅನ್ನು Editorಗೆ ಹಂಚಬೇಡಿ. ನಿಮ್ಮ Bidire authorization gateway ಬೇಕಿದ್ದರೆ ಅದಕ್ಕೆ server-side OAuth endpoint ಅಗತ್ಯ.</div>
+<div class="actions"><button class="primary" id="saveSettings" type="button">Save Settings</button><button class="black" id="connect" type="button">🔐 Connect Google / Blogger</button><button class="light" id="disconnect" type="button">Disconnect</button></div>
 <div class="small" id="settingsStatus"></div><div class="small" id="bloggerStatus"></div>
 </div></section>
 <section class="panel hide" id="allPostsPanel">
@@ -584,14 +545,6 @@ function openSettingsPanel(){
   if(isOpen)setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"start"}),50);
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-  const btn=$("settingsBtn");
-  if(btn){
-    btn.type="button";
-    btn.addEventListener("click",openSettingsPanel);
-    btn.setAttribute("aria-expanded","false");
-  }
-});
 
 function safeGet(key, fallback=""){
   try { return localStorage.getItem(key) ?? fallback; } catch(e) { return fallback; }
@@ -987,69 +940,18 @@ async function caption(data){
   return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim().replace(/^["“”']+|["“”']+$/g,"")
  }catch(e){return""}
 }
-let activePhotoIndex=-1;
 function renderPhotos(){
- $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item">
- <img src="${p.dataUrl||p.driveUrl||""}">
- <textarea class="photo-caption-input" data-caption-i="${i}" placeholder="Manual caption...">${esc(p.caption||"")}</textarea>
- <div class="pname">${esc(p.name)}</div>
- <div class="photo-card-tools">
-  <button type="button" class="light photo-ai-caption" data-i="${i}">✨ AI Caption</button>
-  <button type="button" class="light photo-manual-edit" data-i="${i}">🖌️ Manual Edit</button>
-  <button type="button" class="light photo-auto-edit" data-i="${i}">⚡ Auto Edit</button>
-  <button type="button" class="light photo-remove" data-i="${i}">Remove</button>
- </div></div>`).join("");
+ $("photoGrid").innerHTML=photos.map((p,i)=>`<div class="photo-item"><img src="${p.dataUrl||p.driveUrl||""}"><div class="pcap">${esc(p.caption||"Caption")}</div><div class="pname">${esc(p.name)}</div><button type="button" class="light photo-remove" data-i="${i}">Remove</button></div>`).join("");
  document.querySelectorAll(".photo-remove").forEach(b=>b.onclick=()=>{photos.splice(+b.dataset.i,1);renderPhotos();render()});
- document.querySelectorAll(".photo-caption-input").forEach(t=>t.oninput=()=>{photos[+t.dataset.captionI].caption=t.value;render()});
- document.querySelectorAll(".photo-ai-caption").forEach(b=>b.onclick=async()=>{const i=+b.dataset.i;const p=photos[i];b.disabled=true;b.textContent="⏳ Caption";p.caption=await caption(p.dataUrl)||p.caption||($("headline").value||"ಸುದ್ದಿ")+" — Bidire News";b.disabled=false;b.textContent="✨ AI Caption";renderPhotos();render()});
- document.querySelectorAll(".photo-manual-edit").forEach(b=>b.onclick=()=>openPhotoEditor(+b.dataset.i));
- document.querySelectorAll(".photo-auto-edit").forEach(b=>b.onclick=async()=>{b.disabled=true;b.textContent="⏳ Edit";await autoEditPhoto(+b.dataset.i);b.disabled=false;b.textContent="⚡ Auto Edit"});
 }
 $("photoInput").onchange=async e=>{
  for(const f of [...e.target.files||[]]){
   if(!f.type.startsWith("image/"))continue;
-  const dataUrl=await fileData(f),p={name:f.name,dataUrl,originalDataUrl:dataUrl,caption:"",driveUrl:""};photos.push(p);renderPhotos();
+  const dataUrl=await fileData(f),p={name:f.name,dataUrl,caption:"",driveUrl:""};photos.push(p);renderPhotos();
   p.caption=await caption(dataUrl)||($("headline").value||"ಸುದ್ದಿ")+" — Bidire News";renderPhotos();render();
  }
  e.target.value="";
 };
-function openPhotoEditor(i){
- activePhotoIndex=i;const p=photos[i];if(!p)return;
- $("photoEditor").classList.remove("hide");$("photoEditPreview").src=p.dataUrl||p.originalDataUrl||"";
- $("photoBrightness").value=100;$("photoContrast").value=100;$("photoSaturation").value=100;$("photoRotation").value=0;applyPhotoPreview();
- $("photoEditor").scrollIntoView({behavior:"smooth",block:"center"});
-}
-function applyPhotoPreview(){
- const img=$("photoEditPreview");if(!img)return;
- img.style.filter=`brightness(${$("photoBrightness").value}%) contrast(${$("photoContrast").value}%) saturate(${$("photoSaturation").value}%)`;
- img.style.transform=`rotate(${$("photoRotation").value}deg)`;
-}
-["photoBrightness","photoContrast","photoSaturation","photoRotation"].forEach(id=>$(id).addEventListener("input",applyPhotoPreview));
-$("closePhotoEditor").onclick=()=>{$("photoEditor").classList.add("hide");activePhotoIndex=-1};
-$("resetPhotoEdit").onclick=()=>{if(activePhotoIndex<0)return;const p=photos[activePhotoIndex];p.dataUrl=p.originalDataUrl||p.dataUrl;$("photoBrightness").value=100;$("photoContrast").value=100;$("photoSaturation").value=100;$("photoRotation").value=0;$("photoEditPreview").src=p.dataUrl;applyPhotoPreview();renderPhotos();render()};
-async function renderEditedDataUrl(p,brightness,contrast,saturation,rotation){
- const img=new Image();img.src=p.originalDataUrl||p.dataUrl;await new Promise((res,rej)=>{img.onload=res;img.onerror=rej});
- const rad=Math.abs(rotation)*Math.PI/180,sw=Math.abs(Math.sin(rad)),cw=Math.abs(Math.cos(rad));
- const w=Math.max(1,Math.round(img.width*cw+img.height*sw)),h=Math.max(1,Math.round(img.width*sw+img.height*cw));
- const c=document.createElement("canvas");c.width=w;c.height=h;const ctx=c.getContext("2d");ctx.filter=`brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;ctx.translate(w/2,h/2);ctx.rotate(rotation*Math.PI/180);ctx.drawImage(img,-img.width/2,-img.height/2);return c.toDataURL("image/jpeg",.92);
-}
-async function autoEditPhoto(i){
- const p=photos[i];if(!p)return;p.dataUrl=await renderEditedDataUrl(p,106,110,108,0);renderPhotos();render();
-}
-$("autoPhotoEdit").onclick=async()=>{if(activePhotoIndex<0)return;const b=$("autoPhotoEdit");b.disabled=true;try{const p=photos[activePhotoIndex];p.dataUrl=await renderEditedDataUrl(p,106,110,108,0);$("photoEditPreview").src=p.dataUrl;applyPhotoPreview();renderPhotos();render()}finally{b.disabled=false}};
-$("savePhotoEdit").onclick=async()=>{if(activePhotoIndex<0)return;const p=photos[activePhotoIndex];const b=$("savePhotoEdit");b.disabled=true;try{p.dataUrl=await renderEditedDataUrl(p,+$("photoBrightness").value,+$("photoContrast").value,+$("photoSaturation").value,+$("photoRotation").value);renderPhotos();render();$("photoEditor").classList.add("hide")}finally{b.disabled=false}};
-
-async function imageToText(dataUrl){
- const key=safeGet("bn_key","");if(!key)throw Error("ಮೊದಲು Gemini API Key ಹಾಕಿ.");
- const base64=dataUrl.split(",")[1],mime=(dataUrl.match(/^data:([^;]+);/)||[])[1]||"image/jpeg";
- const prompt=`Extract ONLY the visible written text from this image. Preserve Kannada/English wording, numbers, names, punctuation and line meaning as closely as possible. Do not summarize, translate, correct, or invent anything. If no readable text is present, say: No readable text found.`;
- const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});
- return(j.candidates?.[0]?.content?.parts?.[0]?.text||"").trim();
-}
-$("imageToTextBtn").onclick=async()=>{const f=$("imageTextInput").files?.[0];if(!f){$("imageTextStatus").textContent="ಮೊದಲು image ಆಯ್ಕೆ ಮಾಡಿ.";return}const b=$("imageToTextBtn");b.disabled=true;b.textContent="⏳ Reading...";$("imageTextStatus").textContent="Image text ಹೊರತೆಗೆಯಲಾಗುತ್ತಿದೆ...";try{const d=await fileData(f);$("imageTextOutput").value=await imageToText(d);$("imageTextStatus").textContent="✓ Image to Text complete."}catch(e){$("imageTextStatus").textContent="✕ "+e.message}finally{b.disabled=false;b.textContent="🖼️ Image → Text"}};
-$("imageTextClear").onclick=()=>{$("imageTextInput").value="";$("imageTextOutput").value="";$("imageTextStatus").textContent=""};
-$("imageTextToRaw").onclick=()=>{const t=$("imageTextOutput").value.trim();if(!t)return;$("raw").value=$("raw").value.trim()?$("raw").value.trim()+"\n\n"+t:t;$("raw").dispatchEvent(new Event("input"));$("imageTextStatus").textContent="✓ Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ."};
-
 
 let gsiLoadingPromise=null;
 function loadGoogleIdentityScript(){
@@ -1245,7 +1147,7 @@ $("saveSettings").onclick=()=>{
  if($("settingsStatus"))$("settingsStatus").textContent="✓ Settings saved.";
 };
 $("newBtn").onclick=()=>{if(!confirm("ಹೊಸ Post ಆರಂಭಿಸಬೇಕೇ?"))return;$("raw").value=$("headline").value=$("sub").value=$("bodyOut").value="";if($("category"))$("category").value="ಮೂಡುಬಿದಿರೆ";photos=[];keyPoints=[];englishSummary="";editingPostId=null;editingPostUrl="";$("keyPointsEnabled").checked=true;$("englishEnabled").checked=true;setEditingPost(null,"");autoLabels=[];syncEditors();renderAutoLabelsEditor();renderPhotos();render();setupSocialShares("");localStorage.removeItem("bn_draft");undoStack=[];redoStack=[];pushUndoSnapshot();window.scrollTo({top:0,behavior:"smooth"})};
-let d=null;
+let d=safeJsonGet("bn_draft",null);
 if(d){
   $("headline").value=d.headline||"";$("sub").value=d.sub||"";$("bodyOut").value=d.body||"";if($("category"))$("category").value=["ಮೂಡುಬಿದಿರೆ","ಕ್ರೈಂ","ತಂತ್ರಜ್ಞಾನ","ವಿಶೇಷ"].includes(d.category)?d.category:"ಮೂಡುಬಿದಿರೆ";
   keyPoints=d.keyPoints||[];englishSummary=d.englishSummary||""; autoLabels=Array.isArray(d.autoLabels)?d.autoLabels:[];photos=d.photos||[];
@@ -1300,9 +1202,9 @@ if(d){
     if(headline)headline.value=parsed.headline||"";
     if(sub)sub.value=parsed.sub||"";
     if(body)body.value=parsed.body||"";
-    keyPoints=parsed.keyPoints||[];
-    englishSummary=parsed.englishSummary||"";
-    if(english)english.value=englishSummary;
+    window.keyPoints=parsed.keyPoints||[];
+    window.englishSummary=parsed.englishSummary||"";
+    if(english)english.value=window.englishSummary;
     if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();
     if(typeof render==='function')render();
     if(typeof scheduleAutosave==='function')scheduleAutosave();
@@ -1397,189 +1299,180 @@ ${JSON.stringify(data)}`;
   },true);
 })();
 </script>
-
-
 <script>
 (function(){
-  "use strict";
-  const $id=id=>document.getElementById(id);
-  const scrollToStage=id=>{const el=$id(id);if(!el)return;setTimeout(()=>window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-92),behavior:"smooth"}),80)};
+'use strict';
+const q=id=>document.getElementById(id);
+const scrollToId=(id,offset=88)=>{const el=q(id);if(!el)return; requestAnimationFrame(()=>{const y=el.getBoundingClientRect().top+window.scrollY-offset;window.scrollTo({top:Math.max(0,y),behavior:'smooth'});});};
+const setStatus=(id,msg)=>{const el=q(id);if(el){el.textContent=msg||'';el.style.display=msg?'block':'';}};
 
-  // 1) NEW NEWS must always start completely blank.
-  window.__bidireNewNewsReset=function(){
-    try{localStorage.removeItem("bn_draft");}catch(e){}
-    ["raw","headline","sub","bodyOut","englishSummaryEdit","imageTextOutput","rawChatInput"].forEach(id=>{const el=$id(id);if(el)el.value="";});
-    ["photoInput","imageTextInput","audioInput"].forEach(id=>{const el=$id(id);if(el)try{el.value="";}catch(e){}});
-    if(Array.isArray(window.photos)) window.photos.length=0;
-    try{photos=[];keyPoints=[];englishSummary="";autoLabels=[];editingPostId=null;editingPostUrl="";}catch(e){}
-    const cat=$id("category");if(cat)cat.value="ಮೂಡುಬಿದಿರೆ";
-    ["keyPointsEnabled","englishEnabled"].forEach(id=>{const el=$id(id);if(el)el.checked=true;});
-    const log=$id("rawChatLog");if(log)log.innerHTML="";
-    const chatStatus=$id("rawChatStatus");if(chatStatus)chatStatus.textContent="";
-    const imageStatus=$id("imageTextStatus");if(imageStatus)imageStatus.textContent="";
-    const audioStatus=$id("audioStatus");if(audioStatus)audioStatus.textContent="";
-    const audioPreview=$id("audioPreview");if(audioPreview){audioPreview.pause();audioPreview.removeAttribute("src");audioPreview.load();audioPreview.classList.add("hide");}
-    const photoEditor=$id("photoEditor");if(photoEditor)photoEditor.classList.add("hide");
-    if(typeof setEditingPost==='function')setEditingPost(null,"");
-    if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();
-    if(typeof renderAutoLabelsEditor==='function')renderAutoLabelsEditor();
-    if(typeof renderPhotos==='function')renderPhotos();
-    if(typeof syncEditors==='function')syncEditors();
-    if(typeof render==='function')render();
-    if(typeof setupSocialShares==='function')setupSocialShares("");
-    if(typeof pushUndoSnapshot==='function'){try{undoStack=[];redoStack=[];pushUndoSnapshot();}catch(e){}}
-    scrollToStage("newSection");
-  };
+/* Reliable model cleaner */
+window.cleanModel=function(v){
+ v=String(v||'').replace(/^models\//i,'').trim();
+ if(/3\.8/.test(v))return'gemini-3.8-flash';
+ if(/3\.7/.test(v))return'gemini-3.7-flash';
+ if(/3\.6/.test(v))return'gemini-3.6-flash';
+ if(/3\.5.*lite/i.test(v))return'gemini-3.5-flash-lite';
+ if(/3\.5/.test(v))return'gemini-3.5-flash';
+ return'gemini-3.8-flash';
+};
 
-  // 2) Raw News AI Chat + Clear.
-  const chatLog=$id("rawChatLog"), chatInput=$id("rawChatInput"), chatSend=$id("rawChatSend"), chatClear=$id("rawChatClear"), chatStatus=$id("rawChatStatus");
-  function chatBubble(text,who){if(!chatLog)return;const d=document.createElement("div");d.className="chat-bubble "+who;d.textContent=text;chatLog.appendChild(d);chatLog.scrollTop=chatLog.scrollHeight;}
-  async function runRawChat(){
-    const q=(chatInput?.value||"").trim();if(!q)return;
-    const key=safeGet("bn_key","");if(!key){if(chatStatus)chatStatus.textContent="Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.";return;}
-    const raw=($id("raw")?.value||"").trim();chatBubble(q,"user");chatInput.value="";if(chatStatus)chatStatus.textContent="AI ಉತ್ತರ ತಯಾರಿಸುತ್ತಿದೆ...";chatSend.disabled=true;
-    try{
-      const prompt=`You are Bidire News AI Chat. Answer the user's request using ONLY the supplied Raw News. Never invent facts. If the user asks to rewrite or structure the news, explain the exact change but do not silently modify editor fields.\n\nRAW NEWS:\n${raw}\n\nUSER REQUEST:\n${q}`;
-      const {j}=await geminiRequest(key,[{parts:[{text:prompt}]}],{});
-      const answer=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("\n").trim();
-      chatBubble(answer||"AI ಉತ್ತರ ಸಿಗಲಿಲ್ಲ.","ai");if(chatStatus)chatStatus.textContent="";
-    }catch(e){chatBubble("AI error: "+e.message,"ai");if(chatStatus)chatStatus.textContent="";}
-    finally{chatSend.disabled=false;chatInput.focus();}
-  }
-  if(chatSend){chatSend.onclick=runRawChat;chatSend.type="button";}
-  if(chatInput)chatInput.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();runRawChat();}});
-  if(chatClear)chatClear.onclick=()=>{if(chatLog)chatLog.innerHTML="";if(chatInput)chatInput.value="";if(chatStatus)chatStatus.textContent="";chatInput?.focus();};
+function showSection(id,doScroll=true){
+ const ids=['newSection','editSection','safeSection','previewSection','allPostsPanel'];
+ ids.forEach(x=>{const e=q(x);if(e)e.classList.toggle('hide',x!==id);});
+ document.querySelectorAll('#sectionNav [data-target]').forEach(b=>b.classList.toggle('active',b.dataset.target===id));
+ if(doScroll)scrollToId(id);
+}
 
-  // 3) Normal News Update parser — supports all requested headings and writes to the correct fields.
-  function parseNormal(text){
-    const lines=String(text||"").replace(/\r/g,"").split("\n"), out={headline:"",sub:"",body:"",keyPoints:[],englishSummary:""};
-    let current="body";
-    const aliases=[
-      [/^(ಶೀರ್ಷಿಕೆ|headline|main headline)\s*[:：-]\s*(.*)$/i,"headline"],
-      [/^(ಉಪಶೀರ್ಷಿಕೆ|ಉಪ ಶೀರ್ಷಿಕೆ|subheadline|sub headline)\s*[:：-]\s*(.*)$/i,"sub"],
-      [/^(ಸುದ್ದಿ|ಸುದ್ದಿ ಬಾಡಿ|ಸುದ್ದಿಯ ಬಾಡಿ|news body|body)\s*[:：-]\s*(.*)$/i,"body"],
-      [/^(ಪ್ರಮುಖ ಅಂಶ|ಪ್ರಮುಖ ಅಂಶಗಳು|ಮುಖ್ಯ ಅಂಶ|ಮುಖ್ಯ ಅಂಶಗಳು|key points|key point|highlights)\s*[:：-]\s*(.*)$/i,"keyPoints"],
-      [/^(english summary|english summary\/summer|english)\s*[:：-]\s*(.*)$/i,"englishSummary"],
-      [/^(ಇಂಗ್ಲಿಷ್ ಸಾರಾಂಶ|ಇಂಗ್ಲಿಷ್ ಸಮರಿ)\s*[:：-]\s*(.*)$/i,"englishSummary"]
-    ];
-    for(const line of lines){
-      const t=line.trim();let hit=null;
-      for(const [re,key] of aliases){const m=t.match(re);if(m){hit={key,val:m[1]?m[2]:""};break;}}
-      if(hit){current=hit.key; if(hit.val)out[current]=hit.key==="keyPoints"?[hit.val]:hit.val; continue;}
-      if(!t){if(current==="body"&&out.body)out.body+="\n\n";continue;}
-      if(current==="keyPoints")out.keyPoints.push(t.replace(/^\s*(?:[-*•·]|\d+[.)])\s*/,""));
-      else out[current]=(out[current]?out[current]+"\n":"")+line;
-    }
-    if(!out.headline && !out.sub && !out.keyPoints.length && !out.englishSummary){out.body=String(text||"").trim();}
-    out.headline=String(out.headline||"").trim();out.sub=String(out.sub||"").trim();out.body=String(out.body||"").trim();out.englishSummary=String(out.englishSummary||"").trim();
-    out.keyPoints=Array.isArray(out.keyPoints)?out.keyPoints.map(x=>String(x).replace(/^\s*(?:[-*•·]|\d+[.)])\s*/,"").trim()).filter(Boolean):[];
-    return out;
-  }
-  const normalBtn=$id("rawNormalWrite");
-  if(normalBtn)normalBtn.onclick=()=>{
-    const raw=($id("raw")?.value||"").trim();if(!raw){msg("ಮೊದಲು Raw News ಹಾಕಿ.");return;}
-    const p=parseNormal(raw);$id("headline").value=p.headline;$id("sub").value=p.sub;$id("bodyOut").value=p.body;
-    keyPoints=p.keyPoints;englishSummary=p.englishSummary;$id("englishSummaryEdit").value=englishSummary;
-    renderKeyPointsEditor();render();scheduleAutosave();pushUndoSnapshot();msg("✓ Normal News Update complete — AI ಬಳಸಲಾಗಿಲ್ಲ.");setTimeout(()=>msg(""),1400);scrollToStage("editSection");
-  };
+/* One navigation controller — prevents conflicting handlers. */
+const nav=q('sectionNav');
+if(nav){
+ nav.addEventListener('click',e=>{
+   const b=e.target.closest('[data-target]'); if(!b)return;
+   e.preventDefault();e.stopImmediatePropagation();
+   const id=b.dataset.target;
+   if(id==='newSection') resetNewNews(false);
+   showSection(id,true);
+   if(id==='allPostsPanel' && typeof loadAllPosts==='function') loadAllPosts();
+ },true);
+}
 
-  // 4) AI News button: generate from Raw News and jump to Edit.
-  const rawAi=$id("rawAiWrite");
-  if(rawAi) rawAi.onclick=async()=>{
-    const prompt=promptFor("Create the complete news report.");
-    if(!prompt)return;
-    rawAi.disabled=true;
-    try{await gemini(prompt);scrollToStage("editSection");}
-    finally{rawAi.disabled=false;}
-  };
-  // 4) AI News button must jump to Edit after completion. Wrap existing gemini safely.
-  if(typeof window.gemini==='function'){
-    const originalGemini=window.gemini;
-    window.gemini=async function(){const r=await originalGemini.apply(this,arguments);if(($id("headline")?.value||"").trim()||($id("bodyOut")?.value||"").trim())scrollToStage("editSection");return r;};
-  }
+function resetNewNews(confirmFirst){
+ if(confirmFirst && !confirm('ಹೊಸ ಸುದ್ದಿ ಆರಂಭಿಸಬೇಕೇ?'))return false;
+ ['raw','rawChatInput','headline','sub','bodyOut','englishSummaryEdit'].forEach(id=>{const e=q(id);if(e)e.value='';});
+ if(q('category'))q('category').value='ಮೂಡುಬಿದಿರೆ';
+ if(q('rawChatLog'))q('rawChatLog').innerHTML='';
+ if(q('rawChatStatus'))q('rawChatStatus').textContent='';
+ if(q('status'))q('status').textContent='';
+ if(q('photoInput'))q('photoInput').value='';
+ if(Array.isArray(window.photos))window.photos.length=0;
+ /* lexical state used by original editor */
+ try{photos=[];keyPoints=[];englishSummary='';autoLabels=[];editingPostId=null;editingPostUrl='';}catch(_){ }
+ if(q('keyPointsEnabled'))q('keyPointsEnabled').checked=true;
+ if(q('englishEnabled'))q('englishEnabled').checked=true;
+ if(typeof setEditingPost==='function')setEditingPost(null,'');
+ if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();
+ if(typeof renderAutoLabelsEditor==='function')renderAutoLabelsEditor();
+ if(typeof renderPhotos==='function')renderPhotos();
+ if(typeof render==='function')render();
+ try{localStorage.removeItem('bn_draft');}catch(_){ }
+ try{undoStack=[];redoStack=[];pushUndoSnapshot();}catch(_){ }
+ if(typeof setupSocialShares==='function')setupSocialShares('');
+ return true;
+}
+window.resetBidireNewNews=resetNewNews;
+if(q('newBtn'))q('newBtn').onclick=()=>{if(resetNewNews(true))showSection('newSection',true)};
 
-  // 5) Photo crop: auto 16:9 and manual crop.
-  let crop={x:0,y:0,w:100,h:100,enabled:false};
-  const setCropUI=()=>{["cropX","cropY","cropW","cropH"].forEach(k=>{const el=$id(k);if(el)el.value=crop[k[3].toLowerCase()]??crop[k];});};
-  function readCrop(){return {x:+($id("cropX")?.value||0),y:+($id("cropY")?.value||0),w:+($id("cropW")?.value||100),h:+($id("cropH")?.value||100),enabled:crop.enabled};}
-  ["cropX","cropY","cropW","cropH"].forEach(id=>$id(id)?.addEventListener("input",()=>{crop=readCrop();crop.enabled=true;}));
-  $id("manualCropPhoto")?.addEventListener("click",()=>{$id("photoCropManual")?.classList.toggle("hide");crop.enabled=true;crop=readCrop();});
-  $id("autoCropPhoto")?.addEventListener("click",async()=>{
-    if(activePhotoIndex<0)return;
-    const p=photos[activePhotoIndex];const img=new Image();img.src=p.originalDataUrl||p.dataUrl;
-    try{await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;});const target=16/9,ratio=img.width/img.height;
-      let w=100,h=100,x=0,y=0;
-      if(ratio>target){w=(target*img.height/img.width)*100;x=(100-w)/2;}
-      else if(ratio<target){h=(img.width/target/img.height)*100;y=(100-h)/2;}
-      crop={x,y,w,h,enabled:true};
-      $id("cropX").value=x;$id("cropY").value=y;$id("cropW").value=w;$id("cropH").value=h;$id("photoCropManual")?.classList.remove("hide");
-      renderPhotoEditorPreview();
-    }catch(e){}
-  });
-  $id("resetCropPhoto")?.addEventListener("click",()=>{crop={x:0,y:0,w:100,h:100,enabled:false};$id("cropX").value=0;$id("cropY").value=0;$id("cropW").value=100;$id("cropH").value=100;$id("photoCropManual")?.classList.add("hide");if(activePhotoIndex>=0)renderPhotoEditorPreview();});
-  async function makePhotoData(p,bri,con,sat,rot,cropCfg){
-    const img=new Image();img.src=p.originalDataUrl||p.dataUrl;await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;});
-    let sx=0,sy=0,sw=img.width,sh=img.height;
-    if(cropCfg?.enabled){sx=Math.round(img.width*cropCfg.x/100);sy=Math.round(img.height*cropCfg.y/100);sw=Math.max(1,Math.round(img.width*cropCfg.w/100));sh=Math.max(1,Math.round(img.height*cropCfg.h/100));sw=Math.min(sw,img.width-sx);sh=Math.min(sh,img.height-sy);}
-    const rad=Math.abs(rot)*Math.PI/180, rw=Math.max(1,Math.round(sw*Math.abs(Math.cos(rad))+sh*Math.abs(Math.sin(rad)))), rh=Math.max(1,Math.round(sw*Math.abs(Math.sin(rad))+sh*Math.abs(Math.cos(rad))));
-    const c=document.createElement("canvas");c.width=rw;c.height=rh;const ctx=c.getContext("2d");ctx.filter=`brightness(${bri}%) contrast(${con}%) saturate(${sat}%)`;ctx.translate(rw/2,rh/2);ctx.rotate(rot*Math.PI/180);ctx.drawImage(img,sx,sy,sw,sh,-sw/2,-sh/2,sw,sh);return c.toDataURL("image/jpeg",.92);
-  }
-  async function renderPhotoEditorPreview(){if(activePhotoIndex<0)return;const p=photos[activePhotoIndex];const d=await makePhotoData(p,+$id("photoBrightness").value,+$id("photoContrast").value,+$id("photoSaturation").value,+$id("photoRotation").value,crop);$id("photoEditPreview").src=d;}
-  ["photoBrightness","photoContrast","photoSaturation","photoRotation"].forEach(id=>$id(id)?.addEventListener("input",()=>{applyPhotoPreview();renderPhotoEditorPreview();}));
-  const oldOpen=window.openPhotoEditor;
-  if(typeof oldOpen==='function'){
-    window.openPhotoEditor=function(i){oldOpen(i);crop={x:0,y:0,w:100,h:100,enabled:false};$id("photoCropManual")?.classList.add("hide");setTimeout(renderPhotoEditorPreview,50);};
-  }
-  $id("autoPhotoEdit")?.addEventListener("click",async()=>{if(activePhotoIndex<0)return;const p=photos[activePhotoIndex];p.dataUrl=await makePhotoData(p,106,110,108,0,crop);$id("photoEditPreview").src=p.dataUrl;renderPhotos();render();});
-  $id("savePhotoEdit")?.addEventListener("click",async()=>{if(activePhotoIndex<0)return;const p=photos[activePhotoIndex],b=$id("savePhotoEdit");b.disabled=true;try{p.dataUrl=await makePhotoData(p,+$id("photoBrightness").value,+$id("photoContrast").value,+$id("photoSaturation").value,+$id("photoRotation").value,crop);renderPhotos();render();$id("photoEditor").classList.add("hide");activePhotoIndex=-1;scrollToStage("editSection");}finally{b.disabled=false;}});
+/* Settings: explicit, reliable open/save/close behavior. */
+const settingsBtn=q('settingsBtn');
+if(settingsBtn){
+ settingsBtn.onclick=e=>{e.preventDefault();const panel=q('settings');if(!panel)return;const opening=panel.classList.contains('hide');panel.classList.toggle('hide');if(opening){
+   if(q('apiKey'))q('apiKey').value=safeGet('bn_key','');
+   if(q('model'))q('model').value=window.cleanModel(safeGet('bn_model',''));
+   if(q('clientId'))q('clientId').value=safeGet('bn_client','');
+   if(q('blogId'))q('blogId').value=safeGet('bn_blog','')||'2799540703054854619';
+   if(q('blogLabel'))q('blogLabel').value=safeGet('bn_label','');
+   settingsBtn.textContent='✕';settingsBtn.setAttribute('aria-expanded','true');scrollToId('settings');
+ }else{settingsBtn.textContent='⚙';settingsBtn.setAttribute('aria-expanded','false');}};
+}
+if(q('saveSettings'))q('saveSettings').onclick=()=>{
+ const model=window.cleanModel(q('model')?.value||'');
+ safeSet('bn_key',q('apiKey')?.value.trim()||'');safeSet('bn_model',model);safeSet('bn_client',q('clientId')?.value.trim()||'');safeSet('bn_blog',q('blogId')?.value.trim()||'2799540703054854619');safeSet('bn_label',q('blogLabel')?.value.trim()||'');
+ if(typeof setAIModelStatus==='function')setAIModelStatus(model,'Settings saved');
+ setStatus('settingsStatus','✓ Settings saved successfully.');
+};
+if(q('disconnect'))q('disconnect').onclick=()=>{token=null;tokenClient=null;setStatus('bloggerStatus','Disconnected.');};
 
-  // 6) Image to Text: clear + extract + move to Raw News.
-  const imageBtn=$id("imageToTextBtn");if(imageBtn)imageBtn.onclick=async()=>{const f=$id("imageTextInput")?.files?.[0];if(!f){$id("imageTextStatus").textContent="ಮೊದಲು image ಆಯ್ಕೆ ಮಾಡಿ.";return;}imageBtn.disabled=true;imageBtn.textContent="⏳ Reading...";try{$id("imageTextStatus").textContent="Image text ಹೊರತೆಗೆಯಲಾಗುತ್ತಿದೆ...";const d=await fileData(f),t=await imageToText(d);$id("imageTextOutput").value=t;$id("imageTextStatus").textContent=t?"✓ Image to Text complete.":"⚠️ Text ಸಿಗಲಿಲ್ಲ.";}catch(e){$id("imageTextStatus").textContent="✕ "+e.message;}finally{imageBtn.disabled=false;imageBtn.textContent="🖼️ Image → Text";}};
-  $id("imageTextClear")?.addEventListener("click",()=>{$id("imageTextInput").value="";$id("imageTextOutput").value="";$id("imageTextStatus").textContent="";});
-  $id("imageTextToRaw")?.addEventListener("click",()=>{const t=$id("imageTextOutput")?.value.trim();if(!t)return;$id("raw").value=$id("raw").value.trim()?($id("raw").value.trim()+"\n\n"+t):t;$id("raw").dispatchEvent(new Event("input",{bubbles:true}));$id("imageTextStatus").textContent="✓ Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.";scrollToStage("newSection");setTimeout(()=>$id("raw")?.focus(),450);});
+/* Normal News Update — strict structured parsing and real lexical state update. */
+if(q('rawNormalWrite'))q('rawNormalWrite').onclick=()=>{
+ const text=q('raw')?.value.trim();
+ if(!text){setStatus('status','ಮೊದಲು ಸಂಪೂರ್ಣ ಸುದ್ದಿಯನ್ನು Raw Newsನಲ್ಲಿ paste ಮಾಡಿ.');q('raw')?.focus();return;}
+ const out={headline:'',sub:'',body:'',keyPoints:[],englishSummary:''};let current='body';
+ const labelMap=[
+  [/^(ಶೀರ್ಷಿಕೆ|headline)\s*:/i,'headline'],[/^(ಉಪಶೀರ್ಷಿಕೆ|subheadline|sub-headline)\s*:/i,'sub'],
+  [/^(ಸುದ್ದಿ|news body|body)\s*:/i,'body'],[/^(ಪ್ರಮುಖ ಅಂಶಗಳು|key points|keypoints)\s*:/i,'keyPoints'],[/^(english summary)\s*:/i,'englishSummary']
+ ];
+ for(const line of text.replace(/\r/g,'').split('\n')){
+  const t=line.trim();let matched=false;
+  for(const [re,key] of labelMap){const m=t.match(re);if(m){current=key;const rest=t.replace(re,'').trim();if(key==='keyPoints'){if(rest)out.keyPoints.push(rest.replace(/^[-*•·]\s*/,''));}else out[key]=rest;matched=true;break;}}
+  if(matched)continue;
+  if(current==='keyPoints'){if(t)out.keyPoints.push(t.replace(/^[-*•·]|^\d+[.)]/,'' ).trim());}
+  else if(t)out[current]=(out[current]?out[current]+'\n':'')+line;
+ }
+ if(!out.headline&&!out.sub&&!out.body&&!out.keyPoints.length&&!out.englishSummary){out.body=text;}
+ if(typeof photos!=='undefined'){} // keep lexical scope alive
+ q('headline').value=out.headline.trim();q('sub').value=out.sub.trim();q('bodyOut').value=out.body.trim();
+ try{keyPoints=out.keyPoints.filter(Boolean);englishSummary=out.englishSummary.trim();}catch(_){window.keyPoints=out.keyPoints;window.englishSummary=out.englishSummary.trim();}
+ if(q('englishSummaryEdit'))q('englishSummaryEdit').value=out.englishSummary.trim();
+ if(typeof renderKeyPointsEditor==='function')renderKeyPointsEditor();if(typeof render==='function')render();if(typeof scheduleAutosave==='function')scheduleAutosave();if(typeof pushUndoSnapshot==='function')pushUndoSnapshot();
+ setStatus('status','✓ Normal News Update ಪೂರ್ಣಗೊಂಡಿದೆ — AI ಬಳಸಲಾಗಿಲ್ಲ.');
+ showSection('editSection',true);
+};
 
-  // 7) Audio to Text: file upload + microphone recording + automatic Raw News insertion.
-  let audioBlob=null,audioRecorder=null,audioChunks=[];
-  const audioFile=$id("audioInput"),audioPreview=$id("audioPreview"),audioStatus=$id("audioStatus");
-  if(audioFile)audioFile.onchange=()=>{const f=audioFile.files?.[0];if(!f)return;audioBlob=f;const u=URL.createObjectURL(f);audioPreview.src=u;audioPreview.classList.remove("hide");if(audioStatus)audioStatus.textContent="✓ Audio ready.";};
-  $id("recordAudio")?.addEventListener("click",async()=>{try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});audioChunks=[];audioRecorder=new MediaRecorder(stream);audioRecorder.ondataavailable=e=>{if(e.data.size)audioChunks.push(e.data)};audioRecorder.onstop=()=>{audioBlob=new Blob(audioChunks,{type:audioRecorder.mimeType||"audio/webm"});const u=URL.createObjectURL(audioBlob);audioPreview.src=u;audioPreview.classList.remove("hide");stream.getTracks().forEach(t=>t.stop());if(audioStatus)audioStatus.textContent="✓ Recording ready.";};audioRecorder.start();$id("recordAudio").disabled=true;$id("stopAudio").disabled=false;if(audioStatus)audioStatus.textContent="Recording...";}catch(e){if(audioStatus)audioStatus.textContent="✕ Microphone access: "+e.message;}});
-  $id("stopAudio")?.addEventListener("click",()=>{if(audioRecorder&&audioRecorder.state!=="inactive")audioRecorder.stop();$id("recordAudio").disabled=false;$id("stopAudio").disabled=true;});
-  $id("transcribeAudio")?.addEventListener("click",async()=>{if(!audioBlob){const f=audioFile?.files?.[0];if(f)audioBlob=f;}if(!audioBlob){if(audioStatus)audioStatus.textContent="ಮೊದಲು audio file upload ಅಥವಾ recording ಮಾಡಿ.";return;}const key=safeGet("bn_key","");if(!key){if(audioStatus)audioStatus.textContent="Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.";return;}const b=$id("transcribeAudio");b.disabled=true;b.textContent="⏳ Converting...";try{const reader=new FileReader();const data=await new Promise((res,rej)=>{reader.onload=()=>res(reader.result);reader.onerror=rej;reader.readAsDataURL(audioBlob);});const base64=String(data).split(",")[1],mime=(String(data).match(/^data:([^;]+);/)||[])[1]||audioBlob.type||"audio/webm";const prompt=`Transcribe this audio exactly as spoken. Preserve Kannada and English words, names, numbers and meaning. Do not summarize or invent. Return only the transcription text.`;const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],{});const text=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||"").join("\n").trim();if(!text)throw Error("Audio transcription empty.");$id("raw").value=$id("raw").value.trim()?($id("raw").value.trim()+"\n\n"+text):text;$id("raw").dispatchEvent(new Event("input",{bubbles:true}));if(audioStatus)audioStatus.textContent="✓ Audio → Text complete. Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.";scrollToStage("newSection");setTimeout(()=>$id("raw")?.focus(),450);}catch(e){if(audioStatus)audioStatus.textContent="✕ "+e.message;}finally{b.disabled=false;b.textContent="✨ Audio → Text";}});
-  $id("clearAudio")?.addEventListener("click",()=>{audioBlob=null;if(audioFile)audioFile.value="";if(audioPreview){audioPreview.pause();audioPreview.removeAttribute("src");audioPreview.load();audioPreview.classList.add("hide");}if(audioStatus)audioStatus.textContent="";});
+/* Raw News AI Chat */
+let rawChatHistory=[];
+function addChat(text,who){const log=q('rawChatLog');if(!log)return;const d=document.createElement('div');d.className='chat-bubble '+who;d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+if(q('rawChatSend'))q('rawChatSend').onclick=async()=>{
+ const question=q('rawChatInput')?.value.trim();const raw=q('raw')?.value.trim();
+ if(!question){setStatus('rawChatStatus','AIಗೆ ಕೇಳಬೇಕಾದ ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ.');return}
+ if(!raw){setStatus('rawChatStatus','ಮೊದಲು Raw News ಹಾಕಿ.');return}
+ const key=safeGet('bn_key','');if(!key){setStatus('rawChatStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');if(q('settings')?.classList.contains('hide'))q('settingsBtn')?.click();scrollToId('settings');return}
+ addChat(question,'user');q('rawChatInput').value='';q('rawChatSend').disabled=true;setStatus('rawChatStatus','AI ಉತ್ತರ ತಯಾರಿಸುತ್ತಿದೆ...');
+ try{
+  const prompt=`You are the Bidire News Raw News Assistant. Use ONLY the supplied raw news. Never invent facts. Answer the editor's request clearly. If asked to rewrite, preserve names, dates, places, numbers and supplied facts. RAW NEWS:\n${raw}\n\nEDITOR REQUEST:\n${question}`;
+  const {j}=await geminiRequest(key,[{parts:[{text:prompt}]}],{});
+  const answer=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('').trim()||'ಉತ್ತರ ಸಿಗಲಿಲ್ಲ.';addChat(answer,'ai');rawChatHistory.push({question,answer});setStatus('rawChatStatus','✓ ಉತ್ತರ ಸಿದ್ಧವಾಗಿದೆ.');
+ }catch(e){addChat('AI error: '+e.message,'ai');setStatus('rawChatStatus','AI error: '+e.message)}finally{q('rawChatSend').disabled=false;scrollToId('newSection');}
+};
+if(q('rawChatClear'))q('rawChatClear').onclick=()=>{rawChatHistory=[];if(q('rawChatLog'))q('rawChatLog').innerHTML='';if(q('rawChatInput'))q('rawChatInput').value='';setStatus('rawChatStatus','');};
+if(q('rawChatInput'))q('rawChatInput').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();q('rawChatSend')?.click();}});
 
-  // 8) Photo upload/caption -> next stage.
-  const photoInput=$id("photoInput");if(photoInput){const oldChange=photoInput.onchange;photoInput.addEventListener("change",()=>{setTimeout(()=>{if(photos.length)scrollToStage("newSection");},500);});}
+/* Photo editor: Auto Crop + Manual Crop. */
+function ensureCropStyles(){if(q('bnCropStyles'))return;const s=document.createElement('style');s.id='bnCropStyles';s.textContent=`
+.bn-photo-tools{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.bn-photo-tools button{font-size:11px!important;padding:6px 8px!important}.bn-crop-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px}.bn-crop-card{background:#fff;color:#111;border-radius:16px;max-width:720px;width:100%;max-height:92vh;overflow:auto;padding:14px}.bn-crop-card canvas{display:block;max-width:100%;height:auto;margin:8px auto;border:1px solid #ddd}.bn-crop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.bn-crop-grid input{min-width:0}.bn-crop-actions{display:flex;gap:7px;margin-top:10px}.bn-crop-actions button{flex:1;padding:9px}.bn-crop-presets{display:flex;gap:6px;flex-wrap:wrap}.bn-crop-presets button{padding:6px 9px}.bn-ocr-box{margin-top:10px;border:1px solid #ddd;border-radius:12px;padding:10px}`;document.head.appendChild(s)}
+function autoCropData(dataUrl,aspect=1){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{let sw=im.naturalWidth,sh=im.naturalHeight,cw=sw,ch=Math.round(cw/aspect);if(ch>sh){ch=sh;cw=Math.round(ch*aspect)}const sx=Math.round((sw-cw)/2),sy=Math.round((sh-ch)/2);const c=document.createElement('canvas');c.width=cw;c.height=ch;c.getContext('2d').drawImage(im,sx,sy,cw,ch,0,0,cw,ch);resolve(c.toDataURL('image/jpeg',.92))};im.onerror=reject;im.src=dataUrl})}
+async function applyAutoCrop(i){try{photos[i].dataUrl=await autoCropData(photos[i].dataUrl||photos[i].driveUrl,1);photos[i].driveUrl='';renderPhotos();render();setStatus('photoStatus','✓ Auto Crop ಪೂರ್ಣಗೊಂಡಿದೆ.');scrollToId('newSection')}catch(e){setStatus('photoStatus','Crop error: '+e.message)}}
+function openManualCrop(i){ensureCropStyles();const p=photos[i];const modal=document.createElement('div');modal.className='bn-crop-modal';modal.innerHTML=`<div class="bn-crop-card"><h3 style="margin:0 0 6px">✂ Manual Crop</h3><div class="small">X, Y, Width, Height ಅನ್ನು image pixelsನಲ್ಲಿ ಹೊಂದಿಸಿ.</div><canvas id="bnCropCanvas"></canvas><div class="bn-crop-grid"><input id="bnX" type="number" placeholder="X"><input id="bnY" type="number" placeholder="Y"><input id="bnW" type="number" placeholder="Width"><input id="bnH" type="number" placeholder="Height"></div><div class="bn-crop-presets" style="margin-top:8px"><button type="button" data-r="1">1:1 Square</button><button type="button" data-r="1.7778">16:9</button><button type="button" data-r="1.3333">4:3</button><button type="button" data-r="0.8">4:5</button></div><div class="bn-crop-actions"><button type="button" id="bnCropCancel">Cancel</button><button type="button" id="bnCropApply">✓ Apply Crop</button></div></div>`;document.body.appendChild(modal);const im=new Image();const c=modal.querySelector('#bnCropCanvas');im.onload=()=>{c.width=im.naturalWidth;c.height=im.naturalHeight;c.style.maxHeight='55vh';c.getContext('2d').drawImage(im,0,0);modal.querySelector('#bnW').value=im.naturalWidth;modal.querySelector('#bnH').value=im.naturalHeight;};im.src=p.dataUrl||p.driveUrl;
+ modal.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=+b.dataset.r,sw=im.naturalWidth,sh=im.naturalHeight;let w=sw,h=Math.round(w/r);if(h>sh){h=sh;w=Math.round(h*r)};modal.querySelector('#bnX').value=Math.round((sw-w)/2);modal.querySelector('#bnY').value=Math.round((sh-h)/2);modal.querySelector('#bnW').value=w;modal.querySelector('#bnH').value=h;});
+ modal.querySelector('#bnCropCancel').onclick=()=>modal.remove();modal.querySelector('#bnCropApply').onclick=()=>{const x=Math.max(0,+modal.querySelector('#bnX').value||0),y=Math.max(0,+modal.querySelector('#bnY').value||0),w=Math.max(1,+modal.querySelector('#bnW').value||im.naturalWidth),h=Math.max(1,+modal.querySelector('#bnH').value||im.naturalHeight);const cc=document.createElement('canvas');cc.width=Math.min(w,im.naturalWidth-x);cc.height=Math.min(h,im.naturalHeight-y);cc.getContext('2d').drawImage(im,x,y,cc.width,cc.height,0,0,cc.width,cc.height);photos[i].dataUrl=cc.toDataURL('image/jpeg',.92);photos[i].driveUrl='';modal.remove();renderPhotos();render();setStatus('photoStatus','✓ Manual Crop ಪೂರ್ಣಗೊಂಡಿದೆ.');};}
+const originalRenderPhotos=window.renderPhotos;
+window.renderPhotos=function(){if(typeof originalRenderPhotos==='function')originalRenderPhotos();const grid=q('photoGrid');if(!grid)return;grid.querySelectorAll('.photo-item').forEach((item,i)=>{let tools=item.querySelector('.bn-photo-tools');if(!tools){tools=document.createElement('div');tools.className='bn-photo-tools';tools.innerHTML='<button type="button" class="light">✂ Auto Crop</button><button type="button" class="light">✂ Manual Crop</button>';item.appendChild(tools);const bs=tools.querySelectorAll('button');bs[0].onclick=()=>applyAutoCrop(i);bs[1].onclick=()=>openManualCrop(i);}});};
+const bnPhotoObserver=new MutationObserver(()=>{const grid=q('photoGrid');if(!grid)return;grid.querySelectorAll('.photo-item').forEach((item,i)=>{if(item.querySelector('.bn-photo-tools'))return;const tools=document.createElement('div');tools.className='bn-photo-tools';tools.innerHTML='<button type="button" class="light">✂ Auto Crop</button><button type="button" class="light">✂ Manual Crop</button>';item.appendChild(tools);const bs=tools.querySelectorAll('button');bs[0].onclick=()=>applyAutoCrop(i);bs[1].onclick=()=>openManualCrop(i);});});
+if(q('photoGrid'))bnPhotoObserver.observe(q('photoGrid'),{childList:true,subtree:true});
 
-  // 9) Stage scroll for Image/Audio/Normal and publish/update.
-  $id("publish")?.addEventListener("click",()=>setTimeout(()=>scrollToStage("previewSection"),900));
-
-  // 10) Patch final section navigation so New News always clears old content.
-  const nav=$id("sectionNav");if(nav){const buttons=nav.querySelectorAll("[data-target]");buttons.forEach(btn=>{if(btn.dataset.target==="newSection")btn.addEventListener("click",()=>window.__bidireNewNewsReset(),true);});}
-})();
-
-/* BIDIRE FINAL — single-section navigation */
+/* Image → Text */
 (function(){
-  const nav=document.getElementById("sectionNav");
-  if(!nav)return;
-  const ids=["newSection","editSection","safeSection","previewSection","allPostsPanel"];
-  const sections=ids.map(id=>document.getElementById(id)).filter(Boolean);
-  function show(id){
-    sections.forEach(el=>el.classList.toggle("hide",el.id!==id));
-    nav.querySelectorAll("[data-target]").forEach(b=>b.classList.toggle("active",b.dataset.target===id));
-    const el=document.getElementById(id);
-    if(el) window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-92),behavior:"smooth"});
-  }
-  nav.addEventListener("click",function(ev){
-    const b=ev.target.closest("[data-target]");
-    if(!b)return;
-    ev.preventDefault();
-    ev.stopImmediatePropagation();
-    if(b.dataset.target==="newSection" && typeof window.__bidireNewNewsReset==="function") window.__bidireNewNewsReset();
-    show(b.dataset.target);
-  },true);
-  show("newSection");
+ const box=q('photo-box');if(!box)return;
+ if(!q('imageTextTools')){const d=document.createElement('div');d.className='bn-ocr-box';d.id='imageTextTools';d.innerHTML='<strong>📝 Image to Text</strong><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:7px"><input id="imageTextInput" type="file" accept="image/*" multiple style="flex:1"><button id="imageToTextBtn" type="button" class="black">✨ Extract Text</button></div><div id="imageTextStatus" class="small"></div>';box.appendChild(d);}
+ q('imageToTextBtn').onclick=async()=>{const files=[...(q('imageTextInput')?.files||[])];if(!files.length){setStatus('imageTextStatus','ಮೊದಲು image ಆಯ್ಕೆ ಮಾಡಿ.');return}const key=safeGet('bn_key','');if(!key){setStatus('imageTextStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');if(q('settings')?.classList.contains('hide'))q('settingsBtn')?.click();scrollToId('settings');return}q('imageToTextBtn').disabled=true;setStatus('imageTextStatus','Image text ಓದಲಾಗುತ್ತಿದೆ...');try{let all=[];for(const f of files){const data=await fileData(f);const b64=data.split(',')[1],mime=f.type||'image/jpeg';const prompt='Extract all readable text from this image exactly as visible. Preserve Kannada/English wording, numbers and line breaks as much as possible. Return only the extracted text. Do not invent or summarize.';const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}],{});all.push((j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('').trim());}const txt=all.filter(Boolean).join('\n\n');q('raw').value=q('raw').value.trim()?q('raw').value.trim()+'\n\n'+txt:txt;if(typeof scheduleAutosave==='function')scheduleAutosave();setStatus('imageTextStatus','✓ Image to Text ಪೂರ್ಣಗೊಂಡಿದೆ. Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.');scrollToId('newSection');q('raw')?.focus();}catch(e){setStatus('imageTextStatus','Image to Text error: '+e.message)}finally{q('imageToTextBtn').disabled=false}};
 })();
+
+/* Audio → Text: file + microphone recording + Gemini transcription */
+(function(){
+ const rec=q('recordAudio'),stop=q('stopAudio'),file=q('audioInput'),trans=q('transcribeAudio'),clear=q('clearAudio'),prev=q('audioPreview');let chunks=[],blobData=null,recorder=null;
+ if(!rec||!trans)return;
+ function setAudioBlob(b){blobData=b;if(prev){prev.src=URL.createObjectURL(b);prev.classList.remove('hide');}setStatus('audioStatus','✓ Audio ready.');}
+ rec.onclick=async()=>{try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onstop=()=>{const b=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});stream.getTracks().forEach(t=>t.stop());setAudioBlob(b);};recorder.start();rec.disabled=true;if(stop)stop.disabled=false;rec.textContent='🔴 Recording...';setStatus('audioStatus','Recording… Stop ಒತ್ತಿ.')}catch(e){setStatus('audioStatus','Microphone error: '+e.message)}};
+ if(stop)stop.onclick=()=>{if(recorder&&recorder.state!=='inactive')recorder.stop();rec.disabled=false;stop.disabled=true;rec.textContent='🎙️ Start Recording';};
+ if(file)file.onchange=async()=>{const f=file.files?.[0];if(f)setAudioBlob(f)};
+ trans.onclick=async()=>{if(!blobData){setStatus('audioStatus','ಮೊದಲು audio record ಅಥವಾ upload ಮಾಡಿ.');return}const key=safeGet('bn_key','');if(!key){setStatus('audioStatus','Settingsನಲ್ಲಿ Gemini API Key ಹಾಕಿ.');if(q('settings')?.classList.contains('hide'))q('settingsBtn')?.click();scrollToId('settings');return}trans.disabled=true;setStatus('audioStatus','Audio transcription ನಡೆಯುತ್ತಿದೆ...');try{const data=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(blobData)});const b64=data.split(',')[1],mime=blobData.type||'audio/webm';const prompt='Transcribe this audio accurately. Preserve the spoken Kannada/English wording, names, numbers and sentence order. Return only the transcript. Do not summarize or invent.';const {j}=await geminiRequest(key,[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:b64}}]}],{});const txt=(j.candidates?.[0]?.content?.parts||[]).map(x=>x.text||'').join('').trim();q('raw').value=q('raw').value.trim()?q('raw').value.trim()+'\n\n'+txt:txt;if(typeof scheduleAutosave==='function')scheduleAutosave();setStatus('audioStatus','✓ Audio → Text ಪೂರ್ಣಗೊಂಡಿದೆ. Raw Newsಗೆ ಸೇರಿಸಲಾಗಿದೆ.');scrollToId('newSection');q('raw')?.focus();}catch(e){setStatus('audioStatus','Audio transcription error: '+e.message)}finally{trans.disabled=false}};
+ if(clear)clear.onclick=()=>{blobData=null;chunks=[];if(file)file.value='';if(prev){prev.pause();prev.removeAttribute('src');prev.classList.add('hide');}setStatus('audioStatus','');};
+})();
+
+/* Stage auto-jump: AI/normal/edit/photo/audio/draft/preview actions. */
+if(q('rawAiWrite')){q('rawAiWrite').addEventListener('click',()=>{setTimeout(()=>showSection('editSection',true),900)},true);}
+if(q('publish'))q('publish').addEventListener('click',()=>setTimeout(()=>showSection('previewSection',true),1400));
+if(q('save'))q('save').addEventListener('click',()=>setTimeout(()=>showSection('safeSection',true),350));
+if(q('restoreSafeDraft'))q('restoreSafeDraft').addEventListener('click',()=>setTimeout(()=>showSection('editSection',true),350));
+if(q('transcribeAudio'))q('transcribeAudio').addEventListener('click',()=>setTimeout(()=>scrollToId('newSection'),350));
+if(q('imageToTextBtn'))q('imageToTextBtn').addEventListener('click',()=>setTimeout(()=>scrollToId('newSection'),350));
+
+/* Fix edit fields after Normal News / other actions. */
+window.addEventListener('beforeunload',()=>{try{if(typeof saveDraftAuto==='function')saveDraftAuto()}catch(_){}});
+
+/* Initial state: New News only, clean and at top. */
+setTimeout(()=>{showSection('newSection',false);},0);
+})();
+
 </script>
-
-
 </body></html>
