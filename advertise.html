@@ -196,7 +196,33 @@ async function uploadDrive(dataUrl,name){let b=blob(dataUrl),boundary="bn_"+Date
 
 function blogId(){let id=$("blogId").value.trim();if(!id)throw Error("Blogger Blog ID ಹಾಕಿ.");return id}
 async function syncPosition(ad,pos,dataUrl,link){if(!dataUrl)throw Error(pos+" image ಕಡ್ಡಾಯ.");let imageUrl=await uploadDrive(dataUrl,ad.id+"-"+pos+".jpg");let bid=blogId(),size=pos==="top"?"1536x512":pos==="middle"?"728x90":"360x450";let safeLink=/^https?:\/\//i.test(link||"")?link:"";let content='<div data-bidire-ad="1" data-ad-id="'+esc(ad.id)+'" data-position="'+(pos==="middle"?(ad.middle?.placement||"news-middle"):pos)+'" data-size="'+size+'" data-start="'+esc(ad.start)+'" data-expiry="'+esc(ad.expiry)+'" data-enabled="true" data-link="'+esc(safeLink)+'" style="display:none!important"><a href="'+esc(safeLink||"#")+'"><img src="'+esc(imageUrl)+'" alt="'+esc(ad.title)+'"></a></div>';let payload={kind:"blogger#post",blog:{id:bid},title:"[BIDIRE_AD] "+ad.title+" - "+pos.toUpperCase(),content,labels:["BidireAd"]};let old=ad.postIds?.[pos],url="https://www.googleapis.com/blogger/v3/blogs/"+encodeURIComponent(bid)+"/posts"+(old?"/"+encodeURIComponent(old):"");let r=await fetch(url,{method:old?"PUT":"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(payload)}),j=await r.json();if(!r.ok)throw Error(j.error?.message||"Blogger Advertisement sync failed");return{postId:j.id,url:j.url||"",imageUrl}}
-async function syncBlogger(ad){if(!token)await access();let files={top:await fileData($("topFile").files[0],1000,400,.68),middle:await fileData($("middleFile").files[0],900,250,.68),side:await fileData($("sideFile").files[0],500,500,.68)};for(const p of ["top","middle","side"]){if(!files[p] && ad[p]?.dataUrl)files[p]=ad[p].dataUrl;if(!files[p])throw Error("ಮೂರು positionsಗೂ images ಕಡ್ಡಾಯ.");}ad.postIds=ad.postIds||{};ad.urls=ad.urls||{};for(const p of ["top","middle","side"]){let r=await syncPosition(ad,p,files[p],($(p==="top"?"topLink":p==="middle"?"middleLink":"sideLink").value.trim()||ad[p]?.link||""));ad.postIds[p]=r.postId;ad.urls[p]=r.url;ad[p]={dataUrl:files[p],imageUrl:r.imageUrl,link:($(p==="top"?"topLink":p==="middle"?"middleLink":"sideLink").value.trim()||ad[p]?.link||"")}}}
+async function cleanupInactiveBloggerAds(){
+  // Preserve posts belonging to ACTIVE panel records only; remove stale/legacy BidireAd posts.
+  const bid=blogId();
+  const keep=new Set();
+  ads.filter(a=>status(a)==="ACTIVE").forEach(a=>Object.values(a.postIds||{}).forEach(id=>{if(id)keep.add(String(id))}));
+  let pageToken="";
+  do{
+    const q=new URLSearchParams({labels:"BidireAd",maxResults:"500",fetchBodies:"false"});
+    if(pageToken)q.set("pageToken",pageToken);
+    const r=await fetch("https://www.googleapis.com/blogger/v3/blogs/"+encodeURIComponent(bid)+"/posts?"+q.toString(),{headers:{Authorization:"Bearer "+token}});
+    const j=await r.json();
+    if(!r.ok)throw Error(j.error?.message||"ಹಳೆಯ Blogger ಜಾಹೀರಾತುಗಳ ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ.");
+    for(const post of (j.items||[])){
+      if(!post.id || keep.has(String(post.id)))continue;
+      const title=String(post.title||"");
+      if(!/^\\[BIDIRE_AD\\]/i.test(title))continue;
+      const d=await fetch("https://www.googleapis.com/blogger/v3/blogs/"+encodeURIComponent(bid)+"/posts/"+encodeURIComponent(post.id),{method:"DELETE",headers:{Authorization:"Bearer "+token}});
+      if(!d.ok && d.status!==404)throw Error("ಹಳೆಯ ಜಾಹೀರಾತು ಅಳಿಸಲಾಗಲಿಲ್ಲ: "+post.id);
+    }
+    pageToken=j.nextPageToken||"";
+  }while(pageToken);
+}
+async function syncBlogger(ad){if(!token)await access();let files={top:await fileData($("topFile").files[0],1000,400,.68),middle:await fileData($("middleFile").files[0],900,250,.68),side:await fileData($("sideFile").files[0],500,500,.68)};for(const p of ["top","middle","side"]){if(!files[p] && ad[p]?.dataUrl)files[p]=ad[p].dataUrl;if(!files[p])throw Error("ಮೂರು positionsಗೂ images ಕಡ್ಡಾಯ.");}ad.postIds=ad.postIds||{};ad.urls=ad.urls||{};for(const p of ["top","middle","side"]){let r=await syncPosition(ad,p,files[p],($(p==="top"?"topLink":p==="middle"?"middleLink":"sideLink").value.trim()||ad[p]?.link||""));ad.postIds[p]=r.postId;ad.urls[p]=r.url;ad[p]={dataUrl:files[p],imageUrl:r.imageUrl,link:($(p==="top"?"topLink":p==="middle"?"middleLink":"sideLink").value.trim()||ad[p]?.link||"")};}
+  // Save the latest IDs before cleanup so the newly synced ad is retained.
+  await saveAdsToStorage();
+  await cleanupInactiveBloggerAds();
+}
 function collectBase(){let total=Math.max(0,(+$("rate").value||0)-(+$("discount").value||0));let paid=Math.min(total,Math.max(0,+$("paid").value||0));return{business:$("business").value.trim(),address:$("address").value.trim(),phone:$("phone").value.trim(),title:$("title").value.trim(),note:$("note").value.trim(),start:$("start").value,expiry:$("expiry").value,rate:+$("rate").value||0,discount:+$("discount").value||0,total,paid,payment:$("payment").value,id:editingId||(window.draftBillId||(window.draftBillId=nextBill())),billDate:today()}}
 async function saveAd(){let ad=collectBase();if(!ad.business||!ad.address||!ad.title||!ad.start||!ad.expiry)throw Error("Advertiser Name, Address, Title, Start Date ಮತ್ತು End Date ಕಡ್ಡಾಯ.");if(ad.start>ad.expiry)throw Error("End Date, Start Dateಗಿಂತ ಮುಂಚೆ ಇರಬಾರದು.");let files={top:await fileData($("topFile").files[0],1000,400,.68),middle:await fileData($("middleFile").files[0],900,250,.68),side:await fileData($("sideFile").files[0],500,500,.68)};if(editingId){let old=ads.find(x=>x.id===editingId);for(const p of ["top","middle","side"])if(!files[p]&&old?.[p]?.dataUrl)files[p]=old[p].dataUrl}for(const p of ["top","middle","side"])if(!files[p])throw Error("ಮೂರು advertisement positionsಗೂ image ಕಡ್ಡಾಯ.");ad.top={dataUrl:files.top,link:$("topLink").value.trim()};ad.middle={dataUrl:files.middle,link:$("middleLink").value.trim(),placement:$("middlePlacement").value};ad.side={dataUrl:files.side,link:$("sideLink").value.trim()};ad.postIds=(ads.find(x=>x.id===editingId)?.postIds)||{};ad.urls=(ads.find(x=>x.id===editingId)?.urls)||{};let idx=ads.findIndex(x=>x.id===ad.id);if(idx>=0)ads[idx]=ad;else ads.push(ad);await saveAdsToStorage();return ad}
 $("save").onclick=async()=>{let st=$("status");try{st.textContent="Advertisement save ಆಗುತ್ತಿದೆ...";st.style.display="block";let ad=await saveAd();
