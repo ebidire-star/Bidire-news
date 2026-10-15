@@ -105,8 +105,8 @@ header{
 .panel:nth-of-type(8){border-top:5px solid var(--bn-teal)}
 
 .section-nav{
-  position:sticky;top:67px;z-index:4;display:flex;gap:8px;overflow:auto;
-  padding:9px 2px;margin:0 auto 14px;scrollbar-width:none;
+  position:sticky;top:0;z-index:20;display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;overflow-y:hidden;
+  padding:10px 8px;margin:0 auto 14px;scrollbar-width:none;background:var(--bn-bg,#f4f7fb);border:1px solid #dfe5ee;border-radius:16px;box-shadow:0 5px 18px rgba(20,35,55,.10);
 }
 .section-nav::-webkit-scrollbar{display:none}
 .section-nav button{
@@ -488,6 +488,7 @@ header{min-height:76px;padding:10px clamp(12px,2vw,28px);box-shadow:0 4px 22px #
 #newSection{border-top:3px solid #d71920}#editSection{border-top:3px solid #d71920}#safeSection{border-top:3px solid #15965a}#previewSection{border-top:3px solid #7b42d8}#allPostsPanel{border-top:3px solid #1670df}
 @media(min-width:1000px){#newSection .body{display:block}#raw{min-height:190px}#editSection .body{max-width:1150px;margin:auto}}
 @media(max-width:760px){header{min-height:65px;padding:8px 10px}.bidire-logo{width:min(245px,58vw);max-height:46px}.brand-caption{font-size:7px;letter-spacing:1px}.wrap{margin:8px auto;padding:0 9px}.quick-tools{grid-template-columns:1fr;gap:9px}.quick-tool{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:11px;padding:13px}.quick-tool .tool-symbol{grid-row:1 / span 2;margin:0}.quick-tool h3{align-self:end;font-size:14px}.quick-tool p{grid-column:2;margin:2px 0 10px}.quick-tool button,.quick-tool .tool-note{grid-column:1 / -1}.quick-tool button{min-height:44px}.section-nav button{padding:10px 12px;font-size:12px}.bar{padding:12px;font-size:14px}.body{padding:11px}.edit-head-actions{flex-wrap:wrap}.compact-publish-actions{position:sticky;bottom:6px;z-index:4;background:#ffffffed;backdrop-filter:blur(10px);padding:7px;border:1px solid #e5eaf1;border-radius:13px;box-shadow:0 5px 20px #14233b18}}
+@media(max-width:760px){.section-nav{top:0;gap:6px;padding:8px 6px;margin-bottom:10px;border-radius:12px;max-width:100%;}.section-nav button{flex:0 0 auto;white-space:nowrap;padding:10px 13px;font-size:13px;min-height:42px}.section-nav button:focus-visible{outline:3px solid #7db4ff;outline-offset:2px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 </style>
@@ -1607,4 +1608,22 @@ setTimeout(()=>{showSection('newSection',false);},0);
 })();
 </script>
 
+<script id="bidire-legacy-ads-guard">
+/* Compatibility guard: old live buttons may still call ads(). Ad management is handled in the separate Advertise Panel. */
+window.ads = window.ads || function(){
+  const message = 'ಜಾಹೀರಾತು ನಿರ್ವಹಣೆ ಪ್ರತ್ಯೇಕ Advertise Panel‌ನಲ್ಲಿದೆ.';
+  let status = document.getElementById('bidireAdsNotice');
+  if(!status){
+    status = document.createElement('div');
+    status.id = 'bidireAdsNotice';
+    status.setAttribute('role','status');
+    status.style.cssText = 'position:fixed;left:12px;right:12px;bottom:18px;z-index:9999;padding:13px 16px;border-radius:12px;background:#fff7d6;color:#473800;border:1px solid #ead27a;box-shadow:0 6px 24px #0002;font:600 14px/1.5 system-ui,sans-serif;text-align:center;';
+    document.body.appendChild(status);
+  }
+  status.textContent = message;
+  status.style.display = 'block';
+  if(status._hideTimer) clearTimeout(status._hideTimer);
+  status._hideTimer = setTimeout(()=>{status.style.display='none';},3500);
+};
+</script>
 </body></html>
