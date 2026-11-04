@@ -240,15 +240,15 @@ function restoreEditState(s){restoringEdit=true;const o=JSON.parse(s);Object.key
 function undoEdit(){if(editHistory.length<2){toast('Undo ಮಾಡಲು ಹಿಂದಿನ ಬದಲಾವಣೆ ಇಲ್ಲ');return}editFuture.push(editHistory.pop());restoreEditState(editHistory[editHistory.length-1]);toast('ಹಿಂದಿನ ಬದಲಾವಣೆಗೆ ಮರಳಿಸಲಾಗಿದೆ')}
 function redoEdit(){if(!editFuture.length){toast('Redo ಮಾಡಲು ಮುಂದಿನ ಬದಲಾವಣೆ ಇಲ್ಲ');return}const s=editFuture.pop();editHistory.push(s);restoreEditState(s);toast('ಬದಲಾವಣೆ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ')}
 async function copyFullStory(){const text=[document.getElementById('headline').value,document.getElementById('deck').value,document.getElementById('body').value,document.getElementById('keyPoints').value.trim()?'ಪ್ರಮುಖ ಅಂಶಗಳು:\\n'+document.getElementById('keyPoints').value.trim():''].filter(Boolean).join('\\n\\n');try{await navigator.clipboard.writeText(text);toast('ಶೀರ್ಷಿಕೆ ಸಹಿತ ಸಂಪೂರ್ಣ ಸುದ್ದಿ ನಕಲಿಸಲಾಗಿದೆ')}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();toast(ok?'ಶೀರ್ಷಿಕೆ ಸಹಿತ ಸಂಪೂರ್ಣ ಸುದ್ದಿ ನಕಲಿಸಲಾಗಿದೆ':'ಕಾಪಿ ಮಾಡಲು ಅನುಮತಿ ಲಭ್ಯವಿಲ್ಲ')}}
-function connectGoogle(){document.getElementById('settingsStatus').textContent='Google OAuth ಸಂಪರ್ಕವನ್ನು ಈ HTML ಆವೃತ್ತಿಯಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಿಲ್ಲ.';toast('Google OAuth ಇನ್ನೂ ಸಕ್ರಿಯವಾಗಿಲ್ಲ')}
-function connectBlogger(){document.getElementById('settingsStatus').textContent='Blogger ನೇರ ಪ್ರಕಟಣೆ ಸಂಪರ್ಕವನ್ನು ಈ HTML ಆವೃತ್ತಿಯಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಿಲ್ಲ.';toast('Blogger ನೇರ ಪ್ರಕಟಣೆ ಇನ್ನೂ ಸಕ್ರಿಯವಾಗಿಲ್ಲ')}
-function checkConnections(){document.getElementById('googleStatus').textContent='OAuth ಕಾನ್ಫಿಗರೇಶನ್ ಅಗತ್ಯ';document.getElementById('bloggerStatus').textContent='Google OAuth ಮತ್ತು Blogger API ಅಗತ್ಯ';document.getElementById('settingsStatus').textContent='ಈ ಮಾದರಿಯಲ್ಲಿ ನೇರ ಸಂಪರ್ಕ ಸಕ್ರಿಯವಾಗಿಲ್ಲ.'}
+function connectGoogle(){return activateGoogleBlogger()}
+function connectBlogger(){return activateGoogleBlogger()}
+function checkConnections(){const s=JSON.parse(localStorage.getItem('bidireIntegrationsV6')||'{}');const ok=!!(s.googleClientId&&s.bloggerBlogId);const el=document.getElementById('settingsStatus');if(el)el.textContent=ok?'OAuth ವಿವರಗಳು ಉಳಿಸಲಾಗಿದೆ. Google ಅನುಮತಿ ಪಡೆಯಲು “Google ಸಂಪರ್ಕವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ” ಒತ್ತಿ.':'Google OAuth Client ID ಮತ್ತು Blogger Blog ID ನಮೂದಿಸಿ.'}
 
 document.addEventListener('DOMContentLoaded',()=>{pushEditState();editFields.forEach(id=>{const e=document.getElementById(id);if(e){e.addEventListener('input',pushEditState);e.addEventListener('change',pushEditState)}})});
 
 function saveIntegrations(){const d={};['geminiKey','geminiModel','geminiModels','googleClientId','bloggerBlogId'].forEach(k=>d[k]=document.getElementById(k).value);try{localStorage.setItem('bidireIntegrationsV6',JSON.stringify(d));document.getElementById('settingsStatus').textContent='ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ ✓';toast('ಸಂಪರ್ಕ ವಿವರಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ')}catch(e){toast('ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ')}}
-function loadIntegrations(){try{const d=JSON.parse(localStorage.getItem('bidireIntegrationsV6')||'{}');Object.keys(d).forEach(k=>{const el=document.getElementById(k);if(el)el.value=d[k]})}catch(e){}}
 function clearIntegrationSecrets(){['geminiKey'].forEach(id=>document.getElementById(id).value='');saveIntegrations()}
+function loadIntegrations(){try{const d=JSON.parse(localStorage.getItem('bidireIntegrationsV6')||'{}');['geminiKey','geminiModel','geminiModels','googleClientId','bloggerBlogId'].forEach(k=>{const e=document.getElementById(k);if(e&&d[k]!==undefined)e.value=d[k]});const st=document.getElementById('oauthStatus');if(st&&d.googleClientId&&d.bloggerBlogId)st.textContent='ಸಂಪರ್ಕ ವಿವರಗಳು ಉಳಿಸಲಾಗಿದೆ. ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಲು ಕೆಳಗಿನ ಬಟನ್ ಒತ್ತಿ.'}catch(e){}}
 loadIntegrations();
 let mediaRecorder=null,recordChunks=[],recordStartedAt=0,recordingStream=null,recordElapsed=0,recordTimerHandle=null;
 function formatAudioTime(seconds){const n=Math.max(0,Math.floor(seconds||0));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
@@ -282,7 +282,7 @@ function publishToBlogger(){const blogId=document.getElementById('bloggerBlogId'
 
 // Gemini: discover models supported by this API key, then automatically fall back on 404/other errors.
 async function makeDraft(){
- const raw=document.getElementById('raw').value.trim();if(!raw){toast('ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಸೇರಿಸಿ');go(1);return}
+ const raw=document.getElementById('raw').value.trim();if(!raw){toast('ಮೊದಲು ಕಚ್ಚಾ ಸುದ್ದಿ ಸೇರಿಸಿ');go(1);return}toast('ಕರಡು ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ…');
  const key=document.getElementById('geminiKey')?.value.trim();
  if(!key){const first=raw.split(/[.!?\n]/).map(x=>x.trim()).find(Boolean)||raw;document.getElementById('headline').value=first.length>85?first.slice(0,82)+'…':first;document.getElementById('deck').value='';document.getElementById('body').value=raw;document.getElementById('keyPoints').value='';updateWords();go(3);toast('Gemini API key ಸೇರಿಸಿದರೆ AI ಕರಡು ರಚಿಸಬಹುದು');return}
  const selected=document.getElementById('geminiModel').value;
@@ -308,7 +308,7 @@ async function makeDraft(){
   if(!response.ok){let detail='';try{const err=await response.json();detail=err.error?.message||''}catch(e){}lastErr=model+': HTTP '+response.status+(detail?' — '+detail:'');continue}
   const data=await response.json();const textOut=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'';
   let result;try{result=JSON.parse(textOut.replace(/^```json\s*/i,'').replace(/```$/,'').trim())}catch(e){lastErr=model+': JSON parse error';continue}
-  document.getElementById('headline').value=result.headline||'';document.getElementById('deck').value=result.deck||'';document.getElementById('body').value=result.body||'';const pts=Array.isArray(result.keyPoints)?result.keyPoints.slice(0,5):[];while(pts.length<5)pts.push('');document.getElementById('keyPoints').value=pts.map((x,i)=>x?`${i+1}. ${x}`:'').filter(Boolean).join('\n');updateWords();go(3);toast('Gemini ಮಾದರಿ '+model+' ಮೂಲಕ ಕರಡು ಸಿದ್ಧ');return;
+  document.getElementById('headline').value=result.headline||'';document.getElementById('deck').value=result.deck||'';document.getElementById('body').value=result.body||'';const pts=Array.isArray(result.keyPoints)?result.keyPoints.slice(0,5):[];while(pts.length<5)pts.push('');document.getElementById('keyPoints').value=pts.map((x,i)=>x?`${i+1}. ${x}`:'').filter(Boolean).join('\n');updateWords();go(3);toast('ಕರಡು ಸಿದ್ಧಪಡಿಸಲಾಗಿದೆ ✓');return;
  }catch(e){lastErr=model+': '+(e.message||'network error')}}
  toast('ಯಾವುದೇ ಲಭ್ಯ Gemini ಮಾದರಿಯಿಂದ ಕರಡು ಸಿದ್ಧವಾಗಲಿಲ್ಲ. '+lastErr);
 }
@@ -359,15 +359,14 @@ async function activateGoogleBlogger(){
  if(!client||!blog){toast('OAuth Client ID ಮತ್ತು Blogger Blog ID ನಮೂದಿಸಿ');return}
  const st=document.getElementById('oauthStatus');st.textContent='Google ಸಂಪರ್ಕ ಆರಂಭಿಸಲಾಗುತ್ತಿದೆ…';
  try{await loadGoogleIdentity();const token=await bGetToken(client);const r=await fetch('https://www.googleapis.com/blogger/v3/blogs/'+encodeURIComponent(blog),{headers:{Authorization:'Bearer '+token}});const j=await r.json();if(!r.ok)throw Error(j.error?.message||'Blogger ಪರಿಶೀಲನೆ ವಿಫಲ');sessionStorage.setItem('bidireBloggerConnected','1');st.textContent='Google ಮತ್ತು Blogger ಸಂಪರ್ಕ ಸಕ್ರಿಯವಾಗಿದೆ ✓';toast('Google ಸಂಪರ್ಕ ಸಕ್ರಿಯವಾಗಿದೆ ✓')}
- catch(e){st.textContent='ಸಂಪರ್ಕ ವಿಫಲ: '+e.message;toast('Google ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ')}
+ catch(e){st.textContent='ಸಂಪರ್ಕ ವಿಫಲ: '+(e.message||e)+'. OAuth Client ID, Blog ID, Blogger API ಮತ್ತು Authorized JavaScript origin ಪರಿಶೀಲಿಸಿ.';toast('Google ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ: '+String(e.message||e).slice(0,90))}
 }
-function loadGoogleIdentity(){return new Promise((resolve,reject)=>{if(window.google?.accounts?.oauth2)return resolve();let sc=document.querySelector('script[data-bidire-gis]');if(!sc){sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.defer=true;sc.dataset.bidireGis='1';document.head.appendChild(sc)}sc.addEventListener('load',resolve,{once:true});sc.addEventListener('error',()=>reject(Error('Google OAuth library load failed')),{once:true});setTimeout(()=>window.google?.accounts?.oauth2?resolve():reject(Error('Google OAuth library unavailable')),8000)})}
+function loadGoogleIdentity(){return new Promise((resolve,reject)=>{if(window.google?.accounts?.oauth2)return resolve();let sc=document.querySelector('script[data-bidire-gis]');if(!sc){sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.defer=true;sc.dataset.bidireGis='1';document.head.appendChild(sc)}let settled=false;const done=()=>{if(settled)return;settled=true;window.google?.accounts?.oauth2?resolve():reject(Error('Google OAuth ಲೈಬ್ರರಿ ಲಭ್ಯವಿಲ್ಲ. ಇಂಟರ್ನೆಟ್/ಬ್ರೌಸರ್ ನಿರ್ಬಂಧ ಪರಿಶೀಲಿಸಿ.'))};sc.addEventListener('load',done,{once:true});sc.addEventListener('error',()=>{if(!settled){settled=true;reject(Error('Google OAuth ಲೈಬ್ರರಿ ಲೋಡ್ ಆಗಲಿಲ್ಲ'))}},{once:true});setTimeout(done,9000)})}
 function makeBloggerHtml(){
  const esc=escB, paras=val('body').split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean),first=paras.shift()||'';
  const deck=val('deck').trim(),caption=val('photoCaption').trim(),kp=cleanKeyPoints(val('keyPoints'));
  let html=deck?`<p><strong>${esc(deck)}</strong></p>`:'';
  html+=`<p>${esc(first).replace(/\n/g,'<br>')}</p>`;
- if(bImageData){html+=`<p><img src="${bImageData}" alt="${esc(caption)}" style="max-width:100%;height:auto"></p>`;}
  if(caption)html+=`<p><em>${esc(caption)}</em></p>`;
  html+=paras.map(x=>`<p>${esc(x).replace(/\n/g,'<br>')}</p>`).join('');
  if(kp)html+=`<p><strong>ಪ್ರಮುಖ ಅಂಶಗಳು</strong></p><ul>${kp.split('\n').map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
@@ -377,6 +376,7 @@ async function publishToBlogger(){
  bSave();const client=val('googleClientId').trim(),blog=val('bloggerBlogId').trim();
  if(!client||!blog){toast('ಮೊದಲು Settingsನಲ್ಲಿ OAuth Client ID ಮತ್ತು Blog ID ನೀಡಿ');go(5);return}
  if(!val('headline').trim()||!val('body').trim()){toast('ಶೀರ್ಷಿಕೆ ಮತ್ತು ಸುದ್ದಿ ವರದಿ ತುಂಬಿಸಿ');return}
+ if(bImageData){toast('ಫೋಟೋವನ್ನು Bloggerಗೆ ಸುರಕ್ಷಿತವಾಗಿ ಅಪ್‌ಲೋಡ್ ಮಾಡುವ ವ್ಯವಸ್ಥೆ ಇನ್ನೂ ಜೋಡಿಸಿಲ್ಲ. ಫೋಟೋ ಇಲ್ಲದೆ ಪ್ರಕಟಿಸಬೇಕಾದರೆ ಫೋಟೋ ತೆಗೆದು ಮತ್ತೆ ಪ್ರಕಟಿಸಿ.');return}
  const status=document.getElementById('settingsStatus'),draft=val('publishstate')==='ಕರಡಾಗಿ ಉಳಿಸಿ';
  toast(draft?'ಕರಡು ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ…':'ಸುದ್ದಿ ಪ್ರಕಟಿಸಲಾಗುತ್ತಿದೆ…');if(status)status.textContent=draft?'Blogger ಕರಡು ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ…':'Bloggerನಲ್ಲಿ ಸುದ್ದಿ ಪ್ರಕಟಿಸಲಾಗುತ್ತಿದೆ…';
  try{await loadGoogleIdentity();const token=await bGetToken(client);const res=await fetch(`https://www.googleapis.com/blogger/v3/blogs/${encodeURIComponent(blog)}/posts/`,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({kind:'blogger#post',blog:{id:blog},title:val('headline'),content:makeBloggerHtml(),labels:[val('category')].filter(Boolean),status:draft?'DRAFT':'LIVE'})});const j=await res.json();if(!res.ok)throw Error(j.error?.message||'Blogger API HTTP '+res.status);
